@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>Financial Plan & Accomplishment</h2>
+          </div>
+    </div>
+    <div class="row" [ngClass]="routeAnimationsElements">
+      <div class="col-md-10">
+          <em>serves as the overall financial plan & accomplishment of the department/agency/OU</em>
+      </div>
+      <div  class="col-md-2">
+          <button style="margin:5px;" mat-raised-button class="information">
+              EXPORT to EXCEL
+            </button> 
+            <br>
+      </div>
+
+    </div>
+    <br>
+<div [ngClass]="routeAnimationsElements">
+  <ag-grid-angular 
+    style="width: 100%; height: 400px;" 
+    class="ag-theme-balham"
+    [rowData]="rowData" 
+    [columnDefs]="columnDefs"
+    [components]="components"
+    [enableSorting]="true"
+    [enableFilter]="true"
+    [enableColResize]="true"
+    [autoGroupColumnDef]="autoGroupColumnDef"
+    [groupRemoveSingleChildren]="true"
+    [rowSelection]="rowSelection"
+    [suppressAggFuncInHeader]= "true"
+    (cellClicked)="addObject($event)"
+    (gridReady)="onGridReady($event)"
+    >
+</ag-grid-angular>
+</div>
+<br>
+<div class="row" [ngClass]="routeAnimationsElements">
+    <div class="col-12">
+        <h4>Summary Objects</h4>
+        <summary-object></summary-object>
+      </div>
+</div>
+<br><br>
+
+</div>
