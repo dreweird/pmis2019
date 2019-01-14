@@ -13,6 +13,7 @@ import { MfoService } from '../services/mfo.service';
       [autoGroupColumnDef]="autoGroupColumnDef"
       [enableSorting]="true"
       [enableFilter]="true"
+      [groupRowAggNodes]="groupRowAggNodes"
       [enableColResize]="true"
       [rowSelection]="rowSelection"
       [suppressAggFuncInHeader]="true"
@@ -30,6 +31,7 @@ export class SummaryObjectComponent {
   components: any;
   rowSelection: any;
   columnTypes: any;
+  private groupRowAggNodes;
 
   onGridReady(params) {
     this.gridApi = params.api;
@@ -88,6 +90,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Adjusted Allotment',
+        field: 'adjusted',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
         aggFunc: 'sum',
@@ -117,6 +120,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Q1',
+        field: 'Q1',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#5472d3' },
         aggFunc: 'sum',
@@ -146,6 +150,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Q2',
+        field: 'Q2',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#5472d3' },
         aggFunc: 'sum',
@@ -175,6 +180,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Q3',
+        field: 'Q3',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#5472d3' },
         aggFunc: 'sum',
@@ -204,6 +210,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Q4',
+        field: 'Q4',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#5472d3' },
         aggFunc: 'sum',
@@ -212,7 +219,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Total',
-        field: '',
+        field: 'to',
         width: 70,
         aggFunc: 'sum',
         valueFormatter: this.currencyFormatter,
@@ -221,7 +228,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: 'Unobligated',
-        field: '',
+        field: 'un',
         width: 70,
         aggFunc: 'sum',
         valueFormatter: this.currencyFormatter,
@@ -230,7 +237,7 @@ export class SummaryObjectComponent {
       },
       {
         headerName: '% Utilization',
-        field: '',
+        field: 'fu',
         width: 70,
         valueFormatter: this.percentageFormatter,
         valueGetter:
@@ -265,6 +272,97 @@ export class SummaryObjectComponent {
         cellClass: 'number-cell',
         valueFormatter: this.currencyFormatter
       }
+    };
+
+    this.groupRowAggNodes = function groupRowAggNodes(nodes) {
+      var result = {
+        to:0,fu:0,un:0,
+        adjusted: 0,
+        budget:0,
+        adj:0,
+        Q1:0,
+        Q2:0,
+        Q3:0,
+        Q4:0,
+        jan:0,
+        feb:0,
+        mar:0,
+        apr:0,
+        may:0,
+        jun:0,
+        jul:0,
+        aug:0,
+        sep:0,
+        oct:0,
+        nov:0,
+        decm:0,
+      };
+      nodes.forEach(function(node) {
+        var data = node.group ? node.aggData : node.data;
+        //console.log(data);
+        if (typeof data.adj === "number") {
+          result.adj += data.adj;
+        }
+        if (typeof data.budget === "number") {
+          result.budget += data.budget;
+        }
+        if (typeof data.budget === "number"&&typeof data.adj === "number") {
+          result.adjusted += data.budget+ data.adj;
+        }
+        if (typeof data.jan === "number") {
+          result.jan += data.jan;
+        }
+        if (typeof data.feb === "number") {
+          result.feb += data.feb;
+        }
+        if (typeof data.mar === "number") {
+          result.mar += data.mar;
+        }
+        if (typeof data.apr === "number") {
+          result.apr += data.apr;
+        }
+        if (typeof data.may === "number") {
+          result.may += data.may;
+        }
+        if (typeof data.jun === "number") {
+          result.jun += data.jun;
+        }
+        if (typeof data.jul === "number") {
+          result.jul += data.jul;
+        }
+        if (typeof data.aug === "number") {
+          result.aug += data.aug;
+        }
+        if (typeof data.sep === "number") {
+          result.sep += data.sep;
+        }
+        if (typeof data.oct === "number") {
+          result.oct += data.oct;
+        }
+        if (typeof data.nov === "number") {
+          result.nov += data.nov;
+        }
+        if (typeof data.decm === "number") {
+          result.decm += data.decm;
+        }
+        result.Q1 += Number(data.jan) + Number(data.feb) + Number(data.mar);
+        result.Q2 += Number(data.apr) + Number(data.may) + Number(data.jun);
+        result.Q3 += Number(data.jul) + Number(data.aug) + Number(data.sep);
+        result.Q4 += Number(data.oct) + Number(data.nov) + Number(data.decm);
+        result.to+=Number(data.jan) + Number(data.feb) + Number(data.mar)+Number(data.apr) + Number(data.may) + Number(data.jun)+Number(data.jul) + Number(data.aug) + Number(data.sep)+Number(data.oct) + Number(data.nov) + Number(data.decm);
+        result.un = result.adjusted-result.to;
+        result.fu = result.to/result.adjusted;
+        /*
+        if (typeof data.silver === "number") {
+          result.silver += data.silver;
+          result.silverPie += data.silver * Math.PI;
+        }
+        if (typeof data.bronze === "number") {
+          result.bronze += data.bronze;
+          result.bronzePie += data.bronze * Math.PI;
+        }*/
+      });
+      return result;
     };
   }
 }
