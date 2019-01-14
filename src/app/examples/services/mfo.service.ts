@@ -19,7 +19,12 @@ export class MfoService {
     return this.http.post(url, { mfo_id, object_id });
   }
 
-  getSummaryObject(){
+  updateAllotment(id, value, col) {
+    const url = `${this.apiRoot}/updateAllotment`;
+    return this.http.post(url, { id, value, col });
+  }
+
+  getSummaryObject() {
     const url = `${this.apiRoot}/summaryObject`;
     return this.http.get(url);
   }

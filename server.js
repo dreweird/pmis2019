@@ -54,6 +54,14 @@ const connection = mysql.createConnection({
       });
   });
 
+  app.get('/mfosPhysical',function(req,res){ 
+    connection.query(`
+    SELECT * FROM tbl_mfo`, function (error, results) {
+        if (error) throw error;
+        res.json(results); 
+      });
+  });
+
   app.post('/addObject', function(req, res){
     var query = "INSERT INTO tbl_allotment (mfo_id, object_id) VALUES (?,?)";
     var data = [req.body.mfo_id, req.body.object_id];
@@ -63,6 +71,19 @@ const connection = mysql.createConnection({
         if (err) throw res.status(400).json(err);
         if (rows.insertId){
             res.status(200).json("Successfully Object Added!")
+        }
+    })
+  });
+
+  app.post('/updateAllotment', function(req, res){
+    var query = "UPDATE tbl_allotment SET ?? = ? WHERE id = ?";
+    var data = [req.body.col, req.body.value, req.body.id];
+    query = mysql.format(query,data);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);
+        if (rows.changedRows){
+            res.status(200).json("Successfully Updated!")
         }
     })
   })
