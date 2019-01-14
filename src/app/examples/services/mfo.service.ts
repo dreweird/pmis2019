@@ -14,13 +14,24 @@ export class MfoService {
     return this.http.get(url);
   }
 
+  getMFOPhysical() {
+    // let pid = JSON.parse(localStorage.getItem('pid'));
+    // let body = {pid: pid};
+    const url = `${this.apiRoot}/mfosPhysical`;
+    return this.http.get(url);
+  }
   addObject(mfo_id, object_id) {
     const url = `${this.apiRoot}/addObject`;
     return this.http.post(url, { mfo_id, object_id });
   }
 
-  updateAllotment(id, value, col) {
+  updateAllotment(id: number, value: number, col: string) {
     const url = `${this.apiRoot}/updateAllotment`;
+    return this.http.post(url, { id, value, col });
+  }
+
+  updatePhysical(id: number, value: number, col: string)  {
+    const url = `${this.apiRoot}/updatePhysical`;
     return this.http.post(url, { id, value, col });
   }
 

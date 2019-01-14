@@ -86,7 +86,20 @@ const connection = mysql.createConnection({
             res.status(200).json("Successfully Updated!")
         }
     })
-  })
+  });
+
+  app.post('/updatePhysical', function(req, res){
+    var query = "UPDATE tbl_mfo SET ?? = ? WHERE mfo_id = ?";
+    var data = [req.body.col, req.body.value, req.body.id];
+    query = mysql.format(query,data);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);
+        if (rows.changedRows){
+            res.status(200).json("Successfully Updated!")
+        }
+    })
+  });
 
   app.get('/summaryObject', function(req, res){
       connection.query(`  
