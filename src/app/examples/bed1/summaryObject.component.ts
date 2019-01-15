@@ -4,6 +4,9 @@ import { MfoService } from '../services/mfo.service';
 @Component({
   selector: 'summary-object',
   template: `
+    <button style="margin:5px;" mat-raised-button class="information" (click)="getgridapi()">
+      RECALCULATE
+    </button><br>
     <ag-grid-angular
       style="width: 100%; height: 250px;"
       class="ag-theme-balham"
@@ -16,6 +19,7 @@ import { MfoService } from '../services/mfo.service';
       [groupRowAggNodes]="groupRowAggNodes"
       [enableColResize]="true"
       [rowSelection]="rowSelection"
+      [groupDefaultExpanded]=1
       [suppressAggFuncInHeader]="true"
       (gridReady)="onGridReady($event)"
     >
@@ -40,6 +44,14 @@ export class SummaryObjectComponent {
       this.rowData = data;
       console.log(data);
     });
+  }
+
+  getgridapi(){
+    this.mfoService.getSummaryObject().subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+    this.gridApi.refreshCells();
   }
 
   currencyFormatter(params: any) {
