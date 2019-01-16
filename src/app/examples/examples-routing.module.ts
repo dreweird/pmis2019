@@ -19,10 +19,11 @@ const routes: Routes = [
   {
     path: '',
     component: ExamplesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: 'todos',
+        redirectTo: 'authenticated',
         pathMatch: 'full'
       },
       {
@@ -33,17 +34,17 @@ const routes: Routes = [
       {
         path: 'bed1',
         component: Bed1Component,
-        data: { title: 'BED1' }
+        data: { title: 'BED1' },
       },
       {
         path: 'bed2',
         component: Bed2Component,
-        data: { title: 'BED2' }
+        data: { title: 'BED2' },
       },
       {
         path: 'bed3',
         component: Bed3Component,
-        data: { title: 'BED3' }
+        data: { title: 'BED3' },
       },
       {
         path: 'stock-market',
@@ -78,8 +79,8 @@ const routes: Routes = [
       {
         path: 'authenticated',
         component: AuthenticatedComponent,
+        data: { title: 'anms.examples.menu.auth' },
         canActivate: [AuthGuard],
-        data: { title: 'anms.examples.menu.auth' }
       }
     ]
   }
