@@ -62,6 +62,18 @@ const connection = mysql.createConnection({
       });
   });
 
+  app.post('/getLogs', function(req, res){
+    var query = "SELECT * FROM tbl_logs where uid = ?";
+    var data = [req.body.id];
+    query = mysql.format(query,data);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);   
+        res.json(rows); 
+    
+    })
+  });
+
 
   app.post('/lastUpdated', function(req, res){
     var query = "SELECT * FROM tbl_logs where uid = ? ORDER BY date DESC LIMIT 1 ";

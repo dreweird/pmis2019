@@ -28,6 +28,17 @@ export class MfoService {
     );
   }
 
+  getLogs(): Observable<any> {
+    const url = `${this.apiRoot}/getLogs`;
+    const uid = JSON.parse(localStorage.getItem('currentUser'));
+    const id = uid.user_id;
+    return this.http.post<any>(url, { id }).pipe(
+      tap(_ => console.log('fetched Logs')),
+      catchError(this.handleError('getLogs', []))
+    );
+  }
+  
+
   getLastUpdated(): Observable<any> {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
@@ -60,10 +71,12 @@ export class MfoService {
     mfo_id: number,
     value: number,
     uid: number,
-    col: string
+    col: string,
+    month: string
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
-    const message = col + ' was updated to ' + value;
+    const month = month.slice(0, -1);
+    const message = col + ' was updated to ' + value + ' in the month of ' + month;
     return this.http.post<any>(url, { mfo_id, uid, message }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))

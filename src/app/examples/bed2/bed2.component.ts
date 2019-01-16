@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { logDialog } from './logDialog.component';
 
 @Component({
   selector: 'anms-bed2',
@@ -18,6 +20,7 @@ export class Bed2Component implements OnInit {
   rowSelection: any;
   columnTypes: any;
   date_updated: any;
+  logs: any;
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -38,12 +41,16 @@ export class Bed2Component implements OnInit {
       maximumFractionDigits: 2
     });
   }
-  updateLogs(id: number, value: number, col: string) {
+  updateLogs(id: number, value: number, col: string, month: string) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col)
+      .updateLogs(id, value, uid.user_id, col, month)
       .subscribe(data => console.log(data));
     this.lastUpdated();
+  }
+
+  getLogs(){
+    this.dialog.open(logDialog);
   }
 
   onCellValueChanged(event: any) {
@@ -51,7 +58,7 @@ export class Bed2Component implements OnInit {
       alert('Invalid entry...input numbers only');
       event.newValue = null;
     } else {
-      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name);
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field);
       this.mfoService
         .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
         .subscribe(data => {
@@ -60,7 +67,7 @@ export class Bed2Component implements OnInit {
     }
   }
 
-  constructor(private mfoService: MfoService) {
+  constructor(private mfoService: MfoService, public dialog: MatDialog) {
     this.rowSelection = 'single';
     this.columnDefs = [
       {

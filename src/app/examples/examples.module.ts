@@ -33,6 +33,7 @@ import { MfoService } from './services/mfo.service';
 import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
 import { MomentModule } from 'ngx-moment';
+import { logDialog } from './bed2/logDialog.component';
 
 @NgModule({
   imports: [
@@ -70,10 +71,11 @@ import { MomentModule } from 'ngx-moment';
     Bed2Component,
     Bed3Component,
     AddObjectDialogComponent,
-    SummaryObjectComponent
+    SummaryObjectComponent,
+    logDialog
   ],
   providers: [StockMarketService, MfoService],
-  entryComponents: [AddObjectDialogComponent]
+  entryComponents: [AddObjectDialogComponent, logDialog]
 })
 export class ExamplesModule {
   constructor() {}
