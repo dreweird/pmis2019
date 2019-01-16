@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot
+} from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
 import { AuthApiActions } from '../actions';
 import * as fromAuth from '../reducers';
 
@@ -12,18 +15,18 @@ import * as fromAuth from '../reducers';
 export class AuthGuard implements CanActivate {
   constructor(private store: Store<fromAuth.State>) {}
 
-  canActivate(): Observable<boolean> {
-    return this.store.pipe(
-      select(fromAuth.getLoggedIn),
-      map(authed => {
-        if (!authed) {
-          this.store.dispatch(new AuthApiActions.LoginRedirect());
-          return false;
-        }
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      // logged in so return true
+      return of(true);
+    }
 
-        return true;
-      }),
-      take(1)
-    );
+    // not logged in so redirect to login page with the return url
+    this.store.dispatch(new AuthApiActions.LoginRedirect());
+    return of(false);
   }
 }
