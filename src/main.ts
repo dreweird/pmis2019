@@ -6,6 +6,8 @@ import { environment } from './environments/environment';
 import { LicenseManager } from 'ag-grid-enterprise';
 
 if (environment.production) {
+  // Remove console logs in production
+  window.console.log = () => {};
   enableProdMode();
 }
 

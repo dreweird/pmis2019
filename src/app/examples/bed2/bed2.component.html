@@ -33,9 +33,15 @@
             [rowSelection]="rowSelection"
             [suppressAggFuncInHeader]= "true"
             (gridReady)="onGridReady($event)"
+            (cellValueChanged)="onCellValueChanged($event)"
             >
         </ag-grid-angular>
         </div>
+        <div class="row" [ngClass]="routeAnimationsElements">
+            <div class="col-12">
+                <h5>Last Updated: {{date_updated | amTimeAgo }}</h5>
+            </div>
+          </div>
 </div>
 
 

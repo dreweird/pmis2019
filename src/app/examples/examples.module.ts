@@ -32,10 +32,13 @@ import { AgGridModule } from 'ag-grid-angular/main';
 import { MfoService } from './services/mfo.service';
 import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
+import { MomentModule } from 'ngx-moment';
+
 @NgModule({
   imports: [
     SharedModule,
     ExamplesRoutingModule,
+    MomentModule,
     StoreModule.forFeature(FEATURE_NAME, reducers),
     TranslateModule.forChild({
       loader: {

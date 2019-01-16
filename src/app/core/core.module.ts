@@ -11,7 +11,7 @@ import { environment } from '@env/environment';
 
 import { LocalStorageService } from './local-storage/local-storage.service';
 import { AuthEffects } from './auth/auth.effects';
-import { AuthGuardService } from './auth/auth-guard.service';
+// import { AuthGuardService } from './auth/auth-guard.service';
 import { AnimationsService } from './animations/animations.service';
 import { TitleService } from './title/title.service';
 import { reducers, metaReducers } from './core.state';
@@ -55,7 +55,6 @@ import { AuthModule } from './user/auth.module';
   providers: [
     NotificationService,
     LocalStorageService,
-    AuthGuardService,
     AnimationsService,
     httpInterceptorProviders,
     TitleService,
