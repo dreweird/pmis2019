@@ -35,6 +35,7 @@
     [suppressAggFuncInHeader]= "true"
     (cellClicked)="addObject($event)"
     (gridReady)="onGridReady($event)"
+    (cellValueChanged)="onCellValueChanged($event)"
     >
 </ag-grid-angular>
 </div>
@@ -42,7 +43,7 @@
 <div class="row" [ngClass]="routeAnimationsElements">
     <div class="col-12">
         <h4>Summary Objects</h4>
-        <summary-object></summary-object>
+        <summary-object (api)="updatesummaryapi($event)" (tf)="updatetf($event)"></summary-object>
       </div>
 </div>
 <br><br>

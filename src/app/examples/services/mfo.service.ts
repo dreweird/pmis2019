@@ -98,6 +98,10 @@ export class MfoService {
     return this.http.get(url);
   }
 
+  getDisbursement() {
+    const url = `${this.apiRoot}/disbursement`;
+    return this.http.get(url);
+  }
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
