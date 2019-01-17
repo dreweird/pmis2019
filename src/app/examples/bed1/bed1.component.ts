@@ -3,7 +3,6 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
 import { AddObjectDialogComponent } from './addObject-dialog.component';
-import { SummaryObjectComponent } from './summaryObject.component';
 import 'ag-grid-enterprise';
 
 @Component({
@@ -13,7 +12,6 @@ import 'ag-grid-enterprise';
 })
 export class Bed1Component implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
-  summaryApi: any;
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -33,10 +31,6 @@ export class Bed1Component implements OnInit {
     });
   }
 
-  updatesummaryapi(event: any){
-    this.summaryApi = event;
-    console.log(event);
-  }
   addObject(params) {
     // console.log(params);
     if (params.colDef.headerName === 'PAP' && params.data !== undefined) {
@@ -70,26 +64,8 @@ export class Bed1Component implements OnInit {
       maximumFractionDigits: 2
     });
   }
-  onCellValueChanged(event: any){
-    if (isNaN(+event.newValue)) {
-      alert('Invalid entry...input numbers only');
-      event.newValue = null;
-    } else {
-      this.mfoService
-        .updateAllotment(
-          event.data.id,
-          event.newValue,
-          event.colDef.field
-        )
-        .subscribe(data => {
-          console.log(data);
-          console.log(this.summaryApi);
-          this.summarycomponent.getgridapi(this.summaryApi);
-        });
-    }
-  }
 
-  constructor(private mfoService: MfoService, private dialog: MatDialog, private summarycomponent:SummaryObjectComponent) {
+  constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.rowSelection = 'single';
     this.columnDefs = [
       // {
@@ -160,6 +136,22 @@ export class Bed1Component implements OnInit {
         aggFunc: 'sum',
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Adjusted Allotment',
@@ -178,6 +170,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Feb',
@@ -186,6 +194,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Mar',
@@ -194,6 +218,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Q1',
@@ -211,6 +251,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'May',
@@ -219,6 +275,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Jun',
@@ -227,6 +299,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Q2',
@@ -244,6 +332,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Aug',
@@ -252,6 +356,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Sep',
@@ -260,6 +380,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Q3',
@@ -277,6 +413,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Nov',
@@ -285,6 +437,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Dec',
@@ -293,6 +461,22 @@ export class Bed1Component implements OnInit {
         editable: true,
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn',
+        onCellValueChanged: function(event) {
+          if (isNaN(+event.newValue)) {
+            alert('Invalid entry...input numbers only');
+            event.newValue = null;
+          } else {
+            mfoService
+              .updateAllotment(
+                event.data.id,
+                event.newValue,
+                event.colDef.field
+              )
+              .subscribe(data => {
+                console.log(data);
+              });
+          }
+        }
       },
       {
         headerName: 'Q4',
