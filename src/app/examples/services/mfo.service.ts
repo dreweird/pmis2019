@@ -37,6 +37,16 @@ export class MfoService {
       catchError(this.handleError('getLogs', []))
     );
   }
+
+  getDistrict(): Observable<any> {
+    const url = `${this.apiRoot}/getDistrict`;
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const pid = user.pid;
+    return this.http.post<any>(url, { pid }).pipe(
+      tap(_ => console.log('fetched District')),
+      catchError(this.handleError('getDistrict', []))
+    );
+  }
   
 
   getLastUpdated(): Observable<any> {
@@ -75,8 +85,8 @@ export class MfoService {
     month: string
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
-    const month = month.slice(0, -1);
-    const message = col + ' was updated to ' + value + ' in the month of ' + month;
+    const mo = month.slice(0, -1);
+    const message = col + ' was updated to ' + value + ' in the month of ' + mo;
     return this.http.post<any>(url, { mfo_id, uid, message }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))

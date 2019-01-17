@@ -34,6 +34,7 @@ import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
 import { MomentModule } from 'ngx-moment';
 import { logDialog } from './bed2/logDialog.component';
+import { DistrictComponent } from './district/district.component';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { logDialog } from './bed2/logDialog.component';
     Bed3Component,
     AddObjectDialogComponent,
     SummaryObjectComponent,
-    logDialog
+    logDialog,
+    DistrictComponent
   ],
   providers: [StockMarketService, MfoService],
   entryComponents: [AddObjectDialogComponent, logDialog]

@@ -40,7 +40,8 @@ export class ExamplesComponent implements OnInit, OnDestroy {
     { link: 'authenticated', label: 'Auth', user: true },
     { link: 'bed1', label: 'BED-1', user: true },
     { link: 'bed2', label: 'BED-2', user: true },
-    { link: 'bed3', label: 'BED-3', user: true }
+    { link: 'bed3', label: 'BED-3', user: true },
+    { link: 'district', label: 'DISTRICT', user: true }
   ];
 
   constructor(

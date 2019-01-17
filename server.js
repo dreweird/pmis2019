@@ -35,6 +35,7 @@ const connection = mysql.createConnection({
         if(rows.length != 0){
             res.status(200).json({
                 user_id: rows[0].user_id,
+                pid: rows[0].program_id,
                 username: rows[0].username,  
                 token: 'dacaraga'});
         }else{
@@ -74,6 +75,17 @@ const connection = mysql.createConnection({
     })
   });
 
+  app.post('/getDistrict', function(req, res){
+    var query = "SELECT * FROM tbl_district LEFT JOIN tbl_mfo on tbl_mfo.mfo_id = tbl_district.mfo_id WHERE tbl_mfo.program_id = ?";
+    var data = [req.body.pid];
+    query = mysql.format(query,data);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);   
+        res.json(rows); 
+    
+    })
+  });
 
   app.post('/lastUpdated', function(req, res){
     var query = "SELECT * FROM tbl_logs where uid = ? ORDER BY date DESC LIMIT 1 ";

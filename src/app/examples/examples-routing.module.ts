@@ -14,6 +14,7 @@ import { NotificationsComponent } from './notifications/components/notifications
 import { Bed1Component } from './bed1/bed1.component';
 import { Bed2Component } from './bed2/bed2.component';
 import { Bed3Component } from './bed3/bed3.component';
+import { DistrictComponent } from './district/district.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,11 @@ const routes: Routes = [
         path: 'bed3',
         component: Bed3Component,
         data: { title: 'BED3' },
+      },
+      {
+        path: 'district',
+        component: DistrictComponent,
+        data: { title: 'DISTRICT' },
       },
       {
         path: 'stock-market',
