@@ -22,6 +22,7 @@ export function reducer(
     }
 
     case AuthActions.AuthActionTypes.Logout: {
+      localStorage.removeItem('currentUser');
       return initialState;
     }
 
@@ -31,4 +32,4 @@ export function reducer(
   }
 }
 
-export const getUser = (state: State) => state.user;
+export const getUser = (state: State) => localStorage.getItem('currentUser');

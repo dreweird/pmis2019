@@ -14,15 +14,17 @@ import { NotificationsComponent } from './notifications/components/notifications
 import { Bed1Component } from './bed1/bed1.component';
 import { Bed2Component } from './bed2/bed2.component';
 import { Bed3Component } from './bed3/bed3.component';
+import { DistrictComponent } from './district/district.component';
 
 const routes: Routes = [
   {
     path: '',
     component: ExamplesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: 'todos',
+        redirectTo: 'authenticated',
         pathMatch: 'full'
       },
       {
@@ -33,17 +35,22 @@ const routes: Routes = [
       {
         path: 'bed1',
         component: Bed1Component,
-        data: { title: 'BED1' }
+        data: { title: 'BED1' },
       },
       {
         path: 'bed2',
         component: Bed2Component,
-        data: { title: 'BED2' }
+        data: { title: 'BED2' },
       },
       {
         path: 'bed3',
         component: Bed3Component,
-        data: { title: 'BED3' }
+        data: { title: 'BED3' },
+      },
+      {
+        path: 'district',
+        component: DistrictComponent,
+        data: { title: 'DISTRICT' },
       },
       {
         path: 'stock-market',
@@ -78,8 +85,8 @@ const routes: Routes = [
       {
         path: 'authenticated',
         component: AuthenticatedComponent,
+        data: { title: 'anms.examples.menu.auth' },
         canActivate: [AuthGuard],
-        data: { title: 'anms.examples.menu.auth' }
       }
     ]
   }

@@ -29,7 +29,7 @@ export class AuthEffects {
   loginSuccess$ = this.actions$.pipe(
     ofType(AuthApiActions.AuthApiActionTypes.LoginSuccess),
     tap(() => {
-      this.router.navigate(['/']);
+      this.router.navigate(['/examples']);
       // this.store.dispatch(new ActionAuthLogin());
     })
   );

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SettingsContainerComponent } from './settings';
+import { AuthGuard } from '@app/core/user/services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
   },
   {
     path: 'examples',
-    loadChildren: 'app/examples/examples.module#ExamplesModule'
+    loadChildren: 'app/examples/examples.module#ExamplesModule',
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

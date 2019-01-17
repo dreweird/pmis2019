@@ -32,10 +32,15 @@ import { AgGridModule } from 'ag-grid-angular/main';
 import { MfoService } from './services/mfo.service';
 import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
+import { MomentModule } from 'ngx-moment';
+import { logDialog } from './bed2/logDialog.component';
+import { DistrictComponent } from './district/district.component';
+
 @NgModule({
   imports: [
     SharedModule,
     ExamplesRoutingModule,
+    MomentModule,
     StoreModule.forFeature(FEATURE_NAME, reducers),
     TranslateModule.forChild({
       loader: {
@@ -67,10 +72,12 @@ import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
     Bed2Component,
     Bed3Component,
     AddObjectDialogComponent,
-    SummaryObjectComponent
+    SummaryObjectComponent,
+    logDialog,
+    DistrictComponent
   ],
-  providers: [StockMarketService, MfoService,SummaryObjectComponent],
-  entryComponents: [AddObjectDialogComponent]
+  providers: [StockMarketService, MfoService],
+  entryComponents: [AddObjectDialogComponent, logDialog]
 })
 export class ExamplesModule {
   constructor() {}

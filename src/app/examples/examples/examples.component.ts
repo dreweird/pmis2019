@@ -31,16 +31,17 @@ export class ExamplesComponent implements OnInit, OnDestroy {
   private isAuthenticated$: Observable<boolean>;
 
   examples = [
-    { link: 'todos', label: 'anms.examples.menu.todos' },
+    // { link: 'todos', label: 'anms.examples.menu.todos' },
     // { link: 'stock-market', label: 'anms.examples.menu.stocks' },
     // { link: 'theming', label: 'anms.examples.menu.theming' },
     // { link: 'crud', label: 'anms.examples.menu.crud' },
     // { link: 'form', label: 'anms.examples.menu.form' },
-    { link: 'notifications', label: 'anms.examples.menu.notifications' },
-    { link: 'bed1', label: 'BED-1' },
-    { link: 'bed2', label: 'BED-2' },
-    { link: 'bed3', label: 'BED-3' },
-    { link: 'authenticated', label: 'anms.examples.menu.auth', user: true }
+    // { link: 'notifications', label: 'anms.examples.menu.notifications' },
+    { link: 'authenticated', label: 'Auth', user: true },
+    { link: 'bed1', label: 'BED-1', user: true },
+    { link: 'bed2', label: 'BED-2', user: true },
+    { link: 'bed3', label: 'BED-3', user: true },
+    { link: 'district', label: 'DISTRICT', user: true }
   ];
 
   constructor(

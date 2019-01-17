@@ -1,8 +1,8 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h1 class="main-heading">{{ 'anms.examples.auth.title' | translate }}</h1>
-      <h2>Welcome {{ (user$ | async)?.code}} </h2>
+      <h1 class="main-heading" *ngIf="user">Welcome {{ user.username }} </h1>
+      <h2></h2>
       <p [ngClass]="routeAnimationsElements">
         {{ 'anms.examples.auth.description1' | translate }}
       </p>
