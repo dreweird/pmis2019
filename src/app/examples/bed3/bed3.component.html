@@ -1,40 +1,4 @@
 <div class="container">
-  <div class="row">
-      <div class="col-12">
-          <h2>Disbursement Plan & Accomplishment</h2>
-        </div>
+    <h1>Disbursement Plan & Accomplishment</h1>
+    <em>basis of the issuance of disbursement authorities</em>
   </div>
-  <div class="row" [ngClass]="routeAnimationsElements">
-    <div class="col-md-10">
-        <em>basis of the issuance of disbursement authorities</em>
-    </div>
-    <div  class="col-md-2">
-        <button style="margin:5px;" mat-raised-button class="information">
-            EXPORT to EXCEL
-          </button> 
-          <br>
-    </div>
-
-  </div>
-  <br>
-  <div [ngClass]="routeAnimationsElements">
-    <ag-grid-angular 
-      style="width: 100%; height: 400px;" 
-      class="ag-theme-balham"
-      [rowData]="rowData" 
-      [columnDefs]="columnDefs"
-      [columnTypes]="columnTypes"
-      [components]="components"
-      [enableSorting]="true"
-      [enableFilter]="true"
-      [enableColResize]="true"
-      [autoGroupColumnDef]="autoGroupColumnDef"
-      [groupRowAggNodes]="groupRowAggNodes"
-      [groupRemoveSingleChildren]="true"
-      [rowSelection]="rowSelection"
-      [suppressAggFuncInHeader]= "true"
-      (gridReady)="onGridReady($event)"
-      >
-  </ag-grid-angular>
-  </div>
-  <br>
