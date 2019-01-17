@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component,Output,EventEmitter } from '@angular/core';
 import { MfoService } from '../services/mfo.service';
 
 @Component({
   selector: 'summary-object',
   template: `
-    <button style="margin:5px;" mat-raised-button class="information" (click)="getgridapi()">
+    <button style="margin:5px;" mat-raised-button class="information" (click)="getgridapi(gridApi)">
       RECALCULATE
     </button><br>
     <ag-grid-angular
@@ -27,6 +27,7 @@ import { MfoService } from '../services/mfo.service';
   `
 })
 export class SummaryObjectComponent {
+  @Output() api = new EventEmitter <any>();
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -39,6 +40,7 @@ export class SummaryObjectComponent {
 
   onGridReady(params) {
     this.gridApi = params.api;
+    this.api.emit(this.gridApi);
     this.gridColumnApi = params.columnApi;
     this.mfoService.getSummaryObject().subscribe(data => {
       this.rowData = data;
@@ -46,12 +48,12 @@ export class SummaryObjectComponent {
     });
   }
 
-  getgridapi(){
+  getgridapi(api){
     this.mfoService.getSummaryObject().subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
-    this.gridApi.refreshCells();
+    api.refreshCells();
   }
 
   currencyFormatter(params: any) {

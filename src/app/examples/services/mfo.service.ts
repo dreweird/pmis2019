@@ -39,4 +39,9 @@ export class MfoService {
     const url = `${this.apiRoot}/summaryObject`;
     return this.http.get(url);
   }
+
+  getDisbursement() {
+    const url = `${this.apiRoot}/disbursement`;
+    return this.http.get(url);
+  }
 }

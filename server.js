@@ -109,5 +109,15 @@ const connection = mysql.createConnection({
         res.json(results);
 
       })
-  })
+  });
+
+  app.get('/disbursement', function(req, res){
+    connection.query(`  
+    SELECT header_main,header_program,header_mfo,header_indicator,header_subindicator, tbl_object.object_id,tbl_object.name,tbl_object.type,sum(budget) as budget,sum(adjustment) as adjustment, sum(jan) as jan, sum(feb) as feb, sum(mar) as mar, sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul, sum(aug) as aug, sum(sep) as sep, sum(oct) as oct, sum(nov) as nov, sum(decm) as decm,tbl_object.header FROM tbl_mfo left JOIN tbl_allotment on tbl_mfo.mfo_id = tbl_allotment.mfo_id LEFT JOIN tbl_object on tbl_allotment.object_id=tbl_object.object_id where tbl_object.object_id IS NOT NULL GROUP BY header_subindicator,tbl_object.object_id order by sequence
+    `, function(error, results){
+      if (error) throw error;
+      res.json(results);
+
+    })
+});
   //connection.end();

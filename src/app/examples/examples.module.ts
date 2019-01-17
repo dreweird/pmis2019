@@ -69,7 +69,7 @@ import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
     AddObjectDialogComponent,
     SummaryObjectComponent
   ],
-  providers: [StockMarketService, MfoService],
+  providers: [StockMarketService, MfoService,SummaryObjectComponent],
   entryComponents: [AddObjectDialogComponent]
 })
 export class ExamplesModule {

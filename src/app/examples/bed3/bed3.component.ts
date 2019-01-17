@@ -23,7 +23,7 @@ export class Bed3Component implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getMFO().subscribe(data => {
+    this.mfoService.getDisbursement().subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
@@ -90,13 +90,13 @@ export class Bed3Component implements OnInit {
         rowGroup: true,
         hide: true
       },
-      {
+      /*{
         headerName: 'mfo_id',
         field: 'mfo_id',
         width: 120,
         rowGroup: true,
         hide: true
-      },
+      },*/
       { headerName: 'Description', field: 'name', width: 150, pinned: 'left' },
       { headerName: 'UACS Object Code', field: 'object_id', width: 100 , pinned: 'left' },
       { headerName: "Allotment",
@@ -202,13 +202,86 @@ export class Bed3Component implements OnInit {
           }
         ]
       },
+      { headerName: "Disbursement",
+        children: [
+          { headerName: 'Jan', columnGroupShow: "open", field: 'jan', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Feb', columnGroupShow: "open", field: 'feb', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Mar', columnGroupShow: "open", field: 'mar', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          {
+            headerName: 'Q1', field: 'Q1', width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.jan) + Number(data.feb) + Number(data.mar)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          { headerName: 'Apr', columnGroupShow: "open", field: 'apr', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'May', columnGroupShow: "open", field: 'may', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Jun', columnGroupShow: "open", field: 'jun', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          {
+            headerName: 'Q2', field: 'Q2', width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.apr) + Number(data.may) + Number(data.jun)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          { headerName: 'Jul', columnGroupShow: "open", field: 'jul', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Aug', columnGroupShow: "open",  field: 'aug', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Sep', columnGroupShow: "open",  field: 'sep', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          {
+            headerName: 'Q3', field: 'Q3', width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.jul) + Number(data.aug) + Number(data.sep)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          { headerName: 'Oct', columnGroupShow: "open",  field: 'oct', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Nov', columnGroupShow: "open", field: 'nov', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Dec', columnGroupShow: "open", field: 'decm', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          {
+            headerName: 'Q4', field: 'Q4', width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.oct) + Number(data.nov) + Number(data.decm)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          {
+            headerName: 'Total Obligations',
+            field: 'to',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#ef7109' },
+            valueGetter:
+              'Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm)',
+            valueFormatter: this.currencyFormatter,
+            type: 'totalColumn'
+          },
+          {
+            headerName: 'Unobligated', columnGroupShow: "open", 
+            field: 'un',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#e83525' },
+            valueGetter:
+              '(Number(data.budget) + Number(data.adjustment)) - (Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm))',
+            valueFormatter: this.currencyFormatter,
+            type: 'totalColumn'
+          },
+          {
+            headerName: '% Utilization', columnGroupShow: "open", 
+            field: 'fu',
+            width: 70,
+            valueGetter:
+              '(Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm)) / (Number(data.budget) + Number(data.adjustment))',
+            valueFormatter: this.percentageFormatter,
+            type: 'totalColumn'
+          }
+        ]
+      },
     ];
     this.autoGroupColumnDef = {
       headerName: 'PAP',
       cellRenderer: 'agGroupCellRenderer',
       pinned: 'left',
       width: 300,
-      field: 'mfo_name',
+      field: 'header_subindicator',
       cellRendererParams: {
         suppressCount: true, // turn off the row count
         innerRenderer: 'simpleCellRenderer'
@@ -329,17 +402,18 @@ function getSimpleCellRenderer() {
   function SimpleCellRenderer() {}
   SimpleCellRenderer.prototype.init = function(params) {
     const tempDiv = document.createElement('div');
-    // console.log(params.node);
-    if (params.node.group && params.node.field === 'mfo_id') {
+     console.log(params.node);
+    /*if (params.node.group && params.node.field === 'header_subindicator') {
       // alert(params.node.field);
       tempDiv.innerHTML =
-        '<span>' + params.node.allLeafChildren[0].data.mfo_name + '</span>';
-    } else if (params.node.group) {
+        '<span style="font-weight: bold">' + params.node.allLeafChildren[0].data.header_subindicator + '</span>';
+    } else */
+    if (params.node.uiLevel<=1) {
       tempDiv.innerHTML =
         '<span style="font-weight: bold">' + params.value + '</span>';
     } else {
       // console.log(params);
-      tempDiv.innerHTML = '<span>' + params.value + '</span>';
+      // tempDiv.innerHTML = '<span>' + params.value + '</span>';
     }
     this.eGui = tempDiv.firstChild;
   };
