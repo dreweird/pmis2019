@@ -64,8 +64,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getLogs', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ?";
-    var data = [req.body.id];
+    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ?";
+    var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
@@ -88,8 +88,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/lastUpdated', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? ORDER BY date DESC LIMIT 1 ";
-    var data = [req.body.id];
+    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
+    var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
@@ -114,8 +114,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/addLogs', function(req, res){
-    var query = "INSERT INTO tbl_logs (uid, mfo_id, message, date) VALUES (?, ?, ?, NOW())";
-    var data = [req.body.uid, req.body.mfo_id, req.body.message];
+    var query = "INSERT INTO tbl_logs (uid, mfo_id, message, date, beds) VALUES (?, ?, ?, NOW(), ?)";
+    var data = [req.body.uid, req.body.mfo_id, req.body.message, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Inject } from '@angular/core';
+import { Component,  OnInit, Inject } from '@angular/core';
 import { MfoService } from '../services/mfo.service';
 import * as moment from 'moment';
-
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 
 @Component({
@@ -26,20 +26,23 @@ import * as moment from 'moment';
 export class logDialog implements OnInit{
 
     rowData: any;
+    beds: number;
 
     columnDefs = [
         {headerName: 'Date', field: 'date', width: 120, cellRenderer: (data) => {
-            console.log(data);
+          
             return moment(data.value).format('MM/DD/YYYY HH:mm')
         }},
         {headerName: 'Logs', field: 'message', width: 580,}
     ];
 
-    constructor(private mfoService: MfoService){
+    constructor(private mfoService: MfoService,  public dialogRef: MatDialogRef<logDialog>,
+        @Inject(MAT_DIALOG_DATA) public data: any){
+            this.beds = data.beds;
 
     }
      ngOnInit() {
-        this.mfoService.getLogs().subscribe(data =>{
+        this.mfoService.getLogs(this.beds).subscribe(data =>{
             this.rowData = data;
             console.log(this.rowData);
           }) 
