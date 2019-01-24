@@ -4,6 +4,7 @@ import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
 import { AddObjectDialogComponent } from './addObject-dialog.component';
 import 'ag-grid-enterprise';
+import { logDialog } from '../bed2/logDialog.component';
 
 @Component({
   selector: 'anms-bed1',
@@ -20,6 +21,7 @@ export class Bed1Component implements OnInit {
   components: any;
   rowSelection: any;
   columnTypes: any;
+  date_updated: any;
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -164,11 +166,32 @@ export class Bed1Component implements OnInit {
     });
   }
 
+  updateLogs(id: number, value: number, col: string, month: string) {
+    const uid = JSON.parse(localStorage.getItem('currentUser'));
+    this.mfoService
+      .updateLogs(id, value, uid.user_id, col, month, 1)
+      .subscribe(data => console.log(data));
+    this.lastUpdated();
+  }
+
+  lastUpdated() {
+    this.mfoService.getLastUpdated(1).subscribe(data => {
+      this.date_updated = data[0].date;
+    });
+  }
+
+  getLogs(){
+    this.dialog.open(logDialog, {
+      data: {beds: 1}
+    });
+  }
+
   onCellValueChanged(event: any) {
     if (isNaN(+event.newValue)) {
       alert('Invalid entry...input numbers only');
       event.newValue = null;
     } else {
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field);
       this.mfoService
         .updateAllotment(
           event.data.id,
@@ -445,7 +468,9 @@ export class Bed1Component implements OnInit {
     this.components = { simpleCellRenderer: getSimpleCellRenderer() };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lastUpdated()
+  }
 }
 
 function getSimpleCellRenderer() {
