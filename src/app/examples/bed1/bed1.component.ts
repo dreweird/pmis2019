@@ -3,7 +3,6 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
 import { AddObjectDialogComponent } from './addObject-dialog.component';
-import { SummaryObjectComponent } from './summaryObject.component';
 import 'ag-grid-enterprise';
 
 @Component({
@@ -13,7 +12,6 @@ import 'ag-grid-enterprise';
 })
 export class Bed1Component implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
-  summaryApi: any;
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -33,10 +31,6 @@ export class Bed1Component implements OnInit {
     });
   }
 
-  updatesummaryapi(event: any){
-    this.summaryApi = event;
-    console.log(event);
-  }
   addObject(params) {
     // console.log(params);
     if (params.colDef.headerName === 'PAP' && params.data !== undefined) {
@@ -83,13 +77,11 @@ export class Bed1Component implements OnInit {
         )
         .subscribe(data => {
           console.log(data);
-          console.log(this.summaryApi);
-          this.summarycomponent.getgridapi(this.summaryApi);
         });
     }
   }
 
-  constructor(private mfoService: MfoService, private dialog: MatDialog, private summarycomponent:SummaryObjectComponent) {
+  constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.rowSelection = 'single';
     this.columnDefs = [
       // {

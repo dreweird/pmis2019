@@ -33,6 +33,7 @@
             [rowSelection]="rowSelection"
             [suppressAggFuncInHeader]= "true"
             (gridReady)="onGridReady($event)"
+            (cellClicked)="onCellClicked($event)"
             (cellValueChanged)="onCellValueChanged($event)"
             >
         </ag-grid-angular>

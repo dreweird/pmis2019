@@ -27,7 +27,6 @@ import { MfoService } from '../services/mfo.service';
   `
 })
 export class SummaryObjectComponent {
-  @Output() api = new EventEmitter <any>();
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -40,7 +39,6 @@ export class SummaryObjectComponent {
 
   onGridReady(params) {
     this.gridApi = params.api;
-    this.api.emit(this.gridApi);
     this.gridColumnApi = params.columnApi;
     this.mfoService.getSummaryObject().subscribe(data => {
       this.rowData = data;

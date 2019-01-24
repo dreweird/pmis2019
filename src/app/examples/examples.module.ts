@@ -34,6 +34,7 @@ import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
 import { MomentModule } from 'ngx-moment';
 import { logDialog } from './bed2/logDialog.component';
+import { districtDetailsDialog } from './district/districtDetailsDialog.component';
 import { DistrictComponent } from './district/district.component';
 
 @NgModule({
@@ -74,10 +75,11 @@ import { DistrictComponent } from './district/district.component';
     AddObjectDialogComponent,
     SummaryObjectComponent,
     logDialog,
+    districtDetailsDialog,
     DistrictComponent
   ],
   providers: [StockMarketService, MfoService],
-  entryComponents: [AddObjectDialogComponent, logDialog]
+  entryComponents: [AddObjectDialogComponent, logDialog,districtDetailsDialog]
 })
 export class ExamplesModule {
   constructor() {}

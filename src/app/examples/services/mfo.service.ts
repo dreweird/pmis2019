@@ -47,6 +47,26 @@ export class MfoService {
       catchError(this.handleError('getDistrict', []))
     );
   }
+
+  getDistrictDetails(data): Observable<any> {
+    const url = `${this.apiRoot}/getDistrictDetails`;
+    // const user = JSON.parse(localStorage.getItem('currentUser'));
+    // const pid = user.pid;
+    return this.http.post<any>(url, { data }).pipe(
+      tap(_ => console.log('fetched District Details')),
+      catchError(this.handleError('getDistrictDetails', []))
+    );
+  }
+
+  updateDistrictDetails(data): Observable<any> {
+    const url = `${this.apiRoot}/updateDistrictDetails`;
+    // const user = JSON.parse(localStorage.getItem('currentUser'));
+    // const pid = user.pid;
+    return this.http.post<any>(url, { data }).pipe(
+      tap(_ => console.log('updated District Details')),
+      catchError(this.handleError('updateDistrictDetails', []))
+    );
+  }
   
 
   getLastUpdated(): Observable<any> {
