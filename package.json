@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open",
+    "start": "ng serve --open && node server.js",
     "docker-start": "ng serve  --host 0.0.0.0",
     "build": "ng build",
     "test": "npm run lint && ng test --configuration=test",

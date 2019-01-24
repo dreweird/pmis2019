@@ -43,14 +43,17 @@ export class Bed2Component implements OnInit {
   }
   updateLogs(id: number, value: number, col: string, month: string) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
+    const mo = month.slice(0, -1);
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, month)
+      .updateLogs(id, value, uid.user_id, col, mo, 2)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
 
   getLogs(){
-    this.dialog.open(logDialog);
+    this.dialog.open(logDialog, {
+      data: {beds: 2}
+    });
   }
 
   onCellValueChanged(event: any) {
@@ -558,7 +561,7 @@ export class Bed2Component implements OnInit {
   }
 
   lastUpdated() {
-    this.mfoService.getLastUpdated().subscribe(data => {
+    this.mfoService.getLastUpdated(2).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }

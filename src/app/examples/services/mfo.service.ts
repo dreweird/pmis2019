@@ -28,11 +28,11 @@ export class MfoService {
     );
   }
 
-  getLogs(): Observable<any> {
+  getLogs(beds: number): Observable<any> {
     const url = `${this.apiRoot}/getLogs`;
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
-    return this.http.post<any>(url, { id }).pipe(
+    return this.http.post<any>(url, { id, beds }).pipe(
       tap(_ => console.log('fetched Logs')),
       catchError(this.handleError('getLogs', []))
     );
@@ -69,11 +69,11 @@ export class MfoService {
   }
   
 
-  getLastUpdated(): Observable<any> {
+  getLastUpdated(beds: number): Observable<any> {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
     const url = `${this.apiRoot}/lastUpdated`;
-    return this.http.post<any>(url, { id }).pipe(
+    return this.http.post<any>(url, { id, beds }).pipe(
       tap(_ => console.log('fetched Last Updated')),
       catchError(this.handleError('getLastUpdated', []))
     );
@@ -102,12 +102,12 @@ export class MfoService {
     value: number,
     uid: number,
     col: string,
-    month: string
+    month: string,
+    beds: number
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
-    const mo = month.slice(0, -1);
-    const message = col + ' was updated to ' + value + ' in the month of ' + mo;
-    return this.http.post<any>(url, { mfo_id, uid, message }).pipe(
+    const message = col + ' was updated to ' + value + ' in the month of ' + month;
+    return this.http.post<any>(url, { mfo_id, uid, message, beds }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))
     );
@@ -118,10 +118,6 @@ export class MfoService {
     return this.http.get(url);
   }
 
-  getDisbursement() {
-    const url = `${this.apiRoot}/disbursement`;
-    return this.http.get(url);
-  }
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
