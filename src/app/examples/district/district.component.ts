@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { districtDetailsDialog } from './districtDetailsDialog.component';
 
 @Component({
   selector: 'anms-district',
@@ -23,12 +25,58 @@ export class DistrictComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.mfoService.getDistrict().subscribe(data => {
-      this.rowData = data;
-      console.log(data);
+      this.rowData = data.data;
+      console.log(this.rowData);
     });
   }
 
-  constructor(private mfoService: MfoService) { 
+  currencyFormatter(params) {
+    const number = parseFloat(params.value);
+    if (params.value === undefined || params.value === null) {
+      return null;
+    }
+    return number.toLocaleString('en-us', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  onCellValueChanged(event){
+    // query remarks
+  }
+  onCellClicked(event){
+    if(event.data!=undefined){
+      console.log(event);
+      var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
+      var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
+      for(var i=0;i<prvnc.length;i++){
+        for(var ii=1;ii<=2;ii++){
+          if(event.colDef.field==prvnc[i]+ii+"aaccomp"){
+            console.log(prvnc[i]);
+            console.log(ii);
+            // query for pop up
+            console.log(event.data.mfo_id);
+            var data={};
+            data['province'] = province[i];
+            data['district'] = ii;
+            data['mfo_id'] = event.data.mfo_id;
+            data['mfo_name'] = event.data.mfo_name;
+            data['prvnc'] = prvnc[i];
+            const dialogRef = this.dialog.open(districtDetailsDialog,{disableClose: true,data:data});
+
+            dialogRef.afterClosed().subscribe(result=>{
+              console.log(prvnc[i]+ii+"aarea");
+              event.node.setDataValue(result.prvnc+result.district+"aarea",result.str);
+              event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+            });
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  constructor(private mfoService: MfoService, public dialog: MatDialog) { 
     this.rowSelection = 'single';
     this.columnDefs = [
       {
@@ -73,7 +121,246 @@ export class DistrictComponent implements OnInit {
         rowGroup: true,
         hide: true
       },
-      { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 }
+      { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 },
+      { headerName: 'Accomplished', field: 'taccomp', width: 100, 
+        valueGetter:
+        `Number(data.jana) + Number(data.feba) + Number(data.mara) + Number(data.apra) + 
+         Number(data.maya) + Number(data.juna) + Number(data.jula) + Number(data.auga) + 
+         Number(data.sepa) + Number(data.octa) + Number(data.nova) + Number(data.deca)`,
+        type: 'numericColumn',
+        cellStyle: { color: 'white', 'background-color': '#b23c9a' },
+      },
+      { headerName: 'Agusan del Norte', 
+        children:[
+          { headerName: 'District 1',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'adn1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'adn1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'adn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.adn1target) * Number(data.adn1cost)',valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'adn1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'adn1aaccomp', width: 100, },
+                ]
+              }
+            ]
+          },
+          { headerName: 'District 2',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'adn2area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'adn2target', width: 100, },      
+                  { headerName: 'Unit Cost', field: 'adn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
+                  { headerName: 'Total Cost', field: 'adn2totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.adn2target) * Number(data.adn2cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'adn2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'adn2aaccomp', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      { headerName: 'Agusan del Sur', 
+        children:[
+          { headerName: 'District 1',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'ads1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'ads1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'ads1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.ads1target) * Number(data.ads1cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+          { headerName: 'District 2',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'ads2area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads2target', width: 100, },      
+                  { headerName: 'Unit Cost', field: 'ads2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'ads2totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.ads2target) * Number(data.ads2cost)', valueFormatter: this.currencyFormatter,},  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      { headerName: 'Surigao del Norte', 
+        children:[
+          { headerName: 'District 1',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'sdn1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'sdn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'sdn1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.sdn1target) * Number(data.sdn1cost)',valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+          { headerName: 'District 2',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'sdn2area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn2target', width: 100, },      
+                  { headerName: 'Unit Cost', field: 'sdn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
+                  { headerName: 'Total Cost', field: 'sdn2totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.sdn2target) * Number(data.sdn2cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      { headerName: 'Surigao del Sur', 
+        children:[
+          { headerName: 'District 1',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'sds1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'sds1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'sds1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.sds1target) * Number(data.sds1cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+          { headerName: 'District 2',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'sds2area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds2target', width: 100, },      
+                  { headerName: 'Unit Cost', field: 'sds2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'sds2totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.sds2target) * Number(data.sds2cost)', valueFormatter: this.currencyFormatter,},  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      { headerName: 'Province of Dinagat Islands', 
+        children:[
+          { headerName: 'District 1',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'pdi1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'pdi1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'pdi1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'pdi1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.pdi1target) * Number(data.pdi1cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      { headerName: 'Butuan City', 
+        children:[
+          { headerName: '',
+            children:[   
+              { headerName: 'Target', 
+                children:[
+                  { headerName: 'Area', field: 'bxu1area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'bxu1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Unit Cost', field: 'bxu1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { headerName: 'Total Cost', field: 'bxu1totalcost', width: 100,columnGroupShow: 'open', 
+                    valueGetter:'Number(data.bxu1target) * Number(data.bxu1cost)', valueFormatter: this.currencyFormatter,
+                  },  
+                ]
+              },
+              { headerName: 'Accomplishment', 
+                children:[
+                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'number', width: 100, },
+                ]
+              }
+            ]
+          },
+        ]
+      },
+      {
+        headerName: 'Remarks', 
+        children:[
+          { headerName: 'Q1', field: 'q1', width: 100, editable:true}, 
+          { headerName: 'Q2', field: 'q2', width: 100, editable:true}, 
+          { headerName: 'Q3', field: 'q3', width: 100, editable:true}, 
+          { headerName: 'Q4', field: 'q4', width: 100, editable:true}, 
+        ]
+      },
     ]
 
     this.autoGroupColumnDef = {

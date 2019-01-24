@@ -32,6 +32,7 @@ export class Bed1Component implements OnInit {
     });
   }
 
+
   groupRowAggNodes(nodes: any) {
     const result = {
       to: 0,

@@ -2,7 +2,7 @@ const express = require('express');
 const compression = require('compression');
 const mysql      = require('mysql');
 const bodyParser = require("body-parser"); // Body parser for fetch posted data
-
+var async = require('async');
 const CONTEXT = '/angular-ngrx-material-starter';
 const PORT = 3500;
 
@@ -76,14 +76,139 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getDistrict', function(req, res){
-    var query = "SELECT * FROM tbl_district LEFT JOIN tbl_mfo on tbl_mfo.mfo_id = tbl_district.mfo_id WHERE tbl_mfo.program_id = ?";
+    var query = "SELECT * FROM tbl_mfo WHERE tbl_mfo.program_id = ?";
     var data = [req.body.pid];
+    var datares={};
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
+        var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
+        var itemsProcessed = 0;
+        async.each(rows, function(row, callback){
+            var mfo_id = row.mfo_id;
+            //console.log(mfo_id);
+            var districtFunction =function(prov, callback){
+                var arr = [];
+                async.parallel({
+                    one: function(callback) {
+                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text 
+                        FROM tbl_district where mfo_id = ? and province=? and district=1 GROUP BY mfo_id,province,district`;
+                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                            if(k_err) console.error(k_err);        
+                             callback(null, k_rows[0]);              
+                        });                        
+                    },
+                     two: function(callback) {
+                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text 
+                        FROM tbl_district where mfo_id = ? and province=? and district=2 GROUP BY mfo_id,province,district`;
+                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                            if(k_err) console.error(k_err);        
+                             callback(null, k_rows[0]);              
+                        });   
+            
+                    },
+                    three: function(callback) {
+                        var sql = `SELECT mfo_id,province,district,sum(accomp) as target ,cost, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
+                        FROM tbl_district where mfo_id = ? and province=? and district=1 and accomp>0 GROUP BY mfo_id,province,district`;
+                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                            if(k_err) console.error(k_err);        
+                             callback(null, k_rows[0]);              
+                        });                        
+                    },
+                     four: function(callback) {
+                        var sql = `SELECT mfo_id,province,district,sum(accomp) as target ,cost, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
+                        FROM tbl_district where mfo_id = ? and province=? and district=2 and accomp>0 GROUP BY mfo_id,province,district`;
+                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                            if(k_err) console.error(k_err);        
+                             callback(null, k_rows[0]);              
+                        });   
+            
+                    }  
+                }, function(err, results) {
+                    return callback(null, results);
+                });                  
+            }
+
+            async.map(province, districtFunction, function(err, result){
+                async.each(result, function(rslt, callback){
+                var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
+                var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
+                var pc=0;
+                for(var c = 0;c<province.length;c++){
+                    var g1=false,g2=false;
+                    if(rslt.one==undefined){ g1=true; } else{
+                        //console.log(rslt.one.province);
+                        if(rslt.one.province==province[c]){
+                            row[prvnc[c]+'1area'] = rslt.one.text;
+                            row[prvnc[c]+'1target'] = rslt.one.target;
+                            row[prvnc[c]+'1cost'] = rslt.one.cost;
+                            //console.log(row[prvnc[c]+'1area']);
+                            g1=true;
+                        }}
+                    if(rslt.two==undefined){ g2=true; } else
+                        if(rslt.two.province==province[c]){
+                            row[prvnc[c]+'2area'] = rslt.two.text;
+                            row[prvnc[c]+'2target'] = rslt.two.target;
+                            row[prvnc[c]+'2cost'] = rslt.two.cost;
+                            //console.log(row.two);
+                        g2=true;
+                        }
+                    if(g1 && g2){
+                        pc++;
+                        if(pc==prvnc.length){
+                            itemsProcessed++;
+                            if(itemsProcessed === rows.length) {
+                                datares["data"] =  rows;
+                                res.json(datares);                           
+                            }
+                        }
+                    }
+                }
+                });
+                /*row.area=result;
+                itemsProcessed++;
+                if(itemsProcessed === rows.length) {
+                    datares["data"] =  rows;
+                    res.json(datares);                           
+                }*/
+            });
+        })
+
         if (err) throw res.status(400).json(err);   
-        res.json(rows); 
+        //res.json(rows); 
     
+    })
+  });
+
+  app.post('/getDistrictDetails', function(req, res){
+    var query = "SELECT * FROM tbl_district WHERE province like(?) and district = ? and mfo_id = ?";
+    var data = req.body.data;
+    console.log(data);
+    query = mysql.format(query,[data.province,data.district,data.mfo_id]);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);
+        if (rows.length > 0){
+            res.json(rows); 
+        }
+    })
+  });
+
+  app.post('/updateDistrictDetails', function(req, res){
+    var query = "UPDATE tbl_district SET accomp = ? WHERE id = ?";
+    var data = req.body.data;
+    console.log(data);
+    query = mysql.format(query,[Number(data.accomp),data.id]);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);
+        if (rows.length > 0){
+            res.json(rows); 
+        }
     })
   });
 
