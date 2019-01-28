@@ -4,7 +4,7 @@
             <h2>Financial Plan & Accomplishment</h2>
           </div>
     </div>
-    <div class="row" [ngClass]="routeAnimationsElements">
+    <div class="row item" [ngClass]="routeAnimationsElements">
       <div class="col-md-10">
           <em>serves as the overall financial plan & accomplishment of the department/agency/OU</em>
       </div>
@@ -39,6 +39,15 @@
     >
 </ag-grid-angular>
 </div>
+<div class="row item" [ngClass]="routeAnimationsElements">
+        <div class="col-md-10">
+                <h5>Last Updated: {{date_updated | amTimeAgo }}</h5>
+            </div>
+            <div  class="col-md-2">
+                    <button style="margin:5px;" mat-button class="success" (click)="getLogs()">See Logs</button> 
+               
+            </div>
+  </div>
 <br>
 <div class="row" [ngClass]="routeAnimationsElements">
     <div class="col-12">

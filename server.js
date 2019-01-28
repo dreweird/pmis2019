@@ -64,8 +64,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getLogs', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? ";
-    var data = [req.body.id,req.body.beds];
+    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ?";
+    var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
@@ -231,7 +231,7 @@ const connection = mysql.createConnection({
 
   app.post('/lastUpdated', function(req, res){
     var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
-    var data = [req.body.id,req.body.beds];
+    var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     //console.log(query); 
     connection.query(query, function(err, rows){
@@ -256,7 +256,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/addLogs', function(req, res){
-    var query = "INSERT INTO tbl_logs (uid, mfo_id, message, date,beds) VALUES (?, ?, ?, NOW(),?)";
+    var query = "INSERT INTO tbl_logs (uid, mfo_id, message, date, beds) VALUES (?, ?, ?, NOW(), ?)";
     var data = [req.body.uid, req.body.mfo_id, req.body.message, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
@@ -302,15 +302,5 @@ const connection = mysql.createConnection({
         res.json(results);
 
       })
-  });
-
-  app.get('/disbursement', function(req, res){
-    connection.query(`  
-    SELECT header_main,header_program,header_mfo,header_indicator,header_subindicator, tbl_object.object_id,tbl_object.name,tbl_object.type,sum(budget) as budget,sum(adjustment) as adjustment, sum(jan) as jan, sum(feb) as feb, sum(mar) as mar, sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul, sum(aug) as aug, sum(sep) as sep, sum(oct) as oct, sum(nov) as nov, sum(decm) as decm,tbl_object.header FROM tbl_mfo left JOIN tbl_allotment on tbl_mfo.mfo_id = tbl_allotment.mfo_id LEFT JOIN tbl_object on tbl_allotment.object_id=tbl_object.object_id where tbl_object.object_id IS NOT NULL GROUP BY header_subindicator,tbl_object.object_id order by sequence
-    `, function(error, results){
-      if (error) throw error;
-      res.json(results);
-
-    })
-});
+  })
   //connection.end();

@@ -33,8 +33,10 @@ import { MfoService } from './services/mfo.service';
 import { AddObjectDialogComponent } from './bed1/addObject-dialog.component';
 
 import { MomentModule } from 'ngx-moment';
+
 import { logDialog } from './bed2/logDialog.component';
 import { districtDetailsDialog } from './district/districtDetailsDialog.component';
+
 import { DistrictComponent } from './district/district.component';
 
 @NgModule({

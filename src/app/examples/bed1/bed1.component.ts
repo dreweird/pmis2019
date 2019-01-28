@@ -4,6 +4,7 @@ import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
 import { AddObjectDialogComponent } from './addObject-dialog.component';
 import 'ag-grid-enterprise';
+import { logDialog } from '../bed2/logDialog.component';
 
 @Component({
   selector: 'anms-bed1',
@@ -20,9 +21,9 @@ export class Bed1Component implements OnInit {
   components: any;
   rowSelection: any;
   columnTypes: any;
-  private groupRowAggNodes;
+  date_updated: any;
 
-  onGridReady(params) {
+  onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.mfoService.getMFO().subscribe(data => {
@@ -30,6 +31,107 @@ export class Bed1Component implements OnInit {
       console.log(data);
     });
   }
+
+
+  groupRowAggNodes(nodes: any) {
+    const result = {
+      to: 0,
+      fu: 0,
+      un: 0,
+      adjusted: 0,
+      budget: 0,
+      adjustment: 0,
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Q4: 0,
+      jan: 0,
+      feb: 0,
+      mar: 0,
+      apr: 0,
+      may: 0,
+      jun: 0,
+      jul: 0,
+      aug: 0,
+      sep: 0,
+      oct: 0,
+      nov: 0,
+      decm: 0
+    };
+    nodes.forEach(function(node: any) {
+      const data = node.group ? node.aggData : node.data;
+      if (typeof data.adjustment === 'number') {
+        result.adjustment += data.adjustment;
+      }
+      if (typeof data.budget === 'number') {
+        result.budget += data.budget;
+      }
+      if (
+        typeof data.budget === 'number' &&
+        typeof data.adjustment === 'number'
+      ) {
+        result.adjusted += data.budget + data.adjustment;
+      }
+      if (typeof data.jan === 'number') {
+        result.jan += data.jan;
+      }
+      if (typeof data.feb === 'number') {
+        result.feb += data.feb;
+      }
+      if (typeof data.mar === 'number') {
+        result.mar += data.mar;
+      }
+      if (typeof data.apr === 'number') {
+        result.apr += data.apr;
+      }
+      if (typeof data.may === 'number') {
+        result.may += data.may;
+      }
+      if (typeof data.jun === 'number') {
+        result.jun += data.jun;
+      }
+      if (typeof data.jul === 'number') {
+        result.jul += data.jul;
+      }
+      if (typeof data.aug === 'number') {
+        result.aug += data.aug;
+      }
+      if (typeof data.sep === 'number') {
+        result.sep += data.sep;
+      }
+      if (typeof data.oct === 'number') {
+        result.oct += data.oct;
+      }
+      if (typeof data.nov === 'number') {
+        result.nov += data.nov;
+      }
+      if (typeof data.decm === 'number') {
+        result.decm += data.decm;
+      }
+      result.Q1 += Number(data.jan) + Number(data.feb) + Number(data.mar);
+      result.Q2 += Number(data.apr) + Number(data.may) + Number(data.jun);
+      result.Q3 += Number(data.jul) + Number(data.aug) + Number(data.sep);
+      result.Q4 += Number(data.oct) + Number(data.nov) + Number(data.decm);
+      result.to +=
+        Number(data.jan) +
+        Number(data.feb) +
+        Number(data.mar) +
+        Number(data.apr) +
+        Number(data.may) +
+        Number(data.jun) +
+        Number(data.jul) +
+        Number(data.aug) +
+        Number(data.sep) +
+        Number(data.oct) +
+        Number(data.nov) +
+        Number(data.decm);
+      result.un = result.adjusted - result.to;
+      result.fu = result.to / result.adjusted;
+
+    });
+    return result;
+  }
+  
 
   addObject(params) {
     // console.log(params);
@@ -64,11 +166,33 @@ export class Bed1Component implements OnInit {
       maximumFractionDigits: 2
     });
   }
-  onCellValueChanged(event: any){
+
+  updateLogs(id: number, value: number, col: string, month: string) {
+    const uid = JSON.parse(localStorage.getItem('currentUser'));
+    this.mfoService
+      .updateLogs(id, value, uid.user_id, col, month, 1,null,null,null)
+      .subscribe(data => console.log(data));
+    this.lastUpdated();
+  }
+
+  lastUpdated() {
+    this.mfoService.getLastUpdated(1).subscribe(data => {
+      this.date_updated = data[0].date;
+    });
+  }
+
+  getLogs(){
+    this.dialog.open(logDialog, {
+      data: {beds: 1}
+    });
+  }
+
+  onCellValueChanged(event: any) {
     if (isNaN(+event.newValue)) {
       alert('Invalid entry...input numbers only');
       event.newValue = null;
     } else {
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field);
       this.mfoService
         .updateAllotment(
           event.data.id,
@@ -84,13 +208,6 @@ export class Bed1Component implements OnInit {
   constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.rowSelection = 'single';
     this.columnDefs = [
-      // {
-      //   headerName: "Group",
-      //   cellRenderer: "agGroupCellRenderer",
-      //   showRowGroup: true,
-      //   pinned: 'left',
-      //   field: 'mfo_name'
-      // },
       {
         headerName: 'header_main',
         field: 'header_main',
@@ -140,7 +257,6 @@ export class Bed1Component implements OnInit {
         headerName: 'Original Allotment',
         field: 'budget',
         width: 100,
-        aggFunc: 'sum',
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn'
       },
@@ -149,16 +265,15 @@ export class Bed1Component implements OnInit {
         field: 'adjustment',
         width: 100,
         editable: true,
-        aggFunc: 'sum',
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn',
+
       },
       {
         headerName: 'Adjusted Allotment',
         field: 'adjusted',
         width: 100,
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
-        aggFunc: 'sum',
         valueGetter: 'Number(data.budget) + Number(data.adjustment) ',
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn'
@@ -169,7 +284,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Feb',
@@ -177,7 +292,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Mar',
@@ -185,7 +300,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Q1',
@@ -202,7 +317,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'May',
@@ -210,7 +325,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Jun',
@@ -218,7 +333,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Q2',
@@ -235,7 +350,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Aug',
@@ -243,7 +358,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Sep',
@@ -251,7 +366,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Q3',
@@ -268,7 +383,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Nov',
@@ -276,7 +391,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Dec',
@@ -284,7 +399,7 @@ export class Bed1Component implements OnInit {
         width: 70,
         editable: true,
         valueFormatter: this.currencyFormatter,
-        type: 'valueColumn',
+        type: 'valueColumn'
       },
       {
         headerName: 'Q4',
@@ -352,116 +467,11 @@ export class Bed1Component implements OnInit {
       }
     };
     this.components = { simpleCellRenderer: getSimpleCellRenderer() };
-
-    this.groupRowAggNodes = function groupRowAggNodes(nodes) {
-      const result = {
-        to: 0,
-        fu: 0,
-        un: 0,
-        adjusted: 0,
-        budget: 0,
-        adjustment: 0,
-        Q1: 0,
-        Q2: 0,
-        Q3: 0,
-        Q4: 0,
-        jan: 0,
-        feb: 0,
-        mar: 0,
-        apr: 0,
-        may: 0,
-        jun: 0,
-        jul: 0,
-        aug: 0,
-        sep: 0,
-        oct: 0,
-        nov: 0,
-        decm: 0
-      };
-      nodes.forEach(function(node) {
-        const data = node.group ? node.aggData : node.data;
-        if (typeof data.adjustment === 'number') {
-          result.adjustment += data.adjustment;
-        }
-        if (typeof data.budget === 'number') {
-          result.budget += data.budget;
-        }
-        if (
-          typeof data.budget === 'number' &&
-          typeof data.adjustment === 'number'
-        ) {
-          result.adjusted += data.budget + data.adjustment;
-        }
-        if (typeof data.jan === 'number') {
-          result.jan += data.jan;
-        }
-        if (typeof data.feb === 'number') {
-          result.feb += data.feb;
-        }
-        if (typeof data.mar === 'number') {
-          result.mar += data.mar;
-        }
-        if (typeof data.apr === 'number') {
-          result.apr += data.apr;
-        }
-        if (typeof data.may === 'number') {
-          result.may += data.may;
-        }
-        if (typeof data.jun === 'number') {
-          result.jun += data.jun;
-        }
-        if (typeof data.jul === 'number') {
-          result.jul += data.jul;
-        }
-        if (typeof data.aug === 'number') {
-          result.aug += data.aug;
-        }
-        if (typeof data.sep === 'number') {
-          result.sep += data.sep;
-        }
-        if (typeof data.oct === 'number') {
-          result.oct += data.oct;
-        }
-        if (typeof data.nov === 'number') {
-          result.nov += data.nov;
-        }
-        if (typeof data.decm === 'number') {
-          result.decm += data.decm;
-        }
-        result.Q1 += Number(data.jan) + Number(data.feb) + Number(data.mar);
-        result.Q2 += Number(data.apr) + Number(data.may) + Number(data.jun);
-        result.Q3 += Number(data.jul) + Number(data.aug) + Number(data.sep);
-        result.Q4 += Number(data.oct) + Number(data.nov) + Number(data.decm);
-        result.to +=
-          Number(data.jan) +
-          Number(data.feb) +
-          Number(data.mar) +
-          Number(data.apr) +
-          Number(data.may) +
-          Number(data.jun) +
-          Number(data.jul) +
-          Number(data.aug) +
-          Number(data.sep) +
-          Number(data.oct) +
-          Number(data.nov) +
-          Number(data.decm);
-        result.un = result.adjusted - result.to;
-        result.fu = result.to / result.adjusted;
-        /*
-        if (typeof data.silver === 'number') {
-          result.silver += data.silver;
-          result.silverPie += data.silver * Math.PI;
-        }
-        if (typeof data.bronze === 'number') {
-          result.bronze += data.bronze;
-          result.bronzePie += data.bronze * Math.PI;
-        }*/
-      });
-      return result;
-    };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lastUpdated()
+  }
 }
 
 function getSimpleCellRenderer() {

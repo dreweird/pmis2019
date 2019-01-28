@@ -43,6 +43,7 @@ export class Bed2Component implements OnInit {
   }
   updateLogs(id: number, value: number, col: string, month: string, beds: number) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
+    const mo = month.slice(0, -1);
     this.mfoService
       .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
       .subscribe(data => console.log(data));

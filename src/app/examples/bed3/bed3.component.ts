@@ -423,23 +423,21 @@ export class Bed3Component implements OnInit {
     this.lastUpdated();
   }
 }
-
 function getSimpleCellRenderer() {
   function SimpleCellRenderer() {}
   SimpleCellRenderer.prototype.init = function(params) {
     const tempDiv = document.createElement('div');
-     console.log(params.node);
-    /*if (params.node.group && params.node.field === 'header_subindicator') {
+    // console.log(params.node);
+    if (params.node.group && params.node.field === 'mfo_id') {
       // alert(params.node.field);
       tempDiv.innerHTML =
-        '<span style="font-weight: bold">' + params.node.allLeafChildren[0].data.header_subindicator + '</span>';
-    } else */
-    if (params.node.uiLevel<=1) {
+        '<span>' + params.node.allLeafChildren[0].data.mfo_name + '</span>';
+    } else if (params.node.group) {
       tempDiv.innerHTML =
         '<span style="font-weight: bold">' + params.value + '</span>';
     } else {
       // console.log(params);
-      // tempDiv.innerHTML = '<span>' + params.value + '</span>';
+      tempDiv.innerHTML = '<span>' + params.value + '</span>';
     }
     this.eGui = tempDiv.firstChild;
   };
