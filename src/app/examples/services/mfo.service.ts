@@ -28,11 +28,11 @@ export class MfoService {
     );
   }
 
-  getLogs(): Observable<any> {
+  getLogs(beds): Observable<any> {
     const url = `${this.apiRoot}/getLogs`;
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
-    return this.http.post<any>(url, { id }).pipe(
+    return this.http.post<any>(url, { id,beds }).pipe(
       tap(_ => console.log('fetched Logs')),
       catchError(this.handleError('getLogs', []))
     );
@@ -69,11 +69,11 @@ export class MfoService {
   }
   
 
-  getLastUpdated(): Observable<any> {
+  getLastUpdated(beds): Observable<any> {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
     const url = `${this.apiRoot}/lastUpdated`;
-    return this.http.post<any>(url, { id }).pipe(
+    return this.http.post<any>(url, { id,beds }).pipe(
       tap(_ => console.log('fetched Last Updated')),
       catchError(this.handleError('getLastUpdated', []))
     );
@@ -102,12 +102,17 @@ export class MfoService {
     value: number,
     uid: number,
     col: string,
-    month: string
+    month: string,
+    beds: number,
+    prov: any,
+    dist: any,
+    mun: any,
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
     const mo = month.slice(0, -1);
-    const message = col + ' was updated to ' + value + ' in the month of ' + mo;
-    return this.http.post<any>(url, { mfo_id, uid, message }).pipe(
+    var message = col + ' was updated to ' + value + ' in the month of ' + mo;
+    if(beds==4){ message = col + ' in ' + mun + ', ' + prov + ' was updated to ' + value;}
+    return this.http.post<any>(url, { mfo_id, uid, message,beds }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))
     );

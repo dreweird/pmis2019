@@ -36,5 +36,10 @@
       (gridReady)="onGridReady($event)"
       >
   </ag-grid-angular>
+  </div><div class="row item" [ngClass]="routeAnimationsElements">
+    <div class="col-9">
+        <h5>(Pending...)Last Updated: {{date_updated | amTimeAgo }}</h5>
+        <button style="margin:5px;" mat-button class="success" (click)="getLogs()">See Logs</button>
+    </div>
   </div>
   <br>

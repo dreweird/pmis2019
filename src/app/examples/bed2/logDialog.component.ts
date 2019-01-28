@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, Inject } from '@angular/core';
+import { Component, Input, OnInit, Inject, } from '@angular/core';
+import { MatDialogRef,MatDialogConfig,MAT_DIALOG_DATA} from '@angular/material';
 import { MfoService } from '../services/mfo.service';
 import * as moment from 'moment';
 
@@ -35,11 +36,12 @@ export class logDialog implements OnInit{
         {headerName: 'Logs', field: 'message', width: 580,}
     ];
 
-    constructor(private mfoService: MfoService){
-
+    constructor(private mfoService: MfoService,public dialogRef: MatDialogRef<logDialog>,@Inject(MAT_DIALOG_DATA) public data: any){
+        console.log('data', this.data);
     }
      ngOnInit() {
-        this.mfoService.getLogs().subscribe(data =>{
+         console.log(this.data.beds);
+        this.mfoService.getLogs(this.data.beds).subscribe(data =>{
             this.rowData = data;
             console.log(this.rowData);
           }) 

@@ -3,6 +3,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { districtDetailsDialog } from './districtDetailsDialog.component';
+import { logDialog } from '../bed2/logDialog.component';
 
 @Component({
   selector: 'anms-district',
@@ -20,6 +21,7 @@ export class DistrictComponent implements OnInit {
   components: any;
   rowSelection: any;
   columnTypes: any;
+  date_updated:any;
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -34,6 +36,8 @@ export class DistrictComponent implements OnInit {
     const number = parseFloat(params.value);
     if (params.value === undefined || params.value === null) {
       return null;
+    }else if(isNaN(params.value)){
+      return "";
     }
     return number.toLocaleString('en-us', {
       minimumFractionDigits: 2,
@@ -44,6 +48,19 @@ export class DistrictComponent implements OnInit {
   onCellValueChanged(event){
     // query remarks
   }
+
+  getLogs(){
+    this.dialog.open(logDialog,{data: {
+      beds: 4
+    }});
+  }
+
+  lastUpdated() {
+    this.mfoService.getLastUpdated(4).subscribe(data => {
+      this.date_updated = data[0].date;
+    });
+  }
+
   onCellClicked(event){
     if(event.data!=undefined){
       console.log(event);
@@ -67,7 +84,11 @@ export class DistrictComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result=>{
               console.log(prvnc[i]+ii+"aarea");
               event.node.setDataValue(result.prvnc+result.district+"aarea",result.str);
-              event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+              if(result.total>0)
+                event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+              else event.node.setDataValue(result.prvnc+result.district+"aaccomp","");
+
+              this.lastUpdated();
             });
             break;
           }
@@ -122,7 +143,7 @@ export class DistrictComponent implements OnInit {
         hide: true
       },
       { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 },
-      { headerName: 'Accomplished', field: 'taccomp', width: 100, 
+      { headerName: 'Accomplished', field: 'taccomp', width: 100, hide:false,
         valueGetter:
         `Number(data.jana) + Number(data.feba) + Number(data.mara) + Number(data.apra) + 
          Number(data.maya) + Number(data.juna) + Number(data.jula) + Number(data.auga) + 
@@ -190,8 +211,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'ads1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads1aaccomp', width: 100, },
                 ]
               }
             ]
@@ -209,8 +230,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'ads2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads2aaccomp', width: 100, },
                 ]
               }
             ]
@@ -233,8 +254,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sdn1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn1aaccomp', width: 100, },
                 ]
               }
             ]
@@ -253,8 +274,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sdn2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn2aaccomp', width: 100, },
                 ]
               }
             ]
@@ -277,8 +298,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sds1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds1aaccomp', width: 100, },
                 ]
               }
             ]
@@ -296,8 +317,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sds2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds2aaccomp', width: 100, },
                 ]
               }
             ]
@@ -320,8 +341,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'pdi1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'pdi1aaccomp', width: 100, },
                 ]
               }
             ]
@@ -344,8 +365,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'bxu1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'bxu1aaccomp', width: 100, },
                 ]
               }
             ]
@@ -378,7 +399,9 @@ export class DistrictComponent implements OnInit {
     this.components = { simpleCellRenderer: getSimpleCellRenderer() };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lastUpdated();
+  }
 
 }
 

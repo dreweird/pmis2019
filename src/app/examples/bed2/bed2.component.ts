@@ -41,16 +41,18 @@ export class Bed2Component implements OnInit {
       maximumFractionDigits: 2
     });
   }
-  updateLogs(id: number, value: number, col: string, month: string) {
+  updateLogs(id: number, value: number, col: string, month: string, beds: number) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, month)
+      .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
 
   getLogs(){
-    this.dialog.open(logDialog);
+    this.dialog.open(logDialog,{data: {
+      beds: 2
+    }});
   }
 
   onCellValueChanged(event: any) {
@@ -58,7 +60,7 @@ export class Bed2Component implements OnInit {
       alert('Invalid entry...input numbers only');
       event.newValue = null;
     } else {
-      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field);
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 2);
       this.mfoService
         .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
         .subscribe(data => {
@@ -558,7 +560,7 @@ export class Bed2Component implements OnInit {
   }
 
   lastUpdated() {
-    this.mfoService.getLastUpdated().subscribe(data => {
+    this.mfoService.getLastUpdated(2).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }

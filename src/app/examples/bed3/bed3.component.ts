@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
+import { logDialog } from '../bed2/logDialog.component';
 
 @Component({
   selector: 'anms-bed3',
@@ -19,6 +20,9 @@ export class Bed3Component implements OnInit {
   rowSelection: any;
   columnTypes: any;
   private groupRowAggNodes;
+  date_updated: any;
+  logs: any;
+
 
   onGridReady(params) {
     this.gridApi = params.api;
@@ -26,6 +30,26 @@ export class Bed3Component implements OnInit {
     this.mfoService.getDisbursement().subscribe(data => {
       this.rowData = data;
       console.log(data);
+    });
+  }
+
+  updateLogs(id: number, value: number, col: string, month: string, beds: number) {
+    const uid = JSON.parse(localStorage.getItem('currentUser'));
+    this.mfoService
+      .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
+      .subscribe(data => console.log(data));
+    this.lastUpdated();
+  }
+
+  getLogs(){
+    this.dialog.open(logDialog,{data: {
+      beds: 3
+    }});
+  }
+
+  lastUpdated() {
+    this.mfoService.getLastUpdated(3).subscribe(data => {
+      this.date_updated = data[0].date;
     });
   }
 
@@ -131,9 +155,9 @@ export class Bed3Component implements OnInit {
       },
       { headerName: "Obligation",
         children: [
-          { headerName: 'Jan', columnGroupShow: "open", field: 'jan', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Feb', columnGroupShow: "open", field: 'feb', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Mar', columnGroupShow: "open", field: 'mar', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Jan', columnGroupShow: "open", field: 'jan', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Feb', columnGroupShow: "open", field: 'feb', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Mar', columnGroupShow: "open", field: 'mar', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
             headerName: 'Q1', field: 'Q1', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -141,9 +165,9 @@ export class Bed3Component implements OnInit {
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Apr', columnGroupShow: "open", field: 'apr', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'May', columnGroupShow: "open", field: 'may', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Jun', columnGroupShow: "open", field: 'jun', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Apr', columnGroupShow: "open", field: 'apr', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'May', columnGroupShow: "open", field: 'may', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Jun', columnGroupShow: "open", field: 'jun', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
             headerName: 'Q2', field: 'Q2', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -151,9 +175,9 @@ export class Bed3Component implements OnInit {
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Jul', columnGroupShow: "open", field: 'jul', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Aug', columnGroupShow: "open",  field: 'aug', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Sep', columnGroupShow: "open",  field: 'sep', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Jul', columnGroupShow: "open", field: 'jul', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Aug', columnGroupShow: "open",  field: 'aug', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Sep', columnGroupShow: "open",  field: 'sep', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
             headerName: 'Q3', field: 'Q3', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -161,9 +185,9 @@ export class Bed3Component implements OnInit {
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Oct', columnGroupShow: "open",  field: 'oct', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Nov', columnGroupShow: "open", field: 'nov', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Dec', columnGroupShow: "open", field: 'decm', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Oct', columnGroupShow: "open",  field: 'oct', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Nov', columnGroupShow: "open", field: 'nov', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { headerName: 'Dec', columnGroupShow: "open", field: 'decm', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
             headerName: 'Q4', field: 'Q4', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -395,7 +419,9 @@ export class Bed3Component implements OnInit {
     };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lastUpdated();
+  }
 }
 
 function getSimpleCellRenderer() {
