@@ -112,6 +112,7 @@ export class MfoService {
     const mo = month.slice(0, -1);
     var message = col + ' was updated to ' + value + ' in the month of ' + mo;
     if(beds==4){ message = col + ' in ' + mun + ', ' + prov + ' was updated to ' + value;}
+    if(beds==41){ message = month+' remarks of '+ col + ' was updated to "' + value +'"'; beds=4;}
     return this.http.post<any>(url, { mfo_id, uid, message,beds }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))

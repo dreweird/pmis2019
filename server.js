@@ -64,7 +64,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getLogs', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ?";
+    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? order by date DESC";
     var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
