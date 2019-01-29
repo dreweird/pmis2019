@@ -56,6 +56,13 @@ export class districtDetailsDialog implements OnInit{
     onGridReady(event){
         this.gridApi = event.api;
     }
+    updateLogs(id: number, value: number, col: string, month: string, beds: number, prov: string, dist: string, mun: string) {
+        const uid = JSON.parse(localStorage.getItem('currentUser'));
+        // console.log("4 here");
+        this.mfoService
+          .updateLogs(id, value, uid.user_id, col, month, beds,prov,dist,mun)
+          .subscribe(data => console.log(data));
+      }
     onCellValueChanged(event){
         if(event.data.target<Number(event.data.accomp)||isNaN(Number(event.data.accomp))){
             var mes="";
@@ -67,8 +74,10 @@ export class districtDetailsDialog implements OnInit{
             console.log(event.data);
             var data = event.data;
             this.mfoService.updateDistrictDetails(data).subscribe(data =>{
-                this.rowData = data;
-                //console.log(this.rowData);
+                //console.log("here");
+                //console.log(this.updateLogs);
+                this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 4,event.data.province,event.data.district,event.data.municipal);
+                //this.rowData = data;
             }); 
         }
     }

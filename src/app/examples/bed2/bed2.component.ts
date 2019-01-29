@@ -3,6 +3,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { logDialog } from './logDialog.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 @Component({
   selector: 'anms-bed2',
@@ -41,27 +42,29 @@ export class Bed2Component implements OnInit {
       maximumFractionDigits: 2
     });
   }
-  updateLogs(id: number, value: number, col: string, month: string) {
+  updateLogs(id: number, value: number, col: string, month: string, beds: number) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const mo = month.slice(0, -1);
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, mo, 2)
+      .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
 
   getLogs(){
-    this.dialog.open(logDialog, {
-      data: {beds: 2}
-    });
+    this.dialog.open(logDialog,{data: {
+      beds: 2
+    }});
   }
 
   onCellValueChanged(event: any) {
-    if (isNaN(+event.newValue)) {
-      alert('Invalid entry...input numbers only');
-      event.newValue = null;
+    console.log(event);
+    if (isNaN(+event.newValue)&& event.colDef.cellEditor!="agLargeTextCellEditor") {
+      event.node.setDataValue(event.colDef.field,event.oldValue);
+      var mes="Error: Invalid entry. Please input numbers only.";
+      this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
     } else {
-      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field);
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 2);
       this.mfoService
         .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
         .subscribe(data => {
@@ -70,7 +73,7 @@ export class Bed2Component implements OnInit {
     }
   }
 
-  constructor(private mfoService: MfoService, public dialog: MatDialog) {
+  constructor(private mfoService: MfoService, public dialog: MatDialog,private snackBar: MatSnackBar) {
     this.rowSelection = 'single';
     this.columnDefs = [
       {

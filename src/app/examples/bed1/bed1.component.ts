@@ -170,7 +170,7 @@ export class Bed1Component implements OnInit {
   updateLogs(id: number, value: number, col: string, month: string) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, month, 1)
+      .updateLogs(id, value, uid.user_id, col, month, 1,null,null,null)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }

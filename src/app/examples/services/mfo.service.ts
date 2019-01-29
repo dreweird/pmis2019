@@ -28,11 +28,11 @@ export class MfoService {
     );
   }
 
-  getLogs(beds: number): Observable<any> {
+  getLogs(beds): Observable<any> {
     const url = `${this.apiRoot}/getLogs`;
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
-    return this.http.post<any>(url, { id, beds }).pipe(
+    return this.http.post<any>(url, { id,beds }).pipe(
       tap(_ => console.log('fetched Logs')),
       catchError(this.handleError('getLogs', []))
     );
@@ -69,11 +69,11 @@ export class MfoService {
   }
   
 
-  getLastUpdated(beds: number): Observable<any> {
+  getLastUpdated(beds): Observable<any> {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const id = uid.user_id;
     const url = `${this.apiRoot}/lastUpdated`;
-    return this.http.post<any>(url, { id, beds }).pipe(
+    return this.http.post<any>(url, { id,beds }).pipe(
       tap(_ => console.log('fetched Last Updated')),
       catchError(this.handleError('getLastUpdated', []))
     );
@@ -103,11 +103,17 @@ export class MfoService {
     uid: number,
     col: string,
     month: string,
-    beds: number
+    beds: number,
+    prov: any,
+    dist: any,
+    mun: any,
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
-    const message = col + ' was updated to ' + value + ' in the month of ' + month;
-    return this.http.post<any>(url, { mfo_id, uid, message, beds }).pipe(
+    const mo = month.slice(0, -1);
+    var message = col + ' was updated to ' + value + ' in the month of ' + mo;
+    if(beds==4){ message = col + ' in ' + mun + ', ' + prov + ' was updated to ' + value;}
+    if(beds==41){ message = month+' remarks of '+ col + ' was updated to "' + value +'"'; beds=4;}
+    return this.http.post<any>(url, { mfo_id, uid, message,beds }).pipe(
       tap(_ => console.log('Updated the Logs')),
       catchError(this.handleError('addLogs', []))
     );
@@ -118,6 +124,10 @@ export class MfoService {
     return this.http.get(url);
   }
 
+  getDisbursement() {
+    const url = `${this.apiRoot}/disbursement`;
+    return this.http.get(url);
+  }
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure

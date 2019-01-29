@@ -3,6 +3,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { districtDetailsDialog } from './districtDetailsDialog.component';
+import { logDialog } from '../bed2/logDialog.component';
 
 @Component({
   selector: 'anms-district',
@@ -20,6 +21,7 @@ export class DistrictComponent implements OnInit {
   components: any;
   rowSelection: any;
   columnTypes: any;
+  date_updated:any;
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -34,6 +36,8 @@ export class DistrictComponent implements OnInit {
     const number = parseFloat(params.value);
     if (params.value === undefined || params.value === null) {
       return null;
+    }else if(isNaN(params.value)){
+      return "";
     }
     return number.toLocaleString('en-us', {
       minimumFractionDigits: 2,
@@ -41,12 +45,50 @@ export class DistrictComponent implements OnInit {
     });
   }
 
+  updateLogs(id: number, value: number, col: string, month: string, beds: number,) {
+    const uid = JSON.parse(localStorage.getItem('currentUser'));
+    // console.log("4 here");
+    this.mfoService
+      .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
+      .subscribe(data => console.log(data));
+  }
+
   onCellValueChanged(event){
     // query remarks
+    console.log(event);
+    event.colDef.field[1];
+    event.newValue;
+    event.data.mfo_id;
+    //curdate();
+    /* this.mfoService.getDistrict().subscribe(data => {
+      this.rowData = data.data;
+      console.log(this.rowData);
+    }); */
+    this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.headerName, 41);
+    this.mfoService
+      .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
+      .subscribe(data => {
+        //console.log(data);
+      });
+      this.lastUpdated();
+
   }
+
+  getLogs(){
+    this.dialog.open(logDialog,{data: {
+      beds: 4
+    }});
+  }
+
+  lastUpdated() {
+    this.mfoService.getLastUpdated(4).subscribe(data => {
+      this.date_updated = data[0].date;
+    });
+  }
+
   onCellClicked(event){
     if(event.data!=undefined){
-      console.log(event);
+      // console.log(event);
       var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
       var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
       for(var i=0;i<prvnc.length;i++){
@@ -67,7 +109,11 @@ export class DistrictComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result=>{
               console.log(prvnc[i]+ii+"aarea");
               event.node.setDataValue(result.prvnc+result.district+"aarea",result.str);
-              event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+              if(result.total>0)
+                event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+              else event.node.setDataValue(result.prvnc+result.district+"aaccomp","");
+
+              this.lastUpdated();
             });
             break;
           }
@@ -122,13 +168,14 @@ export class DistrictComponent implements OnInit {
         hide: true
       },
       { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 },
-      { headerName: 'Accomplished', field: 'taccomp', width: 100, 
+      { headerName: 'Accomplished', field: 'taccomp', width: 100, hide:false,
         valueGetter:
         `Number(data.jana) + Number(data.feba) + Number(data.mara) + Number(data.apra) + 
          Number(data.maya) + Number(data.juna) + Number(data.jula) + Number(data.auga) + 
          Number(data.sepa) + Number(data.octa) + Number(data.nova) + Number(data.deca)`,
-        type: 'numericColumn',
+         type: 'valueColumn',
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
+        
       },
       { headerName: 'Agusan del Norte', 
         children:[
@@ -137,7 +184,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'adn1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'adn1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'adn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.adn1target) * Number(data.adn1cost)',valueFormatter: this.currencyFormatter,
@@ -147,7 +194,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Accomplishment', 
                 children:[
                   { headerName: 'Area', field: 'adn1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn1aaccomp', width: 100, },
+                  { headerName: 'Number', field: 'adn1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -157,7 +204,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'adn2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn2target', width: 100, },      
+                  { headerName: 'Number', field: 'adn2target', width: 100,  type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'adn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
                   { headerName: 'Total Cost', field: 'adn2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.adn2target) * Number(data.adn2cost)', valueFormatter: this.currencyFormatter,
@@ -167,7 +214,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Accomplishment', 
                 children:[
                   { headerName: 'Area', field: 'adn2aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn2aaccomp', width: 100, },
+                  { headerName: 'Number', field: 'adn2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -181,7 +228,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'ads1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'ads1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'ads1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'ads1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.ads1target) * Number(data.ads1cost)', valueFormatter: this.currencyFormatter,
@@ -190,8 +237,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'ads1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -201,7 +248,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'ads2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads2target', width: 100, },      
+                  { headerName: 'Number', field: 'ads2target', width: 100,  type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'ads2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'ads2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.ads2target) * Number(data.ads2cost)', valueFormatter: this.currencyFormatter,},  
@@ -209,8 +256,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'ads2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'ads2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -224,7 +271,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'sdn1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'sdn1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'sdn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'sdn1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sdn1target) * Number(data.sdn1cost)',valueFormatter: this.currencyFormatter,
@@ -233,8 +280,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sdn1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -244,7 +291,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'sdn2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn2target', width: 100, },      
+                  { headerName: 'Number', field: 'sdn2target', width: 100,  type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'sdn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
                   { headerName: 'Total Cost', field: 'sdn2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sdn2target) * Number(data.sdn2cost)', valueFormatter: this.currencyFormatter,
@@ -253,8 +300,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sdn2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sdn2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -268,7 +315,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'sds1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'sds1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'sds1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'sds1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sds1target) * Number(data.sds1cost)', valueFormatter: this.currencyFormatter,
@@ -277,8 +324,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sds1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -288,7 +335,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'sds2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds2target', width: 100, },      
+                  { headerName: 'Number', field: 'sds2target', width: 100,  type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'sds2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'sds2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sds2target) * Number(data.sds2cost)', valueFormatter: this.currencyFormatter,},  
@@ -296,8 +343,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'sds2aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'sds2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -311,7 +358,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'pdi1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'pdi1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'pdi1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'pdi1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'pdi1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.pdi1target) * Number(data.pdi1cost)', valueFormatter: this.currencyFormatter,
@@ -320,8 +367,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'pdi1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'pdi1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -335,7 +382,7 @@ export class DistrictComponent implements OnInit {
               { headerName: 'Target', 
                 children:[
                   { headerName: 'Area', field: 'bxu1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'bxu1target', width: 100, type: 'numericColumn',},      
+                  { headerName: 'Number', field: 'bxu1target', width: 100, type: 'valueColumn',},      
                   { headerName: 'Unit Cost', field: 'bxu1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { headerName: 'Total Cost', field: 'bxu1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.bxu1target) * Number(data.bxu1cost)', valueFormatter: this.currencyFormatter,
@@ -344,8 +391,8 @@ export class DistrictComponent implements OnInit {
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'number', width: 100, },
+                  { headerName: 'Area', field: 'bxu1aarea', width: 100,columnGroupShow: 'open', },            
+                  { headerName: 'Number', field: 'bxu1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -355,10 +402,10 @@ export class DistrictComponent implements OnInit {
       {
         headerName: 'Remarks', 
         children:[
-          { headerName: 'Q1', field: 'q1', width: 100, editable:true}, 
-          { headerName: 'Q2', field: 'q2', width: 100, editable:true}, 
-          { headerName: 'Q3', field: 'q3', width: 100, editable:true}, 
-          { headerName: 'Q4', field: 'q4', width: 100, editable:true}, 
+          { headerName: 'Q1', field: 'q1r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { headerName: 'Q2', field: 'q2r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { headerName: 'Q3', field: 'q3r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { headerName: 'Q4', field: 'q4r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
         ]
       },
     ]
@@ -375,10 +422,26 @@ export class DistrictComponent implements OnInit {
       }
     };
 
+    this.columnTypes = {
+      valueColumn: {
+        width: 100,
+        aggFunc: 'sum',
+        valueParser: 'Number(newValue)',
+        cellClass: 'number-cell'
+      },
+      totalColumn: {
+        aggFunc: 'sum',
+        cellRenderer: 'agAnimateShowChangeCellRenderer',
+        cellClass: 'number-cell'
+      }
+    };
+
     this.components = { simpleCellRenderer: getSimpleCellRenderer() };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lastUpdated();
+  }
 
 }
 
