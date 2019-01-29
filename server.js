@@ -64,7 +64,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getLogs', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ?";
+    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? order by date DESC";
     var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
@@ -110,7 +110,7 @@ const connection = mysql.createConnection({
             
                     },
                     three: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(accomp) as target ,cost, 
+                        var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
                         GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
                         FROM tbl_district where mfo_id = ? and province=? and district=1 and accomp>0 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
@@ -119,7 +119,7 @@ const connection = mysql.createConnection({
                         });                        
                     },
                      four: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(accomp) as target ,cost, 
+                        var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
                         GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
                         FROM tbl_district where mfo_id = ? and province=? and district=2 and accomp>0 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
@@ -139,7 +139,7 @@ const connection = mysql.createConnection({
                 var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
                 var pc=0;
                 for(var c = 0;c<province.length;c++){
-                    var g1=false,g2=false;
+                    var g1=false,g2=false,g3=false,g4=false;
                     if(rslt.one==undefined){ g1=true; } else{
                         //console.log(rslt.one.province);
                         if(rslt.one.province==province[c]){
@@ -157,7 +157,22 @@ const connection = mysql.createConnection({
                             //console.log(row.two);
                         g2=true;
                         }
-                    if(g1 && g2){
+                        if(rslt.three==undefined){ g3=true; } else{
+                            //console.log(rslt.one.province);
+                            if(rslt.three.province==province[c]){
+                                row[prvnc[c]+'1aarea'] = rslt.three.text;
+                                row[prvnc[c]+'1aaccomp'] = rslt.three.accomp;
+                                //console.log(row[prvnc[c]+'1area']);
+                                g3=true;
+                            }}
+                        if(rslt.four==undefined){ g4=true; } else
+                            if(rslt.four.province==province[c]){
+                                row[prvnc[c]+'2aarea'] = rslt.four.text;
+                                row[prvnc[c]+'2aaccomp'] = rslt.four.accomp;
+                                //console.log(row.two);
+                            g4=true;
+                            }
+                    if(g1 && g2 && g3 && g4){
                         pc++;
                         if(pc==prvnc.length){
                             itemsProcessed++;
@@ -185,7 +200,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getDistrictDetails', function(req, res){
-    var query = "SELECT * FROM tbl_district WHERE province like(?) and district = ? and mfo_id = ?";
+    var query = "SELECT * FROM tbl_district left join tbl_mfo on tbl_district.mfo_id = tbl_mfo.mfo_id  WHERE province like(?) and district = ? and tbl_district.mfo_id = ?";
     var data = req.body.data;
     console.log(data);
     query = mysql.format(query,[data.province,data.district,data.mfo_id]);
@@ -201,12 +216,14 @@ const connection = mysql.createConnection({
   app.post('/updateDistrictDetails', function(req, res){
     var query = "UPDATE tbl_district SET accomp = ? WHERE id = ?";
     var data = req.body.data;
-    console.log(data);
+    //console.log(data);
     query = mysql.format(query,[Number(data.accomp),data.id]);
     console.log(query); 
     connection.query(query, function(err, rows){
+        console.log(rows);
         if (err) throw res.status(400).json(err);
-        if (rows.length > 0){
+        if (rows.affectedRows > 0){
+            console.log(rows);
             res.json(rows); 
         }
     })
@@ -216,7 +233,7 @@ const connection = mysql.createConnection({
     var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
     var data = [req.body.id, req.body.beds];
     query = mysql.format(query,data);
-    console.log(query); 
+    //console.log(query); 
     connection.query(query, function(err, rows){
         if (err) throw res.status(400).json(err);
         if (rows.length > 0){
@@ -286,4 +303,14 @@ const connection = mysql.createConnection({
 
       })
   })
+
+  app.get('/disbursement', function(req, res){
+    connection.query(`  
+    SELECT header_main,header_program,header_mfo,header_indicator,header_subindicator, tbl_object.object_id,tbl_object.name,tbl_object.type,sum(budget) as budget,sum(adjustment) as adjustment, sum(jan) as jan, sum(feb) as feb, sum(mar) as mar, sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul, sum(aug) as aug, sum(sep) as sep, sum(oct) as oct, sum(nov) as nov, sum(decm) as decm,tbl_object.header FROM tbl_mfo left JOIN tbl_allotment on tbl_mfo.mfo_id = tbl_allotment.mfo_id LEFT JOIN tbl_object on tbl_allotment.object_id=tbl_object.object_id where tbl_object.object_id IS NOT NULL GROUP BY header_subindicator,tbl_object.object_id order by sequence
+    `, function(error, results){
+      if (error) throw error;
+      res.json(results);
+
+    })
+});
   //connection.end();
