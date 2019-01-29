@@ -1,6 +1,117 @@
 import { environment as env } from '@env/environment';
 import { Feature } from './features.model';
 
+export var single = [
+  {
+    "name": "Germany",
+    "value": 8940000
+  },
+  {
+    "name": "USA",
+    "value": 5000000
+  },
+  {
+    "name": "France",
+    "value": 7200000
+  }
+];
+
+export var da_financial = [
+  {
+    "name": "2014",
+    "series": [
+      {
+        "name": "Allotment",
+        "value": 1356481813
+      },
+      {
+        "name": "Obligation",
+        "value":  1054009776.56
+
+      },
+      {
+        "name": "Disbursement",
+        "value": 524255213.06
+      },
+    ]
+  },
+  {
+    "name": "2015",
+    "series": [
+      {
+        "name": "Allotment",
+        "value": 1209192410
+      },
+      {
+        "name": "Obligation",
+        "value":  1094628156.23
+
+      },
+      {
+        "name": "Disbursement",
+        "value": 445906925.25
+      },
+    ]
+  },
+  {
+    "name": "2016",
+    "series": [
+      {
+        "name": "Allotment",
+        "value": 715029518.38
+      },
+      {
+        "name": "Obligation",
+        "value":  614218110.32
+
+      },
+      {
+        "name": "Disbursement",
+        "value": 363348074.76
+      },
+    ]
+  },
+  {
+    "name": "2017",
+    "series": [
+      {
+        "name": "Allotment",
+        "value": 872038058
+      },
+      {
+        "name": "Obligation",
+        "value":  780817121.93
+
+      },
+      {
+        "name": "Disbursement",
+        "value": 577955007.65
+      },
+    ]
+  },
+  {
+    "name": "2018",
+    "series": [
+      {
+        "name": "Allotment",
+        "value": 1101060985
+      },
+      {
+        "name": "Obligation",
+        "value":  742013840.75
+
+      },
+      {
+        "name": "Disbursement",
+        "value": 566486901.6
+      },
+    ]
+  },
+
+
+];
+
+
 export const features: Feature[] = [
   {
     name: 'Angular',

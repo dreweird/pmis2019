@@ -2,19 +2,29 @@ Arguments:
   C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js install
 
 PATH: 
-  C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\DA-MIS-EDM\AppData\Local\Yarn\bin;C:\Users\DA-MIS-EDM\AppData\Roaming\npm
+  C:\Ruby25-x64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Go\bin;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\ASAUGUIS\scoop\apps\openjdk\current\bin;C:\Users\ASAUGUIS\scoop\shims;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\ASAUGUIS\AppData\Local\Android\sdk\platform-tools;C:\Users\ASAUGUIS\AppData\Local\Android\sdk\tools;C:\Program Files\Java\jre1.8.0_131\bin;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Go;C:\Program Files\Java\jdk1.8.0_131;C:\Users\ASAUGUIS\AppData\Local\Yarn\bin;C:\Users\ASAUGUIS\AppData\Roaming\npm;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\heroku\bin;C:\Program Files\MongoDB\Server\4.0\bin
 
 Yarn version: 
-  1.12.3
+  1.12.1
 
 Node version: 
-  10.14.2
+  10.13.0
 
 Platform: 
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\DA-MIS-EDM\pmis2019\node_modules\node-sass\vendor\win32-x64-64\binding.node'
+  Error: https://registry.yarnpkg.com/@angular/common/-/common-7.2.2.tgz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:125174:19)
+      at Object.onceWrapper (events.js:273:13)
+      at ClientRequest.emit (events.js:182:13)
+      at TLSSocket.emitRequestTimeout (_http_client.js:661:40)
+      at Object.onceWrapper (events.js:273:13)
+      at TLSSocket.emit (events.js:182:13)
+      at TLSSocket.Socket._onTimeout (net.js:449:8)
+      at ontimeout (timers.js:436:11)
+      at tryOnTimeout (timers.js:300:5)
+      at listOnTimeout (timers.js:263:5)
 
 npm manifest: 
   {
@@ -23,7 +33,7 @@ npm manifest:
     "license": "MIT",
     "scripts": {
       "ng": "ng",
-      "start": "ng serve --open",
+      "start": "ng serve --open && node server.js",
       "docker-start": "ng serve  --host 0.0.0.0",
       "build": "ng build",
       "test": "npm run lint && ng test --configuration=test",
