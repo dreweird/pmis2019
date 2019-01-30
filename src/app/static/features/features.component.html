@@ -1,14 +1,14 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" [ngClass]="routeAnimationsElements">
       <h1 class="main-heading">DA Performance Comparative Report 2014-2018</h1>
     </div>
   </div>
-  <div class="row" [ngClass]="routeAnimationsElements">
+  <div class="row">
     <div class="col-md-12">
-        <mat-accordion>
+        <mat-accordion #myaccordion="matAccordion" multi="true">
 
-            <mat-expansion-panel>
+            <mat-expansion-panel [ngClass]="routeAnimationsElements">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   DA Caraga
@@ -17,7 +17,7 @@
                   Financial & Physical Performance 2014-2018
                 </mat-panel-description>
               </mat-expansion-panel-header>
-              <div class="row align-items-end">
+          
                   <div class="col"> 
                     <mat-card>
                         <div id="da_fin" style="height: 370px; width: 100%;"></div>
@@ -28,176 +28,140 @@
                             <div id="da_fin_per" style="height: 370px; width: 100%;"></div>
                         </mat-card>
                     </div>
-              </div>
-              <div class="row">
+            
+              
                   <div class="col-md-12">
                       <mat-card>
                           <div id="da_phys" style="height: 370px; width: 100%;"></div>
-                      </mat-card>
-                  </div>
-
-              </div>
+                      </mat-card>   
+                </div>     
             </mat-expansion-panel>
-          </mat-accordion> 
-    </div>
-</div>
 
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      GENERAL SUPPORT SERVICES
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      Financial & Physical Performance 2014-2018
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="row align-items-end">
+            <mat-expansion-panel [ngClass]="routeAnimationsElements">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    GENERAL SUPPORT SERVICES
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Financial & Physical Performance 2014-2018
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row align-items-end">
+                    <div class="col"> 
+                      <mat-card>
+                          <div id="gss_fin" style="height: 370px; width: 100%;"></div>
+                      </mat-card>
+                      </div>
                       <div class="col"> 
-                        <mat-card>
-                            <div id="gss_fin" style="height: 370px; width: 100%;"></div>
-                        </mat-card>
-                        </div>
-                        <div class="col"> 
-                            <mat-card>
-                                <div id="gss_fin_per" style="height: 370px; width: 100%;"></div>
-                            </mat-card>
-                        </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-12">
                           <mat-card>
-                              <div id="gss_phys" style="height: 370px; width: 100%;"></div>
+                              <div id="gss_fin_per" style="height: 370px; width: 100%;"></div>
                           </mat-card>
                       </div>
-
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      RICE PROGRAM
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      Financial & Physical Performance 2014-2018
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="row align-items-end">
-                      <div class="col"> 
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                         <mat-card>
-                            <div id="rice_fin" style="height: 370px; width: 100%;"></div>
+                            <div id="gss_phys" style="height: 370px; width: 100%;"></div>
                         </mat-card>
-                        </div>
-                        <div class="col"> 
-                            <mat-card>
-                                <div id="rice_fin_per" style="height: 370px; width: 100%;"></div>
-                            </mat-card>
-                        </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-12">
+                    </div>
+
+                </div>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [ngClass]="routeAnimationsElements">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    RICE PROGRAM
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Financial & Physical Performance 2014-2018
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row align-items-end">
+                    <div class="col"> 
+                      <mat-card>
+                          <div id="rice_fin" style="height: 370px; width: 100%;"></div>
+                      </mat-card>
+                      </div>
+                      <div class="col"> 
                           <mat-card>
-                              <div id="rice_phys" style="height: 370px; width: 100%;"></div>
+                              <div id="rice_fin_per" style="height: 370px; width: 100%;"></div>
                           </mat-card>
                       </div>
-
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
-
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      CORN PROGRAM
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      Financial & Physical Performance 2014-2018
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="row align-items-end">
-                      <div class="col"> 
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                         <mat-card>
-                            <div id="corn_fin" style="height: 370px; width: 100%;"></div>
+                            <div id="rice_phys" style="height: 370px; width: 100%;"></div>
                         </mat-card>
-                        </div>
-                        <div class="col"> 
-                            <mat-card>
-                                <div id="corn_fin_per" style="height: 370px; width: 100%;"></div>
-                            </mat-card>
-                        </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-12">
+                    </div>
+
+                </div>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [ngClass]="routeAnimationsElements">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    CORN PROGRAM
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Financial & Physical Performance 2014-2018
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row align-items-end">
+                    <div class="col"> 
+                      <mat-card>
+                          <div id="corn_fin" style="height: 370px; width: 100%;"></div>
+                      </mat-card>
+                      </div>
+                      <div class="col"> 
                           <mat-card>
-                              <div id="corn_phys" style="height: 370px; width: 100%;"></div>
+                              <div id="corn_fin_per" style="height: 370px; width: 100%;"></div>
                           </mat-card>
                       </div>
-
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
-
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      HVCD PROGRAM
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      Financial & Physical Performance 2014-2018
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="row align-items-end">
-                      <div class="col"> 
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                         <mat-card>
-                            <div id="hvcdp_fin" style="height: 370px; width: 100%;"></div>
+                            <div id="corn_phys" style="height: 370px; width: 100%;"></div>
                         </mat-card>
-                        </div>
-                        <div class="col"> 
-                            <mat-card>
-                                <div id="hvcdp_fin_per" style="height: 370px; width: 100%;"></div>
-                            </mat-card>
-                        </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-12">
+                    </div>
+
+                </div>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [ngClass]="routeAnimationsElements">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    HVCD PROGRAM
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Financial & Physical Performance 2014-2018
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row align-items-end">
+                    <div class="col"> 
+                      <mat-card>
+                          <div id="hvcdp_fin" style="height: 370px; width: 100%;"></div>
+                      </mat-card>
+                      </div>
+                      <div class="col"> 
                           <mat-card>
-                              <div id="hvcdp_phys" style="height: 370px; width: 100%;"></div>
+                              <div id="hvcdp_fin_per" style="height: 370px; width: 100%;"></div>
                           </mat-card>
                       </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-card>
+                            <div id="hvcdp_phys" style="height: 370px; width: 100%;"></div>
+                        </mat-card>
+                    </div>
 
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
+                </div>
+              </mat-expansion-panel>
 
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
+                <mat-expansion-panel [ngClass]="routeAnimationsElements">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
                       LIVESTOCK PROGRAM
@@ -227,15 +191,11 @@
 
                   </div>
                 </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
- 
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
+             
 
-                <mat-expansion-panel>
+              
+
+                <mat-expansion-panel [ngClass]="routeAnimationsElements">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
                       ORGANIC PROGRAM
@@ -265,69 +225,40 @@
 
                   </div>
                 </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
-    </div>
+          
 
-    <div class="row" [ngClass]="routeAnimationsElements">
-        <div class="col-md-12">
-            <mat-accordion>
-
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      REGULAR PROGRAM
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      Financial & Physical Performance 2014-2018
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="row align-items-end">
+              <mat-expansion-panel [ngClass]="routeAnimationsElements">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    REGULAR PROGRAM
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Financial & Physical Performance 2014-2018
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row align-items-end">
+                    <div class="col"> 
+                      <mat-card>
+                          <div id="regular_fin" style="height: 370px; width: 100%;"></div>
+                      </mat-card>
+                      </div>
                       <div class="col"> 
-                        <mat-card>
-                            <div id="regular_fin" style="height: 370px; width: 100%;"></div>
-                        </mat-card>
-                        </div>
-                        <div class="col"> 
-                            <mat-card>
-                                <div id="regular_fin_per" style="height: 370px; width: 100%;"></div>
-                            </mat-card>
-                        </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-12">
                           <mat-card>
-                              <div id="regular_phys" style="height: 370px; width: 100%;"></div>
+                              <div id="regular_fin_per" style="height: 370px; width: 100%;"></div>
                           </mat-card>
                       </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-card>
+                            <div id="regular_phys" style="height: 370px; width: 100%;"></div>
+                        </mat-card>
+                    </div>
 
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion> 
-        </div>
+                </div>
+              </mat-expansion-panel>
+
+          </mat-accordion> 
     </div>
-    
- 
-    <!-- <div *ngFor="let feature of features" class="col-md-6 col-lg-4" [ngClass]="routeAnimationsElements">
-      <mat-card>
-        <mat-card-title>
-          <code *ngIf="feature.version">{{feature.version}}</code>{{feature.name | translate}}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{ feature.description | translate }}
-        </mat-card-subtitle>
-        <mat-card-actions>
-          <a *ngIf="feature.github" mat-icon-button [href]="feature.github" target="_blank">
-            <fa-icon [icon]="['fab','github']"></fa-icon>
-          </a>
-          <a mat-button [href]="feature.documentation" target="_blank">
-            <fa-icon icon="book"></fa-icon>{{ 'anms.features.documentation' | translate }}
-          </a>
-          <a *ngIf="feature.medium" mat-button [href]="feature.medium" target="_blank">
-            <fa-icon [icon]="['fab','medium-m']"></fa-icon>{{ 'anms.features.guide' | translate }}
-          </a>
-        </mat-card-actions>
-      </mat-card>
-    </div> -->
-
+    </div>
 </div>

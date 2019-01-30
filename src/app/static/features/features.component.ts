@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 
 
 import { features, da_financial } from './features.data';
 import * as CanvasJS from 'canvasjs/dist/canvasjs.min';
-import { reduce } from 'bluebird';
-import { getRenderedText } from '@angular/core/src/render3';
+import {MatAccordion} from '@angular/material';
 
 @Component({
   selector: 'anms-features',
@@ -16,7 +15,9 @@ import { getRenderedText } from '@angular/core/src/render3';
 export class FeaturesComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   features = features;
+  panelOpenState = false;
 
+  @ViewChild('myaccordion') myPanels: MatAccordion;
 
   ngOnInit() {
     CanvasJS.addColorSet("customColorSet1",
@@ -42,6 +43,20 @@ export class FeaturesComponent implements OnInit {
       axisY: {
         title: "Value in Peso",
         fontSize: 10
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            stepSize: 500000,
+            userCallback: function(value: any){
+              value = value.toString();
+              value = value.split(/(?=(?:...)*$)/);
+              value = value.join('.');
+              return 'Php' + value;
+            }
+          }
+        }]
       },
       legend: {
         cursor:"pointer",
