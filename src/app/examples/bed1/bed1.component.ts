@@ -35,6 +35,7 @@ export class Bed1Component implements OnInit {
 
   groupRowAggNodes(nodes: any) {
     const result = {
+      to_t: 0,
       to: 0,
       fu: 0,
       un: 0,
@@ -45,6 +46,10 @@ export class Bed1Component implements OnInit {
       Q2: 0,
       Q3: 0,
       Q4: 0,
+      Q1_t: 0,
+      Q2_t: 0,
+      Q3_t: 0,
+      Q4_t: 0,
       jan: 0,
       feb: 0,
       mar: 0,
@@ -56,7 +61,19 @@ export class Bed1Component implements OnInit {
       sep: 0,
       oct: 0,
       nov: 0,
-      decm: 0
+      decm: 0,
+      jan_t: 0,
+      feb_t: 0,
+      mar_t: 0,
+      apr_t: 0,
+      may_t: 0,
+      jun_t: 0,
+      jul_t: 0,
+      aug_t: 0,
+      sep_t: 0,
+      oct_t: 0,
+      nov_t: 0,
+      dec_t: 0
     };
     nodes.forEach(function(node: any) {
       const data = node.group ? node.aggData : node.data;
@@ -71,6 +88,42 @@ export class Bed1Component implements OnInit {
         typeof data.adjustment === 'number'
       ) {
         result.adjusted += data.budget + data.adjustment;
+      }
+      if (typeof data.jan_t === 'number') {
+        result.jan_t += data.jan_t;
+      }
+      if (typeof data.feb_t === 'number') {
+        result.feb_t += data.feb_t;
+      }
+      if (typeof data.mar_t === 'number') {
+        result.mar_t += data.mar_t;
+      }
+      if (typeof data.apr_t === 'number') {
+        result.apr_t += data.apr_t;
+      }
+      if (typeof data.may_t === 'number') {
+        result.may_t += data.may_t;
+      }
+      if (typeof data.jun_t === 'number') {
+        result.jun_t += data.jun_t;
+      }
+      if (typeof data.jul_t === 'number') {
+        result.jul_t += data.jul_t;
+      }
+      if (typeof data.aug_t === 'number') {
+        result.aug_t += data.aug_t;
+      }
+      if (typeof data.sep_t === 'number') {
+        result.sep_t += data.sep_t;
+      }
+      if (typeof data.oct_t === 'number') {
+        result.oct_t += data.oct_t;
+      }
+      if (typeof data.nov_t === 'number') {
+        result.nov_t += data.nov_t;
+      }
+      if (typeof data.dec_t === 'number') {
+        result.dec_t += data.dec_t;
       }
       if (typeof data.jan === 'number') {
         result.jan += data.jan;
@@ -108,6 +161,10 @@ export class Bed1Component implements OnInit {
       if (typeof data.decm === 'number') {
         result.decm += data.decm;
       }
+      result.Q1_t += Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t);
+      result.Q2_t += Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t);
+      result.Q3_t += Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t);
+      result.Q4_t += Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t);
       result.Q1 += Number(data.jan) + Number(data.feb) + Number(data.mar);
       result.Q2 += Number(data.apr) + Number(data.may) + Number(data.jun);
       result.Q3 += Number(data.jul) + Number(data.aug) + Number(data.sep);
@@ -125,6 +182,19 @@ export class Bed1Component implements OnInit {
         Number(data.oct) +
         Number(data.nov) +
         Number(data.decm);
+      result.to_t +=
+        Number(data.jan_t) +
+        Number(data.feb_t) +
+        Number(data.mar_t) +
+        Number(data.apr_t) +
+        Number(data.may_t) +
+        Number(data.jun_t) +
+        Number(data.jul_t) +
+        Number(data.aug_t) +
+        Number(data.sep_t) +
+        Number(data.oct_t) +
+        Number(data.nov_t) +
+        Number(data.dec_t);
       result.un = result.adjusted - result.to;
       result.fu = result.to / result.adjusted;
 
@@ -279,147 +349,303 @@ export class Bed1Component implements OnInit {
         type: 'valueColumn'
       },
       {
-        headerName: 'Jan',
-        field: 'jan',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
+        headerName: 'Financial Target',
+        children: [
+          {
+            headerName: "Jan",
+            field: 'jan_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+   
+          },
+          {
+            headerName: "Feb",
+            field: 'feb_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+        
+          },
+          {
+            headerName: "Mar",
+            field: 'mar_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+        
+          },
+          {
+            headerName: "Q1",
+            field: 'Q1_t',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#4b830d' },
+            valueGetter:
+            'Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t)'
+         
+          },
+          {
+            headerName: "Apr",
+            field: 'apr_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+            
+          },
+          {
+            headerName: "May",
+            field: 'may_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+            
+          },
+          {
+            headerName: "Jun",
+            field: 'jun_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn',
+            
+          },
+          {
+            headerName: "Q2",
+            field: 'Q2_t',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#4b830d' },
+            valueGetter:
+              'Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t)',
+          },
+          {
+            headerName: "Jul",
+            field: 'jul_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Aug",
+            field: 'aug_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Sep",
+            field: 'sep_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Q3",
+            field: 'Q3_t',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#4b830d' },
+            valueGetter:
+              'Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t)',
+          },
+          {
+            headerName: "Oct",
+            field: 'oct_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Nov",
+            field: 'nov_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Dec",
+            field: 'dec_t',
+            width: 70,
+            columnGroupShow: 'open',
+            type: 'valueColumn'
+          },
+          {
+            headerName: "Q4",
+            field: 'Q4_t',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#4b830d' },
+            valueGetter:
+              'Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
+          },
+          {
+            headerName: "Total",
+            field: 'to_t',
+            width: 70,
+            columnGroupShow: 'closed',
+            cellStyle: { color: 'white', 'background-color': '#ef7109' },
+            valueGetter:
+              'Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t) + Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t) + Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t) + Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
+            type: 'totalColumn'
+          }
+      ]
       },
       {
-        headerName: 'Feb',
-        field: 'feb',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
+        headerName: 'Financial Accomplishment',
+        children: [
+          {
+            headerName: 'Jan',
+            field: 'jan',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Feb',
+            field: 'feb',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Mar',
+            field: 'mar',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Q1',
+            field: 'Q1',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.jan) + Number(data.feb) + Number(data.mar)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          {
+            headerName: 'Apr',
+            field: 'apr',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'May',
+            field: 'may',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Jun',
+            field: 'jun',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Q2',
+            field: 'Q2',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.apr) + Number(data.may) + Number(data.jun)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          {
+            headerName: 'Jul',
+            field: 'jul',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Aug',
+            field: 'aug',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Sep',
+            field: 'sep',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Q3',
+            field: 'Q3',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.jul) + Number(data.aug) + Number(data.sep)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          {
+            headerName: 'Oct',
+            field: 'oct',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Nov',
+            field: 'nov',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Dec',
+            field: 'decm',
+            width: 70,
+            editable: true,
+            valueFormatter: this.currencyFormatter,
+            type: 'valueColumn',
+            columnGroupShow: 'open'
+          },
+          {
+            headerName: 'Q4',
+            field: 'Q4',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#5472d3' },
+            valueGetter: 'Number(data.oct) + Number(data.nov) + Number(data.decm)',
+            valueFormatter: this.currencyFormatter,
+            type: 'numericColumn'
+          },
+          {
+            headerName: 'Total Obligations',
+            field: 'to',
+            width: 70,
+            cellStyle: { color: 'white', 'background-color': '#ef7109' },
+            valueGetter:
+              'Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm)',
+            valueFormatter: this.currencyFormatter,
+            type: 'totalColumn'
+          }
+        ]
       },
-      {
-        headerName: 'Mar',
-        field: 'mar',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Q1',
-        field: 'Q1',
-        width: 70,
-        cellStyle: { color: 'white', 'background-color': '#5472d3' },
-        valueGetter: 'Number(data.jan) + Number(data.feb) + Number(data.mar)',
-        valueFormatter: this.currencyFormatter,
-        type: 'numericColumn'
-      },
-      {
-        headerName: 'Apr',
-        field: 'apr',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'May',
-        field: 'may',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Jun',
-        field: 'jun',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Q2',
-        field: 'Q2',
-        width: 70,
-        cellStyle: { color: 'white', 'background-color': '#5472d3' },
-        valueGetter: 'Number(data.apr) + Number(data.may) + Number(data.jun)',
-        valueFormatter: this.currencyFormatter,
-        type: 'numericColumn'
-      },
-      {
-        headerName: 'Jul',
-        field: 'jul',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Aug',
-        field: 'aug',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Sep',
-        field: 'sep',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Q3',
-        field: 'Q3',
-        width: 70,
-        cellStyle: { color: 'white', 'background-color': '#5472d3' },
-        valueGetter: 'Number(data.jul) + Number(data.aug) + Number(data.sep)',
-        valueFormatter: this.currencyFormatter,
-        type: 'numericColumn'
-      },
-      {
-        headerName: 'Oct',
-        field: 'oct',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Nov',
-        field: 'nov',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Dec',
-        field: 'decm',
-        width: 70,
-        editable: true,
-        valueFormatter: this.currencyFormatter,
-        type: 'valueColumn'
-      },
-      {
-        headerName: 'Q4',
-        field: 'Q4',
-        width: 70,
-        cellStyle: { color: 'white', 'background-color': '#5472d3' },
-        valueGetter: 'Number(data.oct) + Number(data.nov) + Number(data.decm)',
-        valueFormatter: this.currencyFormatter,
-        type: 'numericColumn'
-      },
-      {
-        headerName: 'Total Obligations',
-        field: 'to',
-        width: 70,
-        cellStyle: { color: 'white', 'background-color': '#ef7109' },
-        valueGetter:
-          'Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm)',
-        valueFormatter: this.currencyFormatter,
-        type: 'totalColumn'
-      },
+      
       {
         headerName: 'Unobligated',
         field: 'un',
