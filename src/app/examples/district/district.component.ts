@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatSnackBar} from '@angular/material';
 import { districtDetailsDialog } from './districtDetailsDialog.component';
 import { logDialog } from '../bed2/logDialog.component';
 
@@ -54,24 +54,19 @@ export class DistrictComponent implements OnInit {
   }
 
   onCellValueChanged(event){
-    // query remarks
-    console.log(event);
-    event.colDef.field[1];
-    event.newValue;
-    event.data.mfo_id;
-    //curdate();
-    /* this.mfoService.getDistrict().subscribe(data => {
-      this.rowData = data.data;
-      console.log(this.rowData);
-    }); */
-    this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.headerName, 41);
-    this.mfoService
-      .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
-      .subscribe(data => {
-        //console.log(data);
-      });
-      this.lastUpdated();
-
+    if(event.colDef.editable && event.colDef.cellEditor=="agLargeTextCellEditor"){
+      console.log(event);
+      event.colDef.field[1];
+      event.newValue;
+      event.data.mfo_id;
+      this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.headerName, 41);
+      this.mfoService
+        .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
+        .subscribe(data => {
+          //console.log(data);
+        });
+        this.lastUpdated();
+    }
   }
 
   getLogs(){
@@ -88,7 +83,7 @@ export class DistrictComponent implements OnInit {
 
   onCellClicked(event){
     if(event.data!=undefined){
-      // console.log(event);
+      console.log(event);
       var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
       var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
       for(var i=0;i<prvnc.length;i++){
@@ -96,25 +91,30 @@ export class DistrictComponent implements OnInit {
           if(event.colDef.field==prvnc[i]+ii+"aaccomp"){
             console.log(prvnc[i]);
             console.log(ii);
-            // query for pop up
-            console.log(event.data.mfo_id);
-            var data={};
-            data['province'] = province[i];
-            data['district'] = ii;
-            data['mfo_id'] = event.data.mfo_id;
-            data['mfo_name'] = event.data.mfo_name;
-            data['prvnc'] = prvnc[i];
-            const dialogRef = this.dialog.open(districtDetailsDialog,{disableClose: true,data:data});
+            var tar = prvnc[i]+ii+"target";
+            if(event.data[tar]==undefined){
+              var mes="Error: No target in this location.";
+              this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
+            }else{
+              console.log(event.data.mfo_id);
+              var data={};
+              data['province'] = province[i];
+              data['district'] = ii;
+              data['mfo_id'] = event.data.mfo_id;
+              data['mfo_name'] = event.data.mfo_name;
+              data['prvnc'] = prvnc[i];
+              const dialogRef = this.dialog.open(districtDetailsDialog,{disableClose: true,data:data});
 
-            dialogRef.afterClosed().subscribe(result=>{
-              console.log(prvnc[i]+ii+"aarea");
-              event.node.setDataValue(result.prvnc+result.district+"aarea",result.str);
-              if(result.total>0)
-                event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
-              else event.node.setDataValue(result.prvnc+result.district+"aaccomp","");
+              dialogRef.afterClosed().subscribe(result=>{
+                console.log(prvnc[i]+ii+"aarea");
+                event.node.setDataValue(result.prvnc+result.district+"aarea",result.str);
+                if(result.total>0)
+                  event.node.setDataValue(result.prvnc+result.district+"aaccomp",result.total);
+                else event.node.setDataValue(result.prvnc+result.district+"aaccomp","");
 
-              this.lastUpdated();
-            });
+                this.lastUpdated();
+              });
+            }
             break;
           }
         }
@@ -122,7 +122,7 @@ export class DistrictComponent implements OnInit {
     }
   }
 
-  constructor(private mfoService: MfoService, public dialog: MatDialog) { 
+  constructor(private mfoService: MfoService, public dialog: MatDialog,private snackBar: MatSnackBar) { 
     this.rowSelection = 'single';
     this.columnDefs = [
       {
