@@ -33,6 +33,7 @@
       [groupRemoveSingleChildren]="true"
       [rowSelection]="rowSelection"
       [suppressAggFuncInHeader]= "true"
+      (cellValueChanged)="onCellValueChanged($event)"
       (gridReady)="onGridReady($event)"
       >
   </ag-grid-angular>
