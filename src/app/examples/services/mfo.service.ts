@@ -109,7 +109,31 @@ export class MfoService {
     mun: any,
   ): Observable<any> {
     const url = `${this.apiRoot}/addLogs`;
-    const mo = month.slice(0, -1);
+    let mo: string;
+    if(month === 'jan' || month === 'jan_t' || month === 'jant' || month === 'jana')
+    mo = 'January';
+    if(month === 'feb' || month === 'feb_t' || month === 'febt' || month === 'feba')
+    mo = 'February';
+    if(month === 'mar' || month === 'mar_t' || month === 'mart' || month === 'mara')
+    mo = 'March';
+    if(month === 'apr' || month === 'apr_t' || month === 'aprt' || month === 'apra')
+    mo = 'April';
+    if(month === 'may' || month === 'may_t' || month === 'mayt' || month === 'maya')
+    mo = 'May';
+    if(month === 'jun' || month === 'jun_t' || month === 'junt' || month === 'junna')
+    mo = 'June';
+    if(month === 'jul' || month === 'jul_t' || month === 'jult' || month === 'jula')
+    mo = 'July';
+    if(month === 'aug' || month === 'aug_t' || month === 'augt' || month === 'auga')
+    mo = 'August';
+    if(month === 'sep' || month === 'sep_t' || month === 'sept' || month === 'sepa')
+    mo = 'September';
+    if(month === 'oct' || month === 'oct_t' || month === 'octt' || month === 'octa')
+    mo = 'October';
+    if(month === 'nov' || month === 'nov_t' || month === 'novt' || month === 'nova')
+    mo = 'November';
+    if(month === 'decm' || month === 'dec_t' || month === 'dect' || month === 'deca')
+    mo = 'December';
     var message = col + ' was updated to ' + value + ' in the month of ' + mo;
     if(beds==4){ message = col + ' in ' + mun + ', ' + prov + ' was updated to ' + value;}
     if(beds==41){ message = month+' remarks of '+ col + ' was updated to "' + value +'"'; beds=4;}

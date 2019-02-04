@@ -6,7 +6,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   template: `
-  <h3 mat-dialog-title>Physical Logs</h3>
+  <h3 mat-dialog-title>Audit Logs</h3>
   <mat-dialog-content>
   <div class="container">
   <ag-grid-angular 

@@ -25,6 +25,7 @@ import { MatSliderModule } from '@angular/material/';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -121,7 +122,8 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MatDividerModule,
     MatDialogModule,
 
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatExpansionModule
   ],
   declarations: [BigInputComponent, BigInputActionComponent],
   exports: [
@@ -152,6 +154,7 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MatDatepickerModule,
     MatNativeDateModule,
     MatDialogModule,
+    MatExpansionModule,
 
     FontAwesomeModule,
 
