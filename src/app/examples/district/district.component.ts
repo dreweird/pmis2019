@@ -4,6 +4,8 @@ import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatSnackBar} from '@angular/material';
 import { districtDetailsDialog } from './districtDetailsDialog.component';
 import { logDialog } from '../bed2/logDialog.component';
+import { keyframes } from '@angular/animations';
+import { getLocaleDateFormat } from '@angular/common';
 
 @Component({
   selector: 'anms-district',
@@ -13,6 +15,7 @@ import { logDialog } from '../bed2/logDialog.component';
 export class DistrictComponent implements OnInit {
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
+  user: any;
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -22,6 +25,8 @@ export class DistrictComponent implements OnInit {
   rowSelection: any;
   columnTypes: any;
   date_updated:any;
+  excelStyles:any;
+  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -42,6 +47,97 @@ export class DistrictComponent implements OnInit {
     return number.toLocaleString('en-us', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
+    });
+  }
+  exportcsv(){
+    var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
+    var ck=["mfo_name","unitmeasure","taccomp"];
+    for(var i=0;i<prvnc.length;i++){
+      for(var ii=1;ii<=2;ii++){
+        if(!(ii==2&&i>3)){
+          ck.push(prvnc[i]+""+ii+"area");
+          ck.push(prvnc[i]+""+ii+"target");
+          ck.push(prvnc[i]+""+ii+"cost");
+          ck.push(prvnc[i]+""+ii+"totalcost");
+          ck.push(prvnc[i]+""+ii+"aarea");
+          ck.push(prvnc[i]+""+ii+"aaccomp");
+        }
+        
+      }
+    }
+    ck.push("q1r","q2r","q3r","q4r")
+    this.gridApi.exportDataAsExcel({
+      customHeader  : [
+        [{styleId:'headappend',data:{type:'String', value:'DEPARTMENT OF AGRICULTURE'}}],
+        [{styleId:'headappend',data:{type:'String', value:'Regional Field Office XIII'}}],
+        [{styleId:'headappend',data:{type:'String', value:'By District Report 2019'}}],
+        [{styleId:'headappend',data:{type:'String', value:this.user.username.toUpperCase()}}],
+        [{styleId:'headappend',data:{type:'String', value:'C.Y. 2019 CURRENT APPROPRIATION'}}],
+        [{styleId:'headappend',data:{type:'String', value: 'PMIS v4.0 Generated as of '+this.months[new Date().getMonth()]+' '+new Date().getDate()+', '+new Date().getFullYear()
+        }}],
+        [],
+        [ {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}}, 
+          {styleId:'p1',data:{type:'String', value:'Agusan del Norte'},mergeAcross:11},
+          {styleId:'p2',data:{type:'String', value:'Agusan del Sur'},mergeAcross:11},
+          {styleId:'p1',data:{type:'String', value:'Surigao del Norte'},mergeAcross:11},
+          {styleId:'p2',data:{type:'String', value:'Surigao del Sur'},mergeAcross:11},
+          {styleId:'p1',data:{type:'String', value:'Province of Dinagat Islands'},mergeAcross:5},
+          {styleId:'p2',data:{type:'String', value:'Butuan City'},mergeAcross:5},
+          {styleId:'p1',data:{type:'String', value:''},mergeAcross:3},
+        ],
+        [ {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}}, 
+          {styleId:'d1',data:{type:'String', value:'District 1'},mergeAcross:5},
+          {styleId:'d2',data:{type:'String', value:'District 2'},mergeAcross:5}, 
+          {styleId:'d1',data:{type:'String', value:'District 1'},mergeAcross:5},
+          {styleId:'d2',data:{type:'String', value:'District 2'},mergeAcross:5}, 
+          {styleId:'d1',data:{type:'String', value:'District 1'},mergeAcross:5},
+          {styleId:'d2',data:{type:'String', value:'District 2'},mergeAcross:5}, 
+          {styleId:'d1',data:{type:'String', value:'District 1'},mergeAcross:5},
+          {styleId:'d2',data:{type:'String', value:'District 2'},mergeAcross:5}, 
+          {styleId:'d1',data:{type:'String', value:'District 1'},mergeAcross:5},
+          {styleId:'d2',data:{type:'String', value:''},mergeAcross:5},
+          {styleId:'p1',data:{type:'String', value:'Remarks'},mergeAcross:3},
+        ],
+        [ {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}}, 
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'t',data:{type:'String', value:'Target'},mergeAcross:3}, {styleId:'a',data:{type:'String', value:'Accomplishment'},mergeAcross:1},
+          {styleId:'p1',data:{type:'String', value:''},mergeAcross:3},
+        ],
+      ],
+      columnKeys:ck,
+      processHeaderCallback: function(params){
+        var name = params.column.colDef.headerName;
+        //console.log(params);
+        //if(params.column.visible)
+        if( name == "mfo_name") {return "PAP";}
+        else if(name =="header_program"||name =="header_mfo"||name =="header_indicator"||name =="mfo_id"){} // do nothing
+        else {return params.column.colDef.headerName;}
+      },
+      shouldRowBeSkipped:function(params){
+        //console.log(params);
+        return params.node.group && params.node.childrenAfterGroup.length==1;
+      },
+      processCellCallback:function (params){
+        var node = params.node;
+        console.log(params);
+        if(node.group && params.column.colDef.field=="mfo_name") return node.key;
+        else if(params.column.colDef.headerName=="Total Cost" && isNaN(params.value))return '';
+        else return params.value;
+      },
     });
   }
 
@@ -123,6 +219,42 @@ export class DistrictComponent implements OnInit {
   }
 
   constructor(private mfoService: MfoService, public dialog: MatDialog,private snackBar: MatSnackBar) { 
+    this.excelStyles= [
+      { id:"indent1",alignment :{indent:1} },
+      { id:"indent2",alignment :{indent:2} },
+      { id:"indent3",alignment :{indent:3} },
+      { id:"indent4",alignment :{indent:4} },
+      { id:"indent5",alignment :{indent:5} },
+      { id:"bold", font: {bold:true} },
+      {
+        id: "data",
+        font: { size:11, fontName: "Calibri", },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      {
+        id: "header",
+        font: { size:11, fontName: "Calibri", bold: true, },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "headappend", font: { size:11, fontName: "Calibri", bold: true, }, }
+    ];
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.rowSelection = 'single';
     this.columnDefs = [
       {
@@ -163,12 +295,59 @@ export class DistrictComponent implements OnInit {
       {
         headerName: 'mfo_id',
         field: 'mfo_id',
-        width: 120,
-        rowGroup: true,
+        width: 120,                                                                                                                                                                                      
         hide: true
       },
-      { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 },
-      { headerName: 'Accomplished', field: 'taccomp', width: 100, hide:false,
+      {
+        headerName: 'mfo_name',
+        field: 'mfo_name',
+        width: 120,                                                                                                                                                                                  
+        hide: true,
+        cellClass:['data'],
+        cellClassRules:{
+          indent1: function(params){
+            if(params.node.uiLevel==1) return true;
+          },
+          indent2: function(params){
+            if(params.node.uiLevel==2) return true;
+          },
+          indent3: function(params){
+            if(params.node.uiLevel==3) return true;
+          },
+          indent4: function(params){
+            if(params.node.uiLevel==4) return true;
+          },
+          indent5: function(params){
+            if(params.node.uiLevel==5) return true;
+          },
+          bold: function(params){
+            if(params.node.group) return true;
+          }
+        }
+      },
+      /*{
+        headerName: 'dl',
+        field: '',
+        width: 120,
+        rowGroup: false,
+        hide: false,
+        valueGetter:function(params){
+          console.log(params);
+          if(params.node.group){
+            if(params.node.allChildrenCount>0){
+              var space = "";
+              for(var i=0;i<params.node.uiLevel;i++) space=space+" ";
+              return space+params.node.allLeafChildren[0].data[params.node.field];
+            }
+            //params.node.field
+          }else{
+            return params.data.mfo_name;
+          }
+          
+        }
+      },*/
+      { headerName: 'Unit Measure', field: 'unitmeasure', width: 100 ,cellClass: ['data']},
+      { headerName: 'Accomplished', field: 'taccomp', width: 100, hide:false,cellClass:['data'],
         valueGetter:
         `Number(data.jana) + Number(data.feba) + Number(data.mara) + Number(data.apra) + 
          Number(data.maya) + Number(data.juna) + Number(data.jula) + Number(data.auga) + 
@@ -183,18 +362,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'adn1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'adn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'adn1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'adn1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'adn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.adn1target) * Number(data.adn1cost)',valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'adn1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'adn1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'adn1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -203,18 +382,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'adn2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn2target', width: 100,  type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'adn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
-                  { headerName: 'Total Cost', field: 'adn2totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'adn2area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'adn2target', width: 100,  type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'adn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'adn2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.adn2target) * Number(data.adn2cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'adn2aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'adn2aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'adn2aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'adn2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -227,18 +406,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'ads1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'ads1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'ads1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'ads1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'ads1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'ads1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'ads1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.ads1target) * Number(data.ads1cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'ads1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'ads1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'ads1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -247,17 +426,17 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'ads2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads2target', width: 100,  type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'ads2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'ads2totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'ads2area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'ads2target', width: 100,  type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'ads2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'ads2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.ads2target) * Number(data.ads2cost)', valueFormatter: this.currencyFormatter,},  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'ads2aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'ads2aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'ads2aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'ads2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -270,18 +449,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'sdn1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'sdn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'sdn1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'sdn1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sdn1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'sdn1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'sdn1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sdn1target) * Number(data.sdn1cost)',valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'sdn1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'sdn1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sdn1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -290,18 +469,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'sdn2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn2target', width: 100,  type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'sdn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
-                  { headerName: 'Total Cost', field: 'sdn2totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'sdn2area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sdn2target', width: 100,  type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'sdn2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'sdn2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sdn2target) * Number(data.sdn2cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'sdn2aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sdn2aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'sdn2aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sdn2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -314,18 +493,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'sds1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'sds1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'sds1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'sds1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sds1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'sds1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'sds1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sds1target) * Number(data.sds1cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'sds1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'sds1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sds1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -334,17 +513,17 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'sds2area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds2target', width: 100,  type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'sds2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'sds2totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'sds2area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sds2target', width: 100,  type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'sds2cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'sds2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.sds2target) * Number(data.sds2cost)', valueFormatter: this.currencyFormatter,},  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'sds2aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'sds2aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'sds2aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'sds2aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -357,18 +536,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'pdi1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'pdi1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'pdi1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'pdi1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'pdi1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'pdi1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'pdi1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'pdi1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.pdi1target) * Number(data.pdi1cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'pdi1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'pdi1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'pdi1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'pdi1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -381,18 +560,18 @@ export class DistrictComponent implements OnInit {
             children:[   
               { headerName: 'Target', 
                 children:[
-                  { headerName: 'Area', field: 'bxu1area', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'bxu1target', width: 100, type: 'valueColumn',},      
-                  { headerName: 'Unit Cost', field: 'bxu1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
-                  { headerName: 'Total Cost', field: 'bxu1totalcost', width: 100,columnGroupShow: 'open', 
+                  { cellClass:['data'],headerName: 'Area', field: 'bxu1area', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'bxu1target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Unit Cost', field: 'bxu1cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
+                  { cellClass:['data'],headerName: 'Total Cost', field: 'bxu1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.bxu1target) * Number(data.bxu1cost)', valueFormatter: this.currencyFormatter,
                   },  
                 ]
               },
               { headerName: 'Accomplishment', 
                 children:[
-                  { headerName: 'Area', field: 'bxu1aarea', width: 100,columnGroupShow: 'open', },            
-                  { headerName: 'Number', field: 'bxu1aaccomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Area', field: 'bxu1aarea', width: 100,columnGroupShow: 'open', },            
+                  { cellClass:['data'],headerName: 'Number', field: 'bxu1aaccomp', width: 100,  type: 'valueColumn',},
                 ]
               }
             ]
@@ -402,10 +581,10 @@ export class DistrictComponent implements OnInit {
       {
         headerName: 'Remarks', 
         children:[
-          { headerName: 'Q1', field: 'q1r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
-          { headerName: 'Q2', field: 'q2r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
-          { headerName: 'Q3', field: 'q3r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
-          { headerName: 'Q4', field: 'q4r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { cellClass:['data'],headerName: 'Q1', field: 'q1r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { cellClass:['data'],headerName: 'Q2', field: 'q2r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { cellClass:['data'],headerName: 'Q3', field: 'q3r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
+          { cellClass:['data'],headerName: 'Q4', field: 'q4r', width: 100, editable:true, cellEditor: 'agLargeTextCellEditor'}, 
         ]
       },
     ]

@@ -9,7 +9,7 @@
             <em>serves as the overall district plan & accomplishment of the department/agency/OU</em>
           </div>
         <div  class="col-md-2">
-            <button style="margin:5px;" mat-raised-button class="information">
+            <button style="margin:5px;" mat-raised-button class="information" (click)="exportcsv()">
                 EXPORT to EXCEL
               </button> 
               <br>
@@ -28,8 +28,10 @@
             [enableSorting]="true"
             [enableFilter]="true"
             [enableColResize]="true"
+            [excelStyles]="excelStyles"
             [autoGroupColumnDef]="autoGroupColumnDef"
             [groupRowAggNodes]="groupRowAggNodes"
+            [groupDefaultExpanded]=-1
             [groupRemoveSingleChildren]="true"
             [rowSelection]="rowSelection"
             [suppressAggFuncInHeader]= "true"
