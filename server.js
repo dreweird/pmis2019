@@ -296,7 +296,7 @@ const connection = mysql.createConnection({
 
   app.get('/summaryObject', function(req, res){
       connection.query(`  
-      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id GROUP BY a.object_id
+      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id GROUP BY a.object_id
       `, function(error, results){
         if (error) throw error;
         res.json(results);
