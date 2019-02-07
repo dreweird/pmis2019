@@ -4,6 +4,12 @@ import { MfoService } from '../services/mfo.service';
 @Component({
   selector: 'summary-object',
   template: `
+  <div  class="col-md-2">
+    <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
+      RECALCULATE
+    </button> 
+    <br>
+  </div>
     <ag-grid-angular
       style="width: 100%; height: 250px;"
       class="ag-theme-balham"
@@ -41,7 +47,12 @@ export class SummaryObjectComponent {
       console.log(data);
     });
   }
-
+  recalc(){
+    console.log("here");
+    this.mfoService.getSummaryObject().subscribe(data => {
+      this.rowData = data;
+    });
+  }
   currencyFormatter(params: any) {
     const number = parseFloat(params.value);
     if (params.value === undefined || params.value === null) {
