@@ -297,21 +297,11 @@ const connection = mysql.createConnection({
 
   app.post('/summaryObject', function(req, res){
       connection.query(`  
-      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id  where pid =`+req.body.pid+` GROUP BY a.object_id
+      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id GROUP BY a.object_id where pid =`+req.body.pid+` GROUP BY a.object_id
       `, function(error, results){
         if (error) throw error;
         res.json(results);
 
       })
   })
-
-  app.get('/disbursement', function(req, res){
-    connection.query(`  
-    SELECT header_main,header_program,header_mfo,header_indicator,header_subindicator, tbl_object.object_id,tbl_object.name,tbl_object.type,sum(budget) as budget,sum(adjustment) as adjustment, sum(jan) as jan, sum(feb) as feb, sum(mar) as mar, sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul, sum(aug) as aug, sum(sep) as sep, sum(oct) as oct, sum(nov) as nov, sum(decm) as decm,tbl_object.header FROM tbl_mfo left JOIN tbl_allotment on tbl_mfo.mfo_id = tbl_allotment.mfo_id LEFT JOIN tbl_object on tbl_allotment.object_id=tbl_object.object_id where tbl_object.object_id IS NOT NULL GROUP BY header_subindicator,tbl_object.object_id order by sequence
-    `, function(error, results){
-      if (error) throw error;
-      res.json(results);
-
-    })
-});
   //connection.end();
