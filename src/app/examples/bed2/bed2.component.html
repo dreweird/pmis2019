@@ -9,7 +9,7 @@
             <em>serves as the overall physical plan & accomplishment of the department/agency/OU</em>
           </div>
         <div  class="col-md-2">
-            <button style="margin:5px;" mat-raised-button class="information">
+            <button style="margin:5px;" mat-raised-button class="information" (click)="exportcsv()">
                 EXPORT to EXCEL
               </button> 
               <br>
@@ -26,6 +26,8 @@
             [columnTypes]="columnTypes"
             [components]="components"
             [enableSorting]="true"
+            [groupDefaultExpanded]=-1
+            [excelStyles]="excelStyles"
             [enableFilter]="true"
             [enableColResize]="true"
             [autoGroupColumnDef]="autoGroupColumnDef"

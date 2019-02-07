@@ -66,12 +66,14 @@ export class DistrictComponent implements OnInit {
       }
     }
     ck.push("q1r","q2r","q3r","q4r")
+    var prog_ou=this.user.username;
+    if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
     this.gridApi.exportDataAsExcel({
       customHeader  : [
         [{styleId:'headappend',data:{type:'String', value:'DEPARTMENT OF AGRICULTURE'}}],
         [{styleId:'headappend',data:{type:'String', value:'Regional Field Office XIII'}}],
         [{styleId:'headappend',data:{type:'String', value:'By District Report 2019'}}],
-        [{styleId:'headappend',data:{type:'String', value:this.user.username.toUpperCase()}}],
+        [{styleId:'headappend',data:{type:'String', value:prog_ou.toUpperCase()}}],
         [{styleId:'headappend',data:{type:'String', value:'C.Y. 2019 CURRENT APPROPRIATION'}}],
         [{styleId:'headappend',data:{type:'String', value: 'PMIS v4.0 Generated as of '+this.months[new Date().getMonth()]+' '+new Date().getDate()+', '+new Date().getFullYear()
         }}],
@@ -178,7 +180,7 @@ export class DistrictComponent implements OnInit {
   }
 
   onCellClicked(event){
-    if(event.data!=undefined){
+    if(event.data!=undefined && this.user.b==0){
       console.log(event);
       var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
       var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
