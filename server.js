@@ -36,6 +36,7 @@ const connection = mysql.createConnection({
             res.status(200).json({
                 user_id: rows[0].user_id,
                 pid: rows[0].program_id,
+                b: rows[0].budget,
                 username: rows[0].username,  
                 token: 'dacaraga'});
         }else{
@@ -44,20 +45,20 @@ const connection = mysql.createConnection({
     });
 });
 
-  app.get('/mfos',function(req,res){ 
+  app.post('/mfos',function(req,res){ 
     connection.query(`
     SELECT *, tbl_mfo.mfo_id FROM tbl_mfo left JOIN tbl_allotment 
     on tbl_mfo.mfo_id = tbl_allotment.mfo_id 
     LEFT JOIN tbl_object 
-    on tbl_allotment.object_id=tbl_object.object_id`, function (error, results) {
+    on tbl_allotment.object_id=tbl_object.object_id where program_id =`+req.body.pid, function (error, results) {
         if (error) throw error;
         res.json(results); 
       });
   });
 
-  app.get('/mfosPhysical',function(req,res){ 
+  app.post('/mfosPhysical',function(req,res){ 
     connection.query(`
-    SELECT * FROM tbl_mfo`, function (error, results) {
+    SELECT * FROM tbl_mfo where program_id =`+req.body.pid, function (error, results) {
         if (error) throw error;
         res.json(results); 
       });
@@ -294,9 +295,9 @@ const connection = mysql.createConnection({
     })
   });
 
-  app.get('/summaryObject', function(req, res){
+  app.post('/summaryObject', function(req, res){
       connection.query(`  
-      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id GROUP BY a.object_id
+      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id GROUP BY a.object_id where pid =`+req.body.pid+` GROUP BY a.object_id
       `, function(error, results){
         if (error) throw error;
         res.json(results);

@@ -9,7 +9,7 @@
           <em>serves as the overall financial plan & accomplishment of the department/agency/OU</em>
       </div>
       <div  class="col-md-2">
-          <button style="margin:5px;" mat-raised-button class="information">
+          <button style="margin:5px;" mat-raised-button class="information" (click)="exportcsv()">
               EXPORT to EXCEL
             </button> 
             <br>
@@ -31,6 +31,8 @@
     [autoGroupColumnDef]="autoGroupColumnDef"
     [groupRowAggNodes]="groupRowAggNodes"
     [groupRemoveSingleChildren]="true"
+    [groupDefaultExpanded]=-1
+    [excelStyles]="excelStyles"
     [rowSelection]="rowSelection"
     [suppressAggFuncInHeader]= "true"
     (cellClicked)="addObject($event)"

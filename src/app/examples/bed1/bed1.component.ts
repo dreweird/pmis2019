@@ -22,6 +22,10 @@ export class Bed1Component implements OnInit {
   rowSelection: any;
   columnTypes: any;
   date_updated: any;
+  user: any;
+  excelStyles:any;
+  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  mon = ["jan", "feb", "mar","Q1", "apr", "may", "jun" ,"Q2" , "jul", "aug", "sep" ,"Q3", "oct", "nov", "dec" ,"Q4","to"];
 
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -32,6 +36,64 @@ export class Bed1Component implements OnInit {
     });
   }
 
+  
+  exportcsv(){
+    var ck=["mfo_name","name","object_id","budget","adjustment","adjusted"];
+    for(var i=1;i<=2;i++){
+      for(var ii=0;ii<this.mon.length;ii++){
+        var add="";
+        if(i==1){ add="_t"; }
+        if(i==2&&ii==14) add="m";
+        ck.push(this.mon[ii]+add);
+      }
+    }
+    ck.push("un","fu");
+    var prog_ou=this.user.username;
+    if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
+    this.gridApi.exportDataAsExcel({
+      customHeader  : [
+        [{styleId:'headappend',data:{type:'String', value:'DEPARTMENT OF AGRICULTURE'}}],
+        [{styleId:'headappend',data:{type:'String', value:'Regional Field Office XIII'}}],
+        [{styleId:'headappend',data:{type:'String', value:'BED1 Report 2019'}}],
+        [{styleId:'headappend',data:{type:'String', value:prog_ou.toUpperCase()}}],
+        [{styleId:'headappend',data:{type:'String', value:'C.Y. 2019 CURRENT APPROPRIATION'}}],
+        [{styleId:'headappend',data:{type:'String', value: 'PMIS v4.0 Generated as of '+this.months[new Date().getMonth()]+' '+new Date().getDate()+', '+new Date().getFullYear()
+        }}],
+        [],
+        [ {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {styleId:'t',data:{type:'String', value:'Financial Targets'},mergeAcross:16},
+          {styleId:'a',data:{type:'String', value:'Financial Accomplishments'},mergeAcross:16},
+          {styleId:'t',data:{type:'String', value:''}},
+          {styleId:'t',data:{type:'String', value:''}},
+        ],
+      ],
+      columnKeys:ck,
+      processHeaderCallback: function(params){
+        var name = params.column.colDef.headerName;
+        //console.log(params);
+        //if(params.column.visible)
+        if( name == "mfo_name") {return "PAP";}
+        else if(name =="header_program"||name =="header_mfo"||name =="header_indicator"||name =="mfo_id"){} // do nothing
+        else {return params.column.colDef.headerName;}
+      },
+      shouldRowBeSkipped:function(params){
+        //console.log(params);
+        return params.node.group && params.node.childrenAfterGroup.length==1;
+      },
+      processCellCallback:function (params){
+        var node = params.node;
+        //console.log(params);
+        if(node.group && params.column.colDef.field=="mfo_name") return node.key;
+        else if(params.column.colDef.headerName=="Total Cost" && isNaN(params.value))return '';
+        else return params.value;
+      },
+    });
+  }
 
   groupRowAggNodes(nodes: any) {
     const result = {
@@ -205,13 +267,15 @@ export class Bed1Component implements OnInit {
 
   addObject(params) {
     // console.log(params);
-    if (params.colDef.headerName === 'PAP' && params.data !== undefined) {
-      const selectedRows = this.gridApi.getSelectedRows();
-      console.log(selectedRows);
-      const dialogRef = this.dialog.open(AddObjectDialogComponent, {
-        data: { data: selectedRows[0], gridApi: this.gridApi }
-      });
-      return dialogRef.afterClosed();
+    if(this.user.b==1){
+      if (params.colDef.headerName === 'PAP' && params.data !== undefined) {
+        const selectedRows = this.gridApi.getSelectedRows();
+        console.log(selectedRows);
+        const dialogRef = this.dialog.open(AddObjectDialogComponent, {
+          data: { data: selectedRows[0], gridApi: this.gridApi }
+        });
+        return dialogRef.afterClosed();
+      }
     }
   }
 
@@ -276,6 +340,43 @@ export class Bed1Component implements OnInit {
   }
 
   constructor(private mfoService: MfoService, private dialog: MatDialog) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    var clickable = this.user.b==1;
+    this.excelStyles= [
+      { id:"indent1",alignment :{indent:1} },
+      { id:"indent2",alignment :{indent:2} },
+      { id:"indent3",alignment :{indent:3} },
+      { id:"indent4",alignment :{indent:4} },
+      { id:"indent5",alignment :{indent:5} },
+      { id:"bold", font: {bold:true} },
+      {
+        id: "data",
+        font: { size:11, fontName: "Calibri", },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      {
+        id: "header",
+        font: { size:11, fontName: "Calibri", bold: true, },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "headappend", font: { size:11, fontName: "Calibri", bold: true, }, }
+    ];
     this.rowSelection = 'single';
     this.columnDefs = [
       {
@@ -320,27 +421,55 @@ export class Bed1Component implements OnInit {
         rowGroup: true,
         hide: true
       },
-
-      { headerName: 'Description', field: 'name', width: 150, pinned: 'left' },
-      { headerName: 'UACS Object Code', field: 'object_id', width: 100 },
       {
-        headerName: 'Original Allotment',
+        headerName: 'mfo_name',
+        field: 'mfo_name',
+        width: 120,
+        rowGroup: true,
+        hide: true,
+        cellClass:['data'],
+        cellClassRules:{
+          indent1: function(params){
+            if(params.node.uiLevel==1) return true;
+          },
+          indent2: function(params){
+            if(params.node.uiLevel==2) return true;
+          },
+          indent3: function(params){
+            if(params.node.uiLevel==3) return true;
+          },
+          indent4: function(params){
+            if(params.node.uiLevel==4) return true;
+          },
+          indent5: function(params){
+            if(params.node.uiLevel==5) return true;
+          },
+          bold: function(params){
+            if(params.node.group) return true;
+          }
+        }
+      },
+
+      { cellClass:['data'],headerName: 'Description', field: 'name', width: 150, pinned: 'left' },
+      { cellClass:['data'],headerName: 'UACS Object Code', field: 'object_id', width: 100 },
+      {
+        cellClass:['data'],headerName: 'Original Allotment',
         field: 'budget',
         width: 100,
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn'
       },
       {
-        headerName: 'Adjustment',
+        cellClass:['data'],headerName: 'Adjustment',
         field: 'adjustment',
         width: 100,
-        editable: true,
+        editable: clickable,
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn',
 
       },
       {
-        headerName: 'Adjusted Allotment',
+        cellClass:['data'],headerName: 'Adjusted Allotment',
         field: 'adjusted',
         width: 100,
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
@@ -352,7 +481,7 @@ export class Bed1Component implements OnInit {
         headerName: 'Financial Target',
         children: [
           {
-            headerName: "Jan",
+            cellClass:['data'],headerName: "Jan",
             field: 'jan_t',
             width: 70,
             columnGroupShow: 'open',
@@ -360,7 +489,7 @@ export class Bed1Component implements OnInit {
    
           },
           {
-            headerName: "Feb",
+            cellClass:['data'],headerName: "Feb",
             field: 'feb_t',
             width: 70,
             columnGroupShow: 'open',
@@ -368,7 +497,7 @@ export class Bed1Component implements OnInit {
         
           },
           {
-            headerName: "Mar",
+            cellClass:['data'],headerName: "Mar",
             field: 'mar_t',
             width: 70,
             columnGroupShow: 'open',
@@ -376,7 +505,7 @@ export class Bed1Component implements OnInit {
         
           },
           {
-            headerName: "Q1",
+            cellClass:['data'],headerName: "Q1",
             field: 'Q1_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -385,7 +514,7 @@ export class Bed1Component implements OnInit {
          
           },
           {
-            headerName: "Apr",
+            cellClass:['data'],headerName: "Apr",
             field: 'apr_t',
             width: 70,
             columnGroupShow: 'open',
@@ -393,7 +522,7 @@ export class Bed1Component implements OnInit {
             
           },
           {
-            headerName: "May",
+            cellClass:['data'],headerName: "May",
             field: 'may_t',
             width: 70,
             columnGroupShow: 'open',
@@ -401,7 +530,7 @@ export class Bed1Component implements OnInit {
             
           },
           {
-            headerName: "Jun",
+            cellClass:['data'],headerName: "Jun",
             field: 'jun_t',
             width: 70,
             columnGroupShow: 'open',
@@ -409,7 +538,7 @@ export class Bed1Component implements OnInit {
             
           },
           {
-            headerName: "Q2",
+            cellClass:['data'],headerName: "Q2",
             field: 'Q2_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -417,28 +546,28 @@ export class Bed1Component implements OnInit {
               'Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t)',
           },
           {
-            headerName: "Jul",
+            cellClass:['data'],headerName: "Jul",
             field: 'jul_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Aug",
+            cellClass:['data'],headerName: "Aug",
             field: 'aug_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Sep",
+           cellClass:['data'],headerName: "Sep",
             field: 'sep_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Q3",
+            cellClass:['data'],headerName: "Q3",
             field: 'Q3_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -446,28 +575,28 @@ export class Bed1Component implements OnInit {
               'Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t)',
           },
           {
-            headerName: "Oct",
+            cellClass:['data'],headerName: "Oct",
             field: 'oct_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Nov",
+           cellClass:['data'],headerName: "Nov",
             field: 'nov_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Dec",
+            cellClass:['data'],headerName: "Dec",
             field: 'dec_t',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Q4",
+            cellClass:['data'],headerName: "Q4",
             field: 'Q4_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -475,10 +604,9 @@ export class Bed1Component implements OnInit {
               'Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
           },
           {
-            headerName: "Total",
+            cellClass:['data'],headerName: "Total",
             field: 'to_t',
             width: 70,
-            columnGroupShow: 'closed',
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
             valueGetter:
               'Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t) + Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t) + Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t) + Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
@@ -490,34 +618,34 @@ export class Bed1Component implements OnInit {
         headerName: 'Financial Accomplishment',
         children: [
           {
-            headerName: 'Jan',
+            cellClass:['data'],headerName: 'Jan',
             field: 'jan',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Feb',
+            cellClass:['data'],headerName: 'Feb',
             field: 'feb',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Mar',
+            cellClass:['data'],headerName: 'Mar',
             field: 'mar',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Q1',
+            cellClass:['data'],headerName: 'Q1',
             field: 'Q1',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -526,34 +654,34 @@ export class Bed1Component implements OnInit {
             type: 'numericColumn'
           },
           {
-            headerName: 'Apr',
+            cellClass:['data'],headerName: 'Apr',
             field: 'apr',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'May',
+            cellClass:['data'],headerName: 'May',
             field: 'may',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Jun',
+            cellClass:['data'],headerName: 'Jun',
             field: 'jun',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Q2',
+            cellClass:['data'],headerName: 'Q2',
             field: 'Q2',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -562,34 +690,34 @@ export class Bed1Component implements OnInit {
             type: 'numericColumn'
           },
           {
-            headerName: 'Jul',
+            cellClass:['data'],headerName: 'Jul',
             field: 'jul',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Aug',
+            cellClass:['data'],headerName: 'Aug',
             field: 'aug',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Sep',
+            cellClass:['data'],headerName: 'Sep',
             field: 'sep',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Q3',
+            cellClass:['data'],headerName: 'Q3',
             field: 'Q3',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -598,34 +726,34 @@ export class Bed1Component implements OnInit {
             type: 'numericColumn'
           },
           {
-            headerName: 'Oct',
+            cellClass:['data'],headerName: 'Oct',
             field: 'oct',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Nov',
+            cellClass:['data'],headerName: 'Nov',
             field: 'nov',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Dec',
+            cellClass:['data'],headerName: 'Dec',
             field: 'decm',
             width: 70,
-            editable: true,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            headerName: 'Q4',
+            cellClass:['data'],headerName: 'Q4',
             field: 'Q4',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -634,7 +762,7 @@ export class Bed1Component implements OnInit {
             type: 'numericColumn'
           },
           {
-            headerName: 'Total Obligations',
+            cellClass:['data'],headerName: 'Total Obligations',
             field: 'to',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -647,7 +775,7 @@ export class Bed1Component implements OnInit {
       },
       
       {
-        headerName: 'Unobligated',
+        cellClass:['data'],headerName: 'Unobligated',
         field: 'un',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#e83525' },
@@ -657,7 +785,7 @@ export class Bed1Component implements OnInit {
         type: 'totalColumn'
       },
       {
-        headerName: '% Utilization',
+        cellClass:['data'],headerName: '% Utilization',
         field: 'fu',
         width: 70,
         valueGetter:

@@ -13,16 +13,19 @@ export class MfoService {
   apiRoot = 'http://localhost:3500';
 
   getMFO() {
-    // let pid = JSON.parse(localStorage.getItem('pid'));
-    // let body = {pid: pid};
+     let user = JSON.parse(localStorage.getItem('currentUser'));
+     let pid = user.pid;
+     //let body = {pid: pid};
     const url = `${this.apiRoot}/mfos`;
-    return this.http.get(url);
+    return this.http.post(url, {pid});
   }
 
   // export class or interface instead
   getMFOPhysical(): Observable<MFOPhysical[]> {
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    let pid = user.pid;
     const url = `${this.apiRoot}/mfosPhysical`;
-    return this.http.get<MFOPhysical[]>(url).pipe(
+    return this.http.post<MFOPhysical[]>(url,{pid}).pipe(
       tap(_ => console.log('fetched MFO Physical')),
       catchError(this.handleError('getMFOPhysical', []))
     );
@@ -144,8 +147,10 @@ export class MfoService {
   }
 
   getSummaryObject() {
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    let pid = user.pid;
     const url = `${this.apiRoot}/summaryObject`;
-    return this.http.get(url);
+    return this.http.post(url,{pid});
   }
 
   getDisbursement() {
