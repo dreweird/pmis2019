@@ -12,18 +12,12 @@ export class MfoService {
 
   apiRoot = 'http://localhost:3500';
 
-  getMFO() {
-     let user = JSON.parse(localStorage.getItem('currentUser'));
-     let pid = user.pid;
-     //let body = {pid: pid};
+  getMFO(pid: number) {
     const url = `${this.apiRoot}/mfos`;
     return this.http.post(url, {pid});
   }
 
-  // export class or interface instead
-  getMFOPhysical(): Observable<MFOPhysical[]> {
-    let user = JSON.parse(localStorage.getItem('currentUser'));
-    let pid = user.pid;
+  getMFOPhysical(pid: number): Observable<MFOPhysical[]> {
     const url = `${this.apiRoot}/mfosPhysical`;
     return this.http.post<MFOPhysical[]>(url,{pid}).pipe(
       tap(_ => console.log('fetched MFO Physical')),
@@ -31,20 +25,16 @@ export class MfoService {
     );
   }
 
-  getLogs(beds): Observable<any> {
+  getLogs(beds: number, pid: number): Observable<any> {
     const url = `${this.apiRoot}/getLogs`;
-    const uid = JSON.parse(localStorage.getItem('currentUser'));
-    const id = uid.user_id;
-    return this.http.post<any>(url, { id,beds }).pipe(
+    return this.http.post<any>(url, { pid,beds }).pipe(
       tap(_ => console.log('fetched Logs')),
       catchError(this.handleError('getLogs', []))
     );
   }
 
-  getDistrict(): Observable<any> {
+  getDistrict(pid: number): Observable<any> {
     const url = `${this.apiRoot}/getDistrict`;
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    const pid = user.pid;
     return this.http.post<any>(url, { pid }).pipe(
       tap(_ => console.log('fetched District')),
       catchError(this.handleError('getDistrict', []))
@@ -72,11 +62,9 @@ export class MfoService {
   }
   
 
-  getLastUpdated(beds): Observable<any> {
-    const uid = JSON.parse(localStorage.getItem('currentUser'));
-    const id = uid.user_id;
+  getLastUpdated(beds, pid): Observable<any> {
     const url = `${this.apiRoot}/lastUpdated`;
-    return this.http.post<any>(url, { id,beds }).pipe(
+    return this.http.post<any>(url, { pid,beds }).pipe(
       tap(_ => console.log('fetched Last Updated')),
       catchError(this.handleError('getLastUpdated', []))
     );
@@ -146,9 +134,7 @@ export class MfoService {
     );
   }
 
-  getSummaryObject() {
-    let user = JSON.parse(localStorage.getItem('currentUser'));
-    let pid = user.pid;
+  getSummaryObject(pid:number) {
     const url = `${this.apiRoot}/summaryObject`;
     return this.http.post(url,{pid});
   }

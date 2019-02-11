@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
@@ -11,7 +11,11 @@ import { logDialog } from '../bed2/logDialog.component';
   templateUrl: './bed1.component.html',
   styleUrls: ['./bed1.component.css']
 })
-export class Bed1Component implements OnInit {
+export class Bed1Component implements OnInit, OnChanges {
+
+  @Input() pid: number = 0;
+  changeLog: string[] = [];
+
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
@@ -27,10 +31,22 @@ export class Bed1Component implements OnInit {
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   mon = ["jan", "feb", "mar","Q1", "apr", "may", "jun" ,"Q2" , "jul", "aug", "sep" ,"Q3", "oct", "nov", "dec" ,"Q4","to"];
 
+
+  ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getMFO(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+    this.mfoService.getLastUpdated(1, changes.pid.currentValue).subscribe(data => {
+    this.date_updated = data[0].date;
+    });
+  }
+  
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getMFO().subscribe(data => {
+    this.mfoService.getMFO(this.user.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
@@ -308,16 +324,18 @@ export class Bed1Component implements OnInit {
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
-
   lastUpdated() {
-    this.mfoService.getLastUpdated(1).subscribe(data => {
+    this.mfoService.getLastUpdated(1, this.user.pid).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }
 
   getLogs(){
+    if(this.pid === 0) {
+      this.pid = this.user.pid
+    }
     this.dialog.open(logDialog, {
-      data: {beds: 1}
+      data: {beds: 1, pid: this.pid}
     });
   }
 

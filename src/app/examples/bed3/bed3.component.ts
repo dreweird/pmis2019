@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import { MatDialog } from '@angular/material';
 import { logDialog } from '../bed2/logDialog.component';
 import { MatSnackBar } from '@angular/material';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'anms-bed3',
   templateUrl: './bed3.component.html',
   styleUrls: ['./bed3.component.css']
 })
-export class Bed3Component implements OnInit {
+export class Bed3Component implements OnInit, OnChanges {
+  @Input() pid: number = 0;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
@@ -23,12 +25,23 @@ export class Bed3Component implements OnInit {
   private groupRowAggNodes;
   date_updated: any;
   logs: any;
+  user: any;
 
+  ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getMFO(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+    this.mfoService.getLastUpdated(3, changes.pid.currentValue).subscribe(data => {
+    this.date_updated = data[0].date;
+    });
+  }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getMFO().subscribe(data => {
+    this.mfoService.getMFO(this.user.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
@@ -43,13 +56,16 @@ export class Bed3Component implements OnInit {
   }
 
   getLogs(){
+    if(this.pid === 0) {
+      this.pid = this.user.pid
+    }
     this.dialog.open(logDialog,{data: {
-      beds: 3
+      beds: 3, pid: this.pid
     }});
   }
 
   lastUpdated() {
-    this.mfoService.getLastUpdated(3).subscribe(data => {
+    this.mfoService.getLastUpdated(3, this.user.pid).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }
@@ -93,6 +109,7 @@ export class Bed3Component implements OnInit {
   }
 
   constructor(private mfoService: MfoService, private dialog: MatDialog, private snackBar: MatSnackBar) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.rowSelection = 'single';
     this.columnDefs = [
       {headerName: 'header_main', field: 'header_main', width: 120, rowGroup: true, hide: true },
