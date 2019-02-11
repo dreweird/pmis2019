@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatSnackBar} from '@angular/material';
@@ -12,8 +12,8 @@ import { getLocaleDateFormat } from '@angular/common';
   templateUrl: './district.component.html',
   styleUrls: ['./district.component.css']
 })
-export class DistrictComponent implements OnInit {
-
+export class DistrictComponent implements OnInit, OnChanges {
+  @Input() pid: number = 0;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   user: any;
   gridApi: any;
@@ -27,11 +27,22 @@ export class DistrictComponent implements OnInit {
   date_updated:any;
   excelStyles:any;
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+ 
 
+  ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getDistrict(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+    this.mfoService.getLastUpdated(4, changes.pid.currentValue).subscribe(data => {
+    this.date_updated = data[0].date;
+    });
+  }
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getDistrict().subscribe(data => {
+    this.mfoService.getDistrict(this.user.pid).subscribe(data => {
       this.rowData = data.data;
       console.log(this.rowData);
     });
@@ -169,12 +180,12 @@ export class DistrictComponent implements OnInit {
 
   getLogs(){
     this.dialog.open(logDialog,{data: {
-      beds: 4
+      beds: 4, pid: this.user.pid
     }});
   }
 
   lastUpdated() {
-    this.mfoService.getLastUpdated(4).subscribe(data => {
+    this.mfoService.getLastUpdated(4, this.user.pid).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }

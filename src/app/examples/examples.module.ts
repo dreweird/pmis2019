@@ -38,6 +38,7 @@ import { logDialog } from './bed2/logDialog.component';
 import { districtDetailsDialog } from './district/districtDetailsDialog.component';
 
 import { DistrictComponent } from './district/district.component';
+import { Bed1ContainerComponent } from './bed1/bed1-container/bed1-container.component';
 
 @NgModule({
   imports: [
@@ -78,7 +79,8 @@ import { DistrictComponent } from './district/district.component';
     SummaryObjectComponent,
     logDialog,
     districtDetailsDialog,
-    DistrictComponent
+    DistrictComponent,
+    Bed1ContainerComponent
   ],
   providers: [StockMarketService, MfoService],
   entryComponents: [AddObjectDialogComponent, logDialog,districtDetailsDialog]

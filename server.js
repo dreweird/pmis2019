@@ -65,8 +65,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getLogs', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? order by date DESC";
-    var data = [req.body.id, req.body.beds];
+    var query = "SELECT * FROM tbl_logs where pid = ? and beds = ? order by date DESC";
+    var data = [req.body.pid, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
@@ -231,8 +231,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/lastUpdated', function(req, res){
-    var query = "SELECT * FROM tbl_logs where uid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
-    var data = [req.body.id, req.body.beds];
+    var query = "SELECT * FROM tbl_logs where pid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
+    var data = [req.body.pid, req.body.beds];
     query = mysql.format(query,data);
     //console.log(query); 
     connection.query(query, function(err, rows){
@@ -297,7 +297,12 @@ const connection = mysql.createConnection({
 
   app.post('/summaryObject', function(req, res){
       connection.query(`  
+<<<<<<< HEAD
       SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id where pid =`+req.body.pid+` GROUP BY a.object_id
+=======
+      SELECT a.object_id, b.name, b.type, b.header, SUM(budget) as budget, SUM(adjustment) as adj, SUM(jan) as jan, SUM(feb) as feb, SUM(mar) as mar, SUM(apr) as apr, SUM(may) as may, SUM(jun) as jun, SUM(jul) as jul, SUM(aug) as aug, SUM(sep) as sep, SUM(oct) as oct, SUM(nov) as nov, SUM(decm) as decm, SUM(jan_da) as jan_da, SUM(feb_da) as feb_da, SUM(mar_da) as mar_da, SUM(apr_da) as apr_da, SUM(may_da) as may_da, SUM(jun_da) as jun_da, SUM(jul_da) as jul_da, SUM(aug_da) as aug_da, SUM(sep_da) as sep_da, SUM(oct_da) as oct_da, SUM(nov_da) as nov_da, SUM(dec_da) as dec_da FROM tbl_allotment a LEFT JOIN tbl_object b ON a.object_id = b.object_id 
+       where pid =`+req.body.pid+` GROUP BY a.object_id
+>>>>>>> 11ebc4fb2e9abaa67014e7ef6fa0a084396eeec4
       `, function(error, results){
         if (error) throw error;
         res.json(results);

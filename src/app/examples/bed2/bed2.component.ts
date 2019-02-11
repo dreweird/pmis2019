@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
@@ -10,7 +10,8 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
   templateUrl: './bed2.component.html',
   styleUrls: ['./bed2.component.css']
 })
-export class Bed2Component implements OnInit {
+export class Bed2Component implements OnInit, OnChanges {
+  @Input() pid: number = 0;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
@@ -27,10 +28,22 @@ export class Bed2Component implements OnInit {
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   mon = ["jan", "feb", "mar","q1", "apr", "may", "jun" ,"q2" , "jul", "aug", "sep" ,"q3", "oct", "nov", "dec" ,"q4","t"];
 
+
+ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getMFOPhysical(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+    this.mfoService.getLastUpdated(2, changes.pid.currentValue).subscribe(data => {
+    this.date_updated = data[0].date;
+    });
+  }
+
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getMFOPhysical().subscribe(data => {
+    this.mfoService.getMFOPhysical(this.user.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
@@ -56,8 +69,11 @@ export class Bed2Component implements OnInit {
   }
 
   getLogs(){
+    if(this.pid === 0) {
+      this.pid = this.user.pid
+    }
     this.dialog.open(logDialog,{data: {
-      beds: 2
+      beds: 2, pid: this.pid
     }});
   }
 
@@ -703,7 +719,7 @@ export class Bed2Component implements OnInit {
   }
 
   lastUpdated() {
-    this.mfoService.getLastUpdated(2).subscribe(data => {
+    this.mfoService.getLastUpdated(2, this.user.pid).subscribe(data => {
       this.date_updated = data[0].date;
     });
   }

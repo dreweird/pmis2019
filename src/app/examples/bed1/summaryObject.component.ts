@@ -1,15 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { MfoService } from '../services/mfo.service';
 
 @Component({
   selector: 'summary-object',
   template: `
-  <div  class="col-md-2">
-    <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
+  <div class="row item" [ngClass]="routeAnimationsElements">
+  <div class="col-md-10">
+          <h3>Summary Object Codes Table</h3>
+      </div>
+      <div  class="col-md-2">
+      <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
       RECALCULATE
-    </button> 
-    <br>
-  </div>
+    </button>         
+      </div>
+</div>
+
     <ag-grid-angular
       style="width: 100%; height: 250px;"
       class="ag-theme-balham"
@@ -23,12 +28,13 @@ import { MfoService } from '../services/mfo.service';
       [enableColResize]="true"
       [rowSelection]="rowSelection"
       [suppressAggFuncInHeader]="true"
+      [groupDefaultExpanded]=-1
       (gridReady)="onGridReady($event)"
     >
     </ag-grid-angular>
   `
 })
-export class SummaryObjectComponent {
+export class SummaryObjectComponent implements OnChanges{
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -38,18 +44,29 @@ export class SummaryObjectComponent {
   rowSelection: any;
   columnTypes: any;
   private groupRowAggNodes;
+  user: any;
+  @Input() pid: number = 0;
+
+  ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getSummaryObject(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
+
+  }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getSummaryObject().subscribe(data => {
+    this.mfoService.getSummaryObject(this.user.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
   }
   recalc(){
     console.log("here");
-    this.mfoService.getSummaryObject().subscribe(data => {
+    this.mfoService.getSummaryObject(this.user.pid).subscribe(data => {
       this.rowData = data;
     });
   }
@@ -75,6 +92,7 @@ export class SummaryObjectComponent {
     });
   }
   constructor(private mfoService: MfoService) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.columnDefs = [
       { headerName: 'Summary', field: 'header', rowGroup: true, hide: true },
       { headerName: 'Type', field: 'type', rowGroup: true, hide: true },

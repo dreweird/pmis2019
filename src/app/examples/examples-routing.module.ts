@@ -11,10 +11,11 @@ import { StockMarketContainerComponent } from './stock-market/components/stock-m
 import { CrudComponent } from './crud/components/crud.component';
 import { FormComponent } from './form/components/form.component';
 import { NotificationsComponent } from './notifications/components/notifications.component';
-import { Bed1Component } from './bed1/bed1.component';
+import { Bed1ContainerComponent } from './bed1/bed1-container/bed1-container.component';
 import { Bed2Component } from './bed2/bed2.component';
 import { Bed3Component } from './bed3/bed3.component';
 import { DistrictComponent } from './district/district.component';
+
 
 const routes: Routes = [
   {
@@ -34,7 +35,7 @@ const routes: Routes = [
       },
       {
         path: 'bed1',
-        component: Bed1Component,
+        component: Bed1ContainerComponent,
         data: { title: 'BED1' },
       },
       {

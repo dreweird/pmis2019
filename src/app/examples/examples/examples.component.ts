@@ -29,22 +29,11 @@ interface State extends BaseSettingsState, BaseExamplesState {}
 export class ExamplesComponent implements OnInit, OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   private isAuthenticated$: Observable<boolean>;
-  user:any;
-  pid_mne:any;
+  user: any;
+  examples: any;
 
-  examples = [
-    // { link: 'todos', label: 'anms.examples.menu.todos' },
-    // { link: 'stock-market', label: 'anms.examples.menu.stocks' },
-    // { link: 'theming', label: 'anms.examples.menu.theming' },
-    // { link: 'crud', label: 'anms.examples.menu.crud' },
-    // { link: 'form', label: 'anms.examples.menu.form' },
-    // { link: 'notifications', label: 'anms.examples.menu.notifications' },
-    { link: 'authenticated', label: 'Auth', user: true },
-    { link: 'bed1', label: 'BED-1', user: true },
-    { link: 'bed2', label: 'BED-2', user: true },
-    { link: 'bed3', label: 'BED-3', user: true },
-    { link: 'district', label: 'DISTRICT', user: true }
-  ];
+
+ 
 
   constructor(
     private store: Store<State>,
@@ -52,7 +41,19 @@ export class ExamplesComponent implements OnInit, OnDestroy {
     private router: Router,
     private titleService: TitleService,
     private translate: TranslateService
-  ) {}
+  ) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.examples = [
+      { link: 'authenticated', label: 'Auth', user: true },
+      { link: 'bed1', label: 'BED-1', user: true },
+      { link: 'bed2', label: 'BED-2', user: true },
+      { link: 'bed3', label: 'BED-3', user: true },
+      { link: 'district', label: 'DISTRICT', user: true }
+    ];
+    if(this.user.pid === 100){
+      this.examples = [{ link: 'authenticated', label: 'M&E', user: true }]
+    }
+  }
 
   ngOnInit(): void {
     this.translate.setDefaultLang('en');
