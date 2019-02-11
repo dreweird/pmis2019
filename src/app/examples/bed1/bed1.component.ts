@@ -331,6 +331,7 @@ export class Bed1Component implements OnInit, OnChanges {
     this.lastUpdated();
   }
   lastUpdated() {
+    console.log(this.user.pid);
     this.mfoService.getLastUpdated(1, this.user.pid).subscribe(data => {
       this.date_updated = data;
     });
@@ -850,7 +851,8 @@ export class Bed1Component implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.lastUpdated()
+    console.log(this.user.pid);
+    this.lastUpdated();
   }
 }
 
