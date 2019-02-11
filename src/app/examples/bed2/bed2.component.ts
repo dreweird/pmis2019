@@ -36,7 +36,7 @@ ngOnChanges(changes:any) {
       console.log(data);
     });
     this.mfoService.getLastUpdated(2, changes.pid.currentValue).subscribe(data => {
-    this.date_updated = data[0].date;
+    this.date_updated = data;
     });
   }
 
@@ -720,7 +720,7 @@ ngOnChanges(changes:any) {
 
   lastUpdated() {
     this.mfoService.getLastUpdated(2, this.user.pid).subscribe(data => {
-      this.date_updated = data[0].date;
+      this.date_updated = data;
     });
   }
 
