@@ -34,7 +34,7 @@ export class Bed3Component implements OnInit, OnChanges {
       console.log(data);
     });
     this.mfoService.getLastUpdated(3, changes.pid.currentValue).subscribe(data => {
-    this.date_updated = data[0].date;
+    this.date_updated = data;
     });
   }
 
@@ -66,7 +66,7 @@ export class Bed3Component implements OnInit, OnChanges {
 
   lastUpdated() {
     this.mfoService.getLastUpdated(3, this.user.pid).subscribe(data => {
-      this.date_updated = data[0].date;
+      this.date_updated = data;
     });
   }
 

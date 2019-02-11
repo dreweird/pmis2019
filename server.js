@@ -45,12 +45,16 @@ const connection = mysql.createConnection({
     });
 });
 
-  app.post('/mfos',function(req,res){ 
-    connection.query(`
-    SELECT *, tbl_mfo.mfo_id FROM tbl_mfo left JOIN tbl_allotment 
-    on tbl_mfo.mfo_id = tbl_allotment.mfo_id 
-    LEFT JOIN tbl_object 
-    on tbl_allotment.object_id=tbl_object.object_id where program_id =`+req.body.pid, function (error, results) {
+  app.post('/mfos',function(req,res){
+      var query = `
+      SELECT *, tbl_mfo.mfo_id FROM tbl_mfo left JOIN tbl_allotment 
+      on tbl_mfo.mfo_id = tbl_allotment.mfo_id 
+      LEFT JOIN tbl_object 
+      on tbl_allotment.object_id=tbl_object.object_id where program_id = ?`
+      var data = [req.body.pid];
+      query = mysql.format(query,data);
+    console.log(query); 
+    connection.query(query, function (error, results) {
         if (error) throw error;
         res.json(results); 
       });
@@ -179,6 +183,7 @@ const connection = mysql.createConnection({
                             itemsProcessed++;
                             if(itemsProcessed === rows.length) {
                                 datares["data"] =  rows;
+                                console.log(datares);
                                 res.json(datares);                           
                             }
                         }
@@ -231,15 +236,19 @@ const connection = mysql.createConnection({
   });
 
   app.post('/lastUpdated', function(req, res){
-    var query = "SELECT * FROM tbl_logs where pid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
+    var query = "SELECT date FROM tbl_logs where pid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
     var data = [req.body.pid, req.body.beds];
     query = mysql.format(query,data);
     //console.log(query); 
     connection.query(query, function(err, rows){
         if (err) throw res.status(400).json(err);
         if (rows.length > 0){
-            res.json(rows); 
+            res.json(rows[0].date); 
+        }else{
+            res.json(null);
         }
+        
+   
     })
   });
 
