@@ -87,9 +87,15 @@ export class Bed1Component implements OnInit {
       },
       processCellCallback:function (params){
         var node = params.node;
-        //console.log(params);
-        if(node.group && params.column.colDef.field=="mfo_name") return node.key;
-        else if(params.column.colDef.headerName=="Total Cost" && isNaN(params.value))return '';
+        console.log(params);
+        if(params.column.colDef.field=="mfo_name"){
+          if(node.group) {
+            return node.key;
+          }else if(!node.group && node.parent.childrenAfterGroup.length>=2){
+            return node.master;
+          }
+        }
+        else if(params.column.colDef.field=="fu" && isNaN(params.value))return '';
         else return params.value;
       },
     });
@@ -359,12 +365,14 @@ export class Bed1Component implements OnInit {
           borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
         }
       },
-      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
-      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "ad", interior: { color: "#f1cbff", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "un", interior: { color: "#ffbdbd", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
       { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
-      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
-      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
       {
         id: "header",
         font: { size:11, fontName: "Calibri", bold: true, },
@@ -469,7 +477,7 @@ export class Bed1Component implements OnInit {
 
       },
       {
-        cellClass:['data'],headerName: 'Adjusted Allotment',
+        cellClass:['data','ad'],headerName: 'Adjusted Allotment',
         field: 'adjusted',
         width: 100,
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
@@ -505,7 +513,7 @@ export class Bed1Component implements OnInit {
         
           },
           {
-            cellClass:['data'],headerName: "Q1",
+            cellClass:['data','d1'],headerName: "Q1",
             field: 'Q1_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -538,7 +546,7 @@ export class Bed1Component implements OnInit {
             
           },
           {
-            cellClass:['data'],headerName: "Q2",
+            cellClass:['data','d1'],headerName: "Q2",
             field: 'Q2_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -567,7 +575,7 @@ export class Bed1Component implements OnInit {
             type: 'valueColumn'
           },
           {
-            cellClass:['data'],headerName: "Q3",
+            cellClass:['data','d1'],headerName: "Q3",
             field: 'Q3_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -596,7 +604,7 @@ export class Bed1Component implements OnInit {
             type: 'valueColumn'
           },
           {
-            cellClass:['data'],headerName: "Q4",
+            cellClass:['data','d1'],headerName: "Q4",
             field: 'Q4_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -604,7 +612,7 @@ export class Bed1Component implements OnInit {
               'Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
           },
           {
-            cellClass:['data'],headerName: "Total",
+            cellClass:['data','d2'],headerName: "Total",
             field: 'to_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -645,7 +653,7 @@ export class Bed1Component implements OnInit {
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data'],headerName: 'Q1',
+            cellClass:['data','p1'],headerName: 'Q1',
             field: 'Q1',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -681,7 +689,7 @@ export class Bed1Component implements OnInit {
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data'],headerName: 'Q2',
+            cellClass:['data','p1'],headerName: 'Q2',
             field: 'Q2',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -717,7 +725,7 @@ export class Bed1Component implements OnInit {
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data'],headerName: 'Q3',
+            cellClass:['data','p1'],headerName: 'Q3',
             field: 'Q3',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -753,7 +761,7 @@ export class Bed1Component implements OnInit {
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data'],headerName: 'Q4',
+            cellClass:['data','p1'],headerName: 'Q4',
             field: 'Q4',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -762,7 +770,7 @@ export class Bed1Component implements OnInit {
             type: 'numericColumn'
           },
           {
-            cellClass:['data'],headerName: 'Total Obligations',
+            cellClass:['data','p2'],headerName: 'Total Obligations',
             field: 'to',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -775,7 +783,7 @@ export class Bed1Component implements OnInit {
       },
       
       {
-        cellClass:['data'],headerName: 'Unobligated',
+        cellClass:['data','un'],headerName: 'Unobligated',
         field: 'un',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#e83525' },

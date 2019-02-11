@@ -29,6 +29,8 @@ interface State extends BaseSettingsState, BaseExamplesState {}
 export class ExamplesComponent implements OnInit, OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   private isAuthenticated$: Observable<boolean>;
+  user:any;
+  pid_mne:any;
 
   examples = [
     // { link: 'todos', label: 'anms.examples.menu.todos' },
