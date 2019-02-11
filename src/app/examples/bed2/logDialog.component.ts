@@ -41,7 +41,7 @@ export class logDialog implements OnInit{
     }
      ngOnInit() {
          console.log(this.data.beds);
-        this.mfoService.getLogs(this.data.beds).subscribe(data =>{
+        this.mfoService.getLogs(this.data.beds, this.data.pid).subscribe(data =>{
             this.rowData = data;
             console.log(this.rowData);
           }) 

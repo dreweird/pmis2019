@@ -8,7 +8,54 @@
       </p>
       <p [ngClass]="routeAnimationsElements">
         {{ 'anms.examples.auth.description2' | translate }}
-      </p>
+      </p>   
     </div>
+
+   
   </div>
+  <div  *ngIf="open">
+      <div class="row" [ngClass]="routeAnimationsElements">
+          <div class="col-12">
+              <button mat-raised-button (click)="setPID(1)">RICE</button>
+              <button mat-raised-button (click)="setPID(2)">CORN</button>
+              <button mat-raised-button (click)="setPID(3)">HVCDP</button>
+              <button mat-raised-button (click)="setPID(4)">LIVESTOCK</button>
+              <button mat-raised-button (click)="setPID(5)">OA</button>
+              <button mat-raised-button (click)="setPID(20)">GASS</button>
+              <button mat-raised-button (click)="setPID(17)">PMED</button>
+              <button mat-raised-button (click)="setPID(18)">RAED</button>
+              <button mat-raised-button (click)="setPID(19)">ILD</button>
+              <button mat-raised-button (click)="setPID(14)">AMAD</button>
+              <button mat-raised-button (click)="setPID(16)">REGULATORY</button>
+              <button mat-raised-button (click)="setPID(15)">RESEARCH</button>
+              <button mat-raised-button (click)="setPID(11)">STN_TRENTO</button>
+              <button mat-raised-button (click)="setPID(12)">STN_DELMONTE</button>
+              <button mat-raised-button (click)="setPID(13)">STN_TAGBINA</button>
+              <button mat-raised-button (click)="setPID(21)">GAD</button>
+          </div>
+        
+      </div>
+      <div class="row" [ngClass]="routeAnimationsElements">
+        <div class="col-12">
+          <anms-bed1 [pid]="pid"></anms-bed1> 
+          <summary-object [pid]="pid"></summary-object>
+          </div>
+      </div>
+  <div class="row" [ngClass]="routeAnimationsElements">
+          <div class="col-12">
+            <anms-bed2 [pid]="pid"></anms-bed2> 
+            </div>
+        </div>
+      <!-- <div class="row" [ngClass]="routeAnimationsElements">
+            <div class="col-12">
+              <anms-bed3 [pid]="pid"></anms-bed3> 
+              </div>
+          </div>  -->
+         <!-- <div class="row" [ngClass]="routeAnimationsElements">
+              <div class="col-12">
+                <anms-district [pid]="pid"></anms-district> 
+                </div>
+            </div>  -->
+  </div>
+
 </div>
