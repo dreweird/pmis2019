@@ -36,7 +36,7 @@ export class DistrictComponent implements OnInit, OnChanges {
       console.log(data);
     });
     this.mfoService.getLastUpdated(4, changes.pid.currentValue).subscribe(data => {
-    this.date_updated = data[0].date;
+    this.date_updated = data;
     });
   }
   onGridReady(params: any) {
@@ -186,7 +186,7 @@ export class DistrictComponent implements OnInit, OnChanges {
 
   lastUpdated() {
     this.mfoService.getLastUpdated(4, this.user.pid).subscribe(data => {
-      this.date_updated = data[0].date;
+      this.date_updated = data;
     });
   }
 
