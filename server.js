@@ -81,7 +81,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/getDistrict', function(req, res){
-    var query = "SELECT * FROM tbl_mfo WHERE tbl_mfo.program_id = ?";
+    var query = "SELECT * FROM tbl_mfo INNER JOIN tbl_district on tbl_mfo.mfo_id = tbl_district.mfo_id WHERE tbl_mfo.program_id = ? group by tbl_mfo.mfo_id";
     var data = [req.body.pid];
     var datares={};
     query = mysql.format(query,data);
@@ -96,100 +96,67 @@ const connection = mysql.createConnection({
                 var arr = [];
                 async.parallel({
                     one: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
-                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text 
-                        FROM tbl_district where mfo_id = ? and province=? and district=1 GROUP BY mfo_id,province,district`;
+                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, sum(accomp) as accomp, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text, 
+                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text2 
+                        FROM tbl_district where mfo_id = ? and province= ? and district=1 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
-                            if(k_err) console.error(k_err);        
-                             callback(null, k_rows[0]);              
+                            if(k_err) console.error(k_err);
+                            if(k_rows[0] === undefined){
+                                callback(null, {accomp: null, cost: null, target: null, text: null, text2: null})
+                            }else{
+                                callback(null, k_rows[0]);  
+                            }                           
+                                        
                         });                        
                     },
                      two: function(callback) {
                         var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
-                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text 
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text, sum(accomp) as accomp 
                         FROM tbl_district where mfo_id = ? and province=? and district=2 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
                             if(k_err) console.error(k_err);        
-                             callback(null, k_rows[0]);              
+                            if(k_rows[0] === undefined){
+                                callback(null, {accomp: null, cost: null, target: null, text: null})
+                            }else{
+                                callback(null, k_rows[0]);  
+                            }               
                         });   
             
                     },
-                    three: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
-                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
-                        FROM tbl_district where mfo_id = ? and province=? and district=1 and accomp>0 GROUP BY mfo_id,province,district`;
-                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
-                            if(k_err) console.error(k_err);        
-                             callback(null, k_rows[0]);              
-                        });                        
-                    },
-                     four: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
-                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
-                        FROM tbl_district where mfo_id = ? and province=? and district=2 and accomp>0 GROUP BY mfo_id,province,district`;
-                        connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
-                            if(k_err) console.error(k_err);        
-                             callback(null, k_rows[0]);              
-                        });   
+                    // three: function(callback) {
+                    //     var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
+                    //     GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
+                    //     FROM tbl_district where mfo_id = ? and province=? and district=1 and accomp>0 GROUP BY mfo_id,province,district`;
+                    //     connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                    //         if(k_err) console.error(k_err);        
+                    //          callback(null, k_rows[0]);              
+                    //     });                        
+                    // },
+                    //  four: function(callback) {
+                    //     var sql = `SELECT mfo_id,province,district,sum(accomp) as accomp , 
+                    //     GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text 
+                    //     FROM tbl_district where mfo_id = ? and province=? and district=2 and accomp>0 GROUP BY mfo_id,province,district`;
+                    //     connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
+                    //         if(k_err) console.error(k_err);        
+                    //          callback(null, k_rows[0]);              
+                    //     });   
             
-                    }  
-                }, function(err, results) {
+                    // }  
+                }, function(err, results) {                 
                     return callback(null, results);
                 });                  
             }
 
             async.map(province, districtFunction, function(err, result){
-                async.each(result, function(rslt, callback){
-                var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
-                var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
-                var pc=0;
-                for(var c = 0;c<province.length;c++){
-                    var g1=false,g2=false,g3=false,g4=false;
-                    if(rslt.one==undefined){ g1=true; } else{
-                        //console.log(rslt.one.province);
-                        if(rslt.one.province==province[c]){
-                            row[prvnc[c]+'1area'] = rslt.one.text;
-                            row[prvnc[c]+'1target'] = rslt.one.target;
-                            row[prvnc[c]+'1cost'] = rslt.one.cost;
-                            //console.log(row[prvnc[c]+'1area']);
-                            g1=true;
-                        }}
-                    if(rslt.two==undefined){ g2=true; } else
-                        if(rslt.two.province==province[c]){
-                            row[prvnc[c]+'2area'] = rslt.two.text;
-                            row[prvnc[c]+'2target'] = rslt.two.target;
-                            row[prvnc[c]+'2cost'] = rslt.two.cost;
-                            //console.log(row.two);
-                        g2=true;
-                        }
-                        if(rslt.three==undefined){ g3=true; } else{
-                            //console.log(rslt.one.province);
-                            if(rslt.three.province==province[c]){
-                                row[prvnc[c]+'1aarea'] = rslt.three.text;
-                                row[prvnc[c]+'1aaccomp'] = rslt.three.accomp;
-                                //console.log(row[prvnc[c]+'1area']);
-                                g3=true;
-                            }}
-                        if(rslt.four==undefined){ g4=true; } else
-                            if(rslt.four.province==province[c]){
-                                row[prvnc[c]+'2aarea'] = rslt.four.text;
-                                row[prvnc[c]+'2aaccomp'] = rslt.four.accomp;
-                                //console.log(row.two);
-                            g4=true;
-                            }
-                    if(g1 && g2 && g3 && g4){
-                        pc++;
-                        if(pc==prvnc.length){
-                            itemsProcessed++;
-                            if(itemsProcessed === rows.length) {
-                                datares["data"] =  rows;
-                                console.log(datares);
-                                res.json(datares);                           
-                            }
-                        }
-                    }
+                console.log(result);
+                itemsProcessed++;
+                row.dist = result;
+                if(itemsProcessed === rows.length) {
+                    datares["data"] =  rows;
+                    res.json(rows);                           
                 }
-                });
+            
                 /*row.area=result;
                 itemsProcessed++;
                 if(itemsProcessed === rows.length) {
