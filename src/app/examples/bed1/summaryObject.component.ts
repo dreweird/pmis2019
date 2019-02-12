@@ -39,23 +39,29 @@ export class SummaryObjectComponent implements OnChanges{
   components: any;
   rowSelection: any;
   columnTypes: any;
+  user:any;
   private groupRowAggNodes;
 
-  ngOnChanges(changes: {[propKey: string]: any}) {
-    console.log("updated");
-    this.recalc();
+  
+  ngOnChanges(changes:any) {
+    console.log(changes.pid.currentValue);
+    this.mfoService.getSummaryObject(changes.pid.currentValue).subscribe(data => {
+      this.rowData = data;
+      console.log(data);
+    });
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    if(this.pid===0) this.pid = this.user.pid;
     this.mfoService.getSummaryObject(this.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
   }
   recalc(){
-    console.log("here");
+    if(this.pid===0) this.pid = this.user.pid;
     this.mfoService.getSummaryObject(this.pid).subscribe(data => {
       this.rowData = data;
     });
@@ -82,6 +88,7 @@ export class SummaryObjectComponent implements OnChanges{
     });
   }
   constructor(private mfoService: MfoService) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.columnDefs = [
       { headerName: 'Summary', field: 'header', rowGroup: true, hide: true },
       { headerName: 'Type', field: 'type', rowGroup: true, hide: true },

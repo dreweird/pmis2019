@@ -14,6 +14,7 @@ import { logDialog } from '../bed2/logDialog.component';
 export class Bed1Component implements OnInit, OnChanges {
 
   @Input() pid: number = 0;
+  @Input() name: string = '';
   changeLog: string[] = [];
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
@@ -27,6 +28,7 @@ export class Bed1Component implements OnInit, OnChanges {
   columnTypes: any;
   date_updated: any;
   user: any;
+  edit: any;
   excelStyles:any;
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   mon = ["jan", "feb", "mar","Q1", "apr", "may", "jun" ,"Q2" , "jul", "aug", "sep" ,"Q3", "oct", "nov", "dec" ,"Q4","to"];
@@ -65,6 +67,8 @@ export class Bed1Component implements OnInit, OnChanges {
     }
     ck.push("un","fu");
     var prog_ou=this.user.username;
+    console.log(this.pid);
+    if(this.pid!=0) prog_ou=this.name+" - M&E Generated";
     if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
     this.gridApi.exportDataAsExcel({
       customHeader  : [
@@ -103,12 +107,12 @@ export class Bed1Component implements OnInit, OnChanges {
       },
       processCellCallback:function (params){
         var node = params.node;
-        console.log(params);
+        //console.log(params);
         if(params.column.colDef.field=="mfo_name"){
           if(node.group) {
             return node.key;
-          }else if(!node.group && node.parent.childrenAfterGroup.length>=2){
-            return node.master;
+          }else {
+            return params.value;
           }
         }
         else if(params.column.colDef.field=="fu" && isNaN(params.value))return '';
@@ -366,7 +370,7 @@ export class Bed1Component implements OnInit, OnChanges {
 
   constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    var clickable = this.user.b==1;
+    this.edit = this.user.b==1 && this.user.pid!=100;
     this.excelStyles= [
       { id:"indent1",alignment :{indent:1} },
       { id:"indent2",alignment :{indent:2} },
@@ -490,7 +494,7 @@ export class Bed1Component implements OnInit, OnChanges {
         cellClass:['data'],headerName: 'Adjustment',
         field: 'adjustment',
         width: 100,
-        editable: clickable,
+        editable: this.edit,
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn',
 
@@ -648,7 +652,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jan',
             field: 'jan',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -657,7 +661,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Feb',
             field: 'feb',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -666,7 +670,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Mar',
             field: 'mar',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -684,7 +688,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Apr',
             field: 'apr',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -693,7 +697,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'May',
             field: 'may',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -702,7 +706,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jun',
             field: 'jun',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -720,7 +724,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jul',
             field: 'jul',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -729,7 +733,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Aug',
             field: 'aug',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -738,7 +742,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Sep',
             field: 'sep',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -756,7 +760,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Oct',
             field: 'oct',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -765,7 +769,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Nov',
             field: 'nov',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -774,7 +778,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Dec',
             field: 'decm',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
