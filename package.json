@@ -71,6 +71,7 @@
     "moment": "^2.23.0",
     "mysql": "^2.16.0",
     "ngx-moment": "^3.3.0",
+    "path": "^0.12.7",
     "rxjs": "^6.3.3",
     "uuid": "^3.3.2",
     "web-animations-js": "^2.2.5",

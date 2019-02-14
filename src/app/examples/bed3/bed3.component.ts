@@ -22,7 +22,7 @@ export class Bed3Component implements OnInit, OnChanges {
   components: any;
   rowSelection: any;
   columnTypes: any;
-  private groupRowAggNodes;
+  groupRowAggNodes;
   date_updated: any;
   logs: any;
   user: any;

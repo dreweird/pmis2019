@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 import { MfoService } from '../services/mfo.service';
 
 @Component({
@@ -35,6 +36,8 @@ import { MfoService } from '../services/mfo.service';
   `
 })
 export class SummaryObjectComponent implements OnChanges{
+
+  routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -43,7 +46,7 @@ export class SummaryObjectComponent implements OnChanges{
   components: any;
   rowSelection: any;
   columnTypes: any;
-  private groupRowAggNodes;
+  groupRowAggNodes;
   user: any;
   @Input() pid: number = 0;
 

@@ -2,7 +2,9 @@ const express = require('express');
 const compression = require('compression');
 const mysql      = require('mysql');
 const bodyParser = require("body-parser"); // Body parser for fetch posted data
-var async = require('async');
+const async = require('async');
+const path = require('path');
+var staticRoot = __dirname + './dist'; 
 const CONTEXT = '/angular-ngrx-material-starter';
 const PORT = 3500;
 
@@ -14,16 +16,18 @@ app.use(CONTEXT, express.static(__dirname + '/dist'));
 app.use('/', express.static(__dirname + '/dist'));
 app.use(bodyParser.json()); // Body parser use JSON data
 app.use(bodyParser.urlencoded({ extended: false }));
-app.listen(PORT, () => console.log(`App running on localhost:${PORT}/${CONTEXT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`App running on 0.0.0.0:${PORT}/${CONTEXT}`));
 
 const connection = mysql.createConnection({
-    host     : 'localhost',
+    host     : '0.0.0.0',
     user     : 'root',
     password : '',
     database : 'raw_dasystem'
   });
   
   connection.connect();
+
+  app.get('/', (req, res) => res.send('Hello World!'));
 
   app.post('/login',function(req,res){
     console.log(req.body);
@@ -111,8 +115,9 @@ const connection = mysql.createConnection({
                         });                        
                     },
                      two: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
-                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text, sum(accomp) as accomp 
+                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, sum(accomp) as accomp ,
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text,
+                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text2  
                         FROM tbl_district where mfo_id = ? and province=? and district=2 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
                             if(k_err) console.error(k_err);        
@@ -282,3 +287,12 @@ const connection = mysql.createConnection({
       })
   })
   //connection.end();
+
+  app.get('/', function (req, res) {
+    res.sendFile(path.join(staticRoot,'index.html'))
+    });
+    
+    app.get('*', function (req, res) {
+        res.sendFile(path.join(staticRoot,'index.html'));
+       });
+    

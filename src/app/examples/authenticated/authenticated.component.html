@@ -4,10 +4,10 @@
       <h1 class="main-heading" *ngIf="user">Welcome {{ user.username }} </h1>
       <h2></h2>
       <p [ngClass]="routeAnimationsElements">
-        {{ 'anms.examples.auth.description1' | translate }}
+        This component is only accessible for authenticated users
       </p>
       <p [ngClass]="routeAnimationsElements">
-        {{ 'anms.examples.auth.description2' | translate }}
+        Logging out will cause user to be redirected to home screen if visiting route accessible only to authenticated users
       </p>   
     </div>
 
