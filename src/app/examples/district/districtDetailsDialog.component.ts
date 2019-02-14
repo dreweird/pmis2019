@@ -60,25 +60,27 @@ export class districtDetailsDialog implements OnInit{
         const uid = JSON.parse(localStorage.getItem('currentUser'));
         // console.log("4 here");
         this.mfoService
-          .updateLogs(id, value, uid.user_id, col, month, beds,prov,dist,mun)
+          .updateLogs(id, value, uid.pid, col, month, beds,prov,dist,mun)
           .subscribe(data => console.log(data));
       }
     onCellValueChanged(event){
-        if(event.data.target<Number(event.data.accomp)||isNaN(Number(event.data.accomp))){
-            var mes="";
-            if(isNaN(Number(event.data.accomp))) mes="Error: Please entry a number less than or equal to the target.";
-            else mes = "Error: Accomplishment inputted is greater than the target.";
-            this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
-            event.node.setDataValue(event.colDef.field,event.oldValue);
+        if(isNaN(Number(event.oldValue))||event.data.target<Number(event.oldValue)){
+            // console.log("revert");
         }else{
-            console.log(event.data);
-            var data = event.data;
-            this.mfoService.updateDistrictDetails(data).subscribe(data =>{
-                //console.log("here");
-                //console.log(this.updateLogs);
-                this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 4,event.data.province,event.data.district,event.data.municipal);
-                //this.rowData = data;
-            }); 
+            // console.log("new");
+            if(event.data.target<Number(event.data.accomp)||isNaN(Number(event.data.accomp))){
+                var mes="";
+                if(isNaN(Number(event.data.accomp))) mes="Error: Please entry a number less than or equal to the target.";
+                else mes = "Error: Accomplishment inputted is greater than the target.";
+                this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
+                event.node.setDataValue(event.colDef.field,event.oldValue);
+            }else{
+                console.log(event.data);
+                var data = event.data;
+                this.mfoService.updateDistrictDetails(data).subscribe(data =>{
+                    this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 4,event.data.province,event.data.district,event.data.municipal);
+                }); 
+            }
         }
     }
     doneClicked(){
@@ -91,12 +93,13 @@ export class districtDetailsDialog implements OnInit{
         children.forEach(element => {
             var accomp = Number(element.data.accomp);
             if(accomp!=0 && !isNaN(accomp)){
-               // this.str = concat(this.str,element.data.municipal,"(",element.data.accomp,"), ");
                 str = str+element.data.municipal+"("+element.data.accomp+"), ";
                 total=total+accomp;
-                //console.log(str);
             }
         });
-        this.dialogRef.close({str:str,total:total,prvnc:this.data.prvnc,district:this.data.district});
+        console.log(this.data);
+        this.data.data.dist[this.data.i][this.data.ii]["text2"] = str;
+        this.data.data.dist[this.data.i][this.data.ii]["accomp"] = total;
+        this.dialogRef.close({data:this.data.data});
     }
 }

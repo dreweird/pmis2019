@@ -50,7 +50,7 @@ const connection = mysql.createConnection({
       SELECT *, tbl_mfo.mfo_id FROM tbl_mfo left JOIN tbl_allotment 
       on tbl_mfo.mfo_id = tbl_allotment.mfo_id 
       LEFT JOIN tbl_object 
-      on tbl_allotment.object_id=tbl_object.object_id where program_id = ?`
+      on tbl_allotment.object_id=tbl_object.object_id where program_id = ?`;
       var data = [req.body.pid];
       query = mysql.format(query,data);
     console.log(query); 
@@ -98,7 +98,7 @@ const connection = mysql.createConnection({
                     one: function(callback) {
                         var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, sum(accomp) as accomp, 
                         GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text, 
-                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text2 
+                        GROUP_CONCAT(CASE WHEN accomp>0 THEN CONCAT(municipal, '(', accomp,')') ELSE NULL END  SEPARATOR ", " ) as text2
                         FROM tbl_district where mfo_id = ? and province= ? and district=1 GROUP BY mfo_id,province,district`;
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
                             if(k_err) console.error(k_err);
@@ -111,9 +111,11 @@ const connection = mysql.createConnection({
                         });                        
                     },
                      two: function(callback) {
-                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, 
-                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text, sum(accomp) as accomp 
+                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost,  sum(accomp) as accomp,
+                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text,
+                        GROUP_CONCAT(CASE WHEN accomp>0 THEN CONCAT(municipal, '(', accomp,')') ELSE NULL END  SEPARATOR ", " ) as text2
                         FROM tbl_district where mfo_id = ? and province=? and district=2 GROUP BY mfo_id,province,district`;
+                        console.log(sql);
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
                             if(k_err) console.error(k_err);        
                             if(k_rows[0] === undefined){
@@ -165,6 +167,7 @@ const connection = mysql.createConnection({
                 }*/
             });
         })
+        if(rows.length<=0) res.json(rows);
 
         if (err) throw res.status(400).json(err);   
         //res.json(rows); 
@@ -206,7 +209,7 @@ const connection = mysql.createConnection({
     var query = "SELECT date FROM tbl_logs where pid = ? and beds = ? ORDER BY date DESC LIMIT 1 ";
     var data = [req.body.pid, req.body.beds];
     query = mysql.format(query,data);
-    //console.log(query); 
+    console.log(query); 
     connection.query(query, function(err, rows){
         if (err) throw res.status(400).json(err);
         if (rows.length > 0){
@@ -233,7 +236,7 @@ const connection = mysql.createConnection({
   });
 
   app.post('/addLogs', function(req, res){
-    var query = "INSERT INTO tbl_logs (uid, mfo_id, message, date, beds) VALUES (?, ?, ?, NOW(), ?)";
+    var query = "INSERT INTO tbl_logs (pid, mfo_id, message, date, beds) VALUES (?, ?, ?, NOW(), ?)";
     var data = [req.body.uid, req.body.mfo_id, req.body.message, req.body.beds];
     query = mysql.format(query,data);
     console.log(query); 
