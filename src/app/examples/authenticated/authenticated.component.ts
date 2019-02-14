@@ -13,10 +13,12 @@ export class AuthenticatedComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   user: any = '';
   pid = 0;
+  name: string = '';
   open: boolean = false;
 
-  setPID(pid: number) {
+  setPID(pid: number, name: string) {
     this.pid = pid;
+    this.name = name;
   }
 
   constructor(private storeUser: Store<AppState>) {

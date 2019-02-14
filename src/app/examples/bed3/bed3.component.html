@@ -9,7 +9,7 @@
         <em>basis of the issuance of disbursement authorities</em>
     </div>
     <div  class="col-md-2">
-        <button style="margin:5px;" mat-raised-button class="information">
+        <button style="margin:5px;" mat-raised-button class="information"  (click)="exportcsv()">
             EXPORT to EXCEL
           </button> 
           <br>
@@ -29,6 +29,7 @@
       [enableFilter]="true"
       [enableColResize]="true"
       [autoGroupColumnDef]="autoGroupColumnDef"
+      [excelStyles]="excelStyles"
       [groupRowAggNodes]="groupRowAggNodes"
       [groupRemoveSingleChildren]="true"
       [rowSelection]="rowSelection"
@@ -40,7 +41,7 @@
   </ag-grid-angular>
   </div><div class="row item" [ngClass]="routeAnimationsElements">
     <div class="col-9">
-        <h5>(Pending...)Last Updated: {{date_updated | amTimeAgo }}</h5>
+        <h5>Last Updated: {{date_updated | amTimeAgo }}</h5>
         <button style="margin:5px;" mat-button class="success" (click)="getLogs()">See Logs</button>
     </div>
   </div>

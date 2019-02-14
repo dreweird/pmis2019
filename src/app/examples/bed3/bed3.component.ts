@@ -13,6 +13,7 @@ import { AnonymousSubject } from 'rxjs/internal/Subject';
 })
 export class Bed3Component implements OnInit, OnChanges {
   @Input() pid: number = 0;
+  @Input() name: string = '';
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
@@ -26,6 +27,10 @@ export class Bed3Component implements OnInit, OnChanges {
   date_updated: any;
   logs: any;
   user: any;
+  edit:any;
+  excelStyles:any;
+  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  mon = ["jan", "feb", "mar","Q1", "apr", "may", "jun" ,"Q2" , "jul", "aug", "sep" ,"Q3", "oct", "nov", "dec" ,"Q4","to"];
 
   ngOnChanges(changes:any) {
     console.log(changes.pid.currentValue);
@@ -35,6 +40,76 @@ export class Bed3Component implements OnInit, OnChanges {
     });
     this.mfoService.getLastUpdated(3, changes.pid.currentValue).subscribe(data => {
     this.date_updated = data;
+    });
+  }
+
+  exportcsv(){
+    var ck=["mfo_name","name","object_id","budget","adjustment","adjusted"];
+    for(var i=1;i<=3;i++){
+      for(var ii=0;ii<this.mon.length;ii++){
+        var add="";
+        if(i==1){ add=""; }
+        if(i==3){ add="_da"; }
+        if(i==2){ add="_dt"; }
+        //if(i==2&&ii==14) add="m";
+        ck.push(this.mon[ii]+add);
+        if(i==1&&ii==this.mon.length-1)ck.push("un","fu");
+      }
+    }
+    ck.push("unpaid_obligation","disbursement_utilization");
+    var prog_ou=this.user.username;
+    console.log(ck);
+    if(this.pid!=0) prog_ou=this.name+" - M&E Generated";
+    if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
+    this.gridApi.exportDataAsExcel({
+      customHeader  : [
+        [{styleId:'headappend',data:{type:'String', value:'DEPARTMENT OF AGRICULTURE'}}],
+        [{styleId:'headappend',data:{type:'String', value:'Regional Field Office XIII'}}],
+        [{styleId:'headappend',data:{type:'String', value:'BED3 Report 2019'}}],
+        [{styleId:'headappend',data:{type:'String', value:prog_ou.toUpperCase()}}],
+        [{styleId:'headappend',data:{type:'String', value:'C.Y. 2019 CURRENT APPROPRIATION'}}],
+        [{styleId:'headappend',data:{type:'String', value: 'PMIS v4.0 Generated as of '+this.months[new Date().getMonth()]+' '+new Date().getDate()+', '+new Date().getFullYear()
+        }}],
+        [],
+        [ {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {data: {type:'String', value:''}},
+          {styleId:'d2',data:{type:'String', value:'Financial Obligation'},mergeAcross:17},
+          {styleId:'a',data:{type:'String', value:'Financial Accomplishments'},mergeAcross:16},
+          {styleId:'p2',data:{type:'String', value:'Financial Disbursement'},mergeAcross:16},
+          {styleId:'ad',data:{type:'String', value:''}},
+          {styleId:'',data:{type:'String', value:''}},
+        ],
+      ],
+      columnKeys:ck,
+      processHeaderCallback: function(params){
+        var name = params.column.colDef.headerName;
+        //console.log(params);
+        //if(params.column.visible)
+        if( name == "mfo_name") {return "PAP";}
+        else if(name =="header_program"||name =="header_mfo"||name =="header_indicator"||name =="mfo_id"){} // do nothing
+        else {return params.column.colDef.headerName;}
+      },
+      shouldRowBeSkipped:function(params){
+        //console.log(params);
+        return params.node.group && params.node.childrenAfterGroup.length==1;
+      },
+      processCellCallback:function (params){
+        var node = params.node;
+        //console.log(params);
+        if(params.column.colDef.field=="mfo_name"){
+          if(node.group) {
+            return node.key;
+          }else {
+            return params.value;
+          }
+        }
+        else if(params.column.colDef.field=="fu" && isNaN(params.value))return '';
+        else return params.value;
+      },
     });
   }
 
@@ -110,6 +185,44 @@ export class Bed3Component implements OnInit, OnChanges {
 
   constructor(private mfoService: MfoService, private dialog: MatDialog, private snackBar: MatSnackBar) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.edit = this.user.b==1;
+    this.excelStyles= [
+      { id:"indent1",alignment :{indent:1} },
+      { id:"indent2",alignment :{indent:2} },
+      { id:"indent3",alignment :{indent:3} },
+      { id:"indent4",alignment :{indent:4} },
+      { id:"indent5",alignment :{indent:5} },
+      { id:"bold", font: {bold:true} },
+      {
+        id: "data",
+        font: { size:11, fontName: "Calibri", },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "ad", interior: { color: "#f1cbff", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "un", interior: { color: "#ffbdbd", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      {
+        id: "header",
+        font: { size:11, fontName: "Calibri", bold: true, },
+        borders: {
+          borderBottom: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderLeft: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderRight: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+          borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
+        }
+      },
+      { id: "headappend", font: { size:11, fontName: "Calibri", bold: true, }, }
+    ];
     this.rowSelection = 'single';
     this.columnDefs = [
       {headerName: 'header_main', field: 'header_main', width: 120, rowGroup: true, hide: true },
@@ -155,12 +268,40 @@ export class Bed3Component implements OnInit, OnChanges {
         rowGroup: true,
         hide: true
       },
-      { headerName: 'Description', field: 'name', width: 150, pinned: 'left' },
-      { headerName: 'UACS Object Code', field: 'object_id', width: 100 , pinned: 'left' },
-      { headerName: "Allotment",
+      {
+        headerName: 'mfo_name',
+        field: 'mfo_name',
+        width: 120,
+        rowGroup: true,
+        hide: true,
+        cellClass:['data'],
+        cellClassRules:{
+          indent1: function(params){
+            if(params.node.uiLevel==1) return true;
+          },
+          indent2: function(params){
+            if(params.node.uiLevel==2) return true;
+          },
+          indent3: function(params){
+            if(params.node.uiLevel==3) return true;
+          },
+          indent4: function(params){
+            if(params.node.uiLevel==4) return true;
+          },
+          indent5: function(params){
+            if(params.node.uiLevel==5) return true;
+          },
+          bold: function(params){
+            if(params.node.group) return true;
+          }
+        }
+      },
+      { cellClass:['data'],headerName: 'Description', field: 'name', width: 150, pinned: 'left' },
+      { cellClass:['data'],headerName: 'UACS Object Code', field: 'object_id', width: 100 , pinned: 'left' },
+      { cellClass:['data'],headerName: "Allotment",
         children: [
           {
-            headerName: 'Original Allotment', columnGroupShow: "open", 
+            cellClass:['data'],headerName: 'Original Allotment', columnGroupShow: "open", 
             field: 'budget',
             width: 100,
             aggFunc: 'sum',
@@ -168,7 +309,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'numericColumn'
           },
           {
-            headerName: 'Adjustment', columnGroupShow: "open", 
+            cellClass:['data'],headerName: 'Adjustment', columnGroupShow: "open", 
             field: 'adjustment',
             width: 100,
             aggFunc: 'sum',
@@ -176,7 +317,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'numericColumn',
           },
           {
-            headerName: 'Adjusted Allotment',
+            cellClass:['data','ad'],headerName: 'Adjusted Allotment',
             field: 'adjusted',
             width: 100,
             cellStyle: { color: 'white', 'background-color': '#b23c9a' },
@@ -189,48 +330,48 @@ export class Bed3Component implements OnInit, OnChanges {
       },
       { headerName: "Obligation",
         children: [
-          { headerName: 'Jan', columnGroupShow: "open", field: 'jan', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Feb', columnGroupShow: "open", field: 'feb', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Mar', columnGroupShow: "open", field: 'mar', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jan', columnGroupShow: "open", field: 'jan', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Feb', columnGroupShow: "open", field: 'feb', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Mar', columnGroupShow: "open", field: 'mar', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q1', field: 'Q1', width: 70,
+            cellClass:['data','d1'],headerName: 'Q1', field: 'Q1', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.jan) + Number(data.feb) + Number(data.mar)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Apr', columnGroupShow: "open", field: 'apr', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'May', columnGroupShow: "open", field: 'may', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Jun', columnGroupShow: "open", field: 'jun', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Apr', columnGroupShow: "open", field: 'apr', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'May', columnGroupShow: "open", field: 'may', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jun', columnGroupShow: "open", field: 'jun', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q2', field: 'Q2', width: 70,
+            cellClass:['data','d1'],headerName: 'Q2', field: 'Q2', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.apr) + Number(data.may) + Number(data.jun)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Jul', columnGroupShow: "open", field: 'jul', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Aug', columnGroupShow: "open",  field: 'aug', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Sep', columnGroupShow: "open",  field: 'sep', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jul', columnGroupShow: "open", field: 'jul', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Aug', columnGroupShow: "open",  field: 'aug', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Sep', columnGroupShow: "open",  field: 'sep', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q3', field: 'Q3', width: 70,
+            cellClass:['data','d1'],headerName: 'Q3', field: 'Q3', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.jul) + Number(data.aug) + Number(data.sep)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Oct', columnGroupShow: "open",  field: 'oct', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Nov', columnGroupShow: "open", field: 'nov', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Dec', columnGroupShow: "open", field: 'decm', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Oct', columnGroupShow: "open",  field: 'oct', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Nov', columnGroupShow: "open", field: 'nov', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Dec', columnGroupShow: "open", field: 'decm', width: 70, editable: false, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q4', field: 'Q4', width: 70,
+            cellClass:['data','d1'],headerName: 'Q4', field: 'Q4', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.oct) + Number(data.nov) + Number(data.decm)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
           {
-            headerName: 'Total Obligations',
+            cellClass:['data','d2'],headerName: 'Total Obligations',
             field: 'to',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -240,7 +381,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'totalColumn'
           },
           {
-            headerName: 'Unobligated', columnGroupShow: "open", 
+            cellClass:['data','ad'],headerName: 'Unobligated', columnGroupShow: "open", 
             field: 'un',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#e83525' },
@@ -250,7 +391,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'totalColumn'
           },
           {
-            headerName: '% Utilization', columnGroupShow: "open", 
+            cellClass:['data'],headerName: '% Utilization', columnGroupShow: "open", 
             field: 'fu',
             width: 70,
             cellStyle: { color: 'black', 'background-color': 'yellow' },
@@ -265,7 +406,7 @@ export class Bed3Component implements OnInit, OnChanges {
         headerName: 'Disbursement Target',
         children: [
           {
-            headerName: "Jan",
+            cellClass:['data'],headerName: "Jan",
             field: 'jan_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -273,7 +414,7 @@ export class Bed3Component implements OnInit, OnChanges {
    
           },
           {
-            headerName: "Feb",
+            cellClass:['data'],headerName: "Feb",
             field: 'feb_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -281,7 +422,7 @@ export class Bed3Component implements OnInit, OnChanges {
         
           },
           {
-            headerName: "Mar",
+            cellClass:['data'],headerName: "Mar",
             field: 'mar_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -289,7 +430,7 @@ export class Bed3Component implements OnInit, OnChanges {
         
           },
           {
-            headerName: "Q1",
+            cellClass:['data','t'],headerName: "Q1",
             field: 'Q1_dt',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -298,7 +439,7 @@ export class Bed3Component implements OnInit, OnChanges {
          
           },
           {
-            headerName: "Apr",
+            cellClass:['data'],headerName: "Apr",
             field: 'apr_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -306,7 +447,7 @@ export class Bed3Component implements OnInit, OnChanges {
             
           },
           {
-            headerName: "May",
+            cellClass:['data'],headerName: "May",
             field: 'may_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -314,7 +455,7 @@ export class Bed3Component implements OnInit, OnChanges {
             
           },
           {
-            headerName: "Jun",
+            cellClass:['data'],headerName: "Jun",
             field: 'jun_dt',
             width: 70,
             columnGroupShow: 'open',
@@ -322,7 +463,7 @@ export class Bed3Component implements OnInit, OnChanges {
             
           },
           {
-            headerName: "Q2",
+            cellClass:['data','t'],headerName: "Q2",
             field: 'Q2_dt',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -330,28 +471,28 @@ export class Bed3Component implements OnInit, OnChanges {
               'Number(data.apr_dt) + Number(data.may_dt) + Number(data.jun_dt)',
           },
           {
-            headerName: "Jul",
+            cellClass:['data'],headerName: "Jul",
             field: 'jul_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Aug",
+            cellClass:['data'],headerName: "Aug",
             field: 'aug_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Sep",
+            cellClass:['data'],headerName: "Sep",
             field: 'sep_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Q3",
+            cellClass:['data','t'],headerName: "Q3",
             field: 'Q3_dt',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -359,28 +500,28 @@ export class Bed3Component implements OnInit, OnChanges {
               'Number(data.jul_dt) + Number(data.aug_dt) + Number(data.sep_dt)',
           },
           {
-            headerName: "Oct",
+            cellClass:['data'],headerName: "Oct",
             field: 'oct_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Nov",
+            cellClass:['data'],headerName: "Nov",
             field: 'nov_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Dec",
+            cellClass:['data'],headerName: "Dec",
             field: 'dec_dt',
             width: 70,
             columnGroupShow: 'open',
             type: 'valueColumn'
           },
           {
-            headerName: "Q4",
+            cellClass:['data','t'],headerName: "Q4",
             field: 'Q4_dt',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -388,7 +529,7 @@ export class Bed3Component implements OnInit, OnChanges {
               'Number(data.oct_dt) + Number(data.nov_dt) + Number(data.dec_dt)',
           },
           {
-            headerName: "Total",
+            cellClass:['data','a'],headerName: "Total",
             field: 'to_dt',
             width: 70,
             columnGroupShow: 'closed',
@@ -401,48 +542,48 @@ export class Bed3Component implements OnInit, OnChanges {
       },
       { headerName: "Disbursement Accomplishment",
         children: [
-          { headerName: 'Jan', columnGroupShow: "open", field: 'jan_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Feb', columnGroupShow: "open", field: 'feb_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Mar', columnGroupShow: "open", field: 'mar_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jan', columnGroupShow: "open", field: 'jan_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Feb', columnGroupShow: "open", field: 'feb_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Mar', columnGroupShow: "open", field: 'mar_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q1', field: 'Q1_da', width: 70,
+            cellClass:['data','p1'],headerName: 'Q1', field: 'Q1_da', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.jan_da) + Number(data.feb_da) + Number(data.mar_da)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Apr', columnGroupShow: "open", field: 'apr_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'May', columnGroupShow: "open", field: 'may_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Jun', columnGroupShow: "open", field: 'jun_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Apr', columnGroupShow: "open", field: 'apr_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'May', columnGroupShow: "open", field: 'may_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jun', columnGroupShow: "open", field: 'jun_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q2', field: 'Q2_da', width: 70,
+            cellClass:['data','p1'],headerName: 'Q2', field: 'Q2_da', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.apr_da) + Number(data.may_da) + Number(data.jun_da)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Jul', columnGroupShow: "open", field: 'jul_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Aug', columnGroupShow: "open",  field: 'aug_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Sep', columnGroupShow: "open",  field: 'sep_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Jul', columnGroupShow: "open", field: 'jul_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Aug', columnGroupShow: "open",  field: 'aug_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Sep', columnGroupShow: "open",  field: 'sep_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q3', field: 'Q3_da', width: 70,
+            cellClass:['data','p1'],headerName: 'Q3', field: 'Q3_da', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.jul_da) + Number(data.aug_da) + Number(data.sep_da)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
-          { headerName: 'Oct', columnGroupShow: "open",  field: 'oct_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Nov', columnGroupShow: "open", field: 'nov_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
-          { headerName: 'Dec', columnGroupShow: "open", field: 'dec_da', width: 70, editable: true, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Oct', columnGroupShow: "open",  field: 'oct_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Nov', columnGroupShow: "open", field: 'nov_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
+          { cellClass:['data'],headerName: 'Dec', columnGroupShow: "open", field: 'dec_da', width: 70, editable: this.edit, valueFormatter: this.currencyFormatter, type: 'valueColumn', },
           {
-            headerName: 'Q4', field: 'Q4_da', width: 70,
+            cellClass:['data','p1'],headerName: 'Q4', field: 'Q4_da', width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
             valueGetter: 'Number(data.oct_da) + Number(data.nov_da) + Number(data.dec_da)',
             valueFormatter: this.currencyFormatter,
             type: 'numericColumn'
           },
           {
-            headerName: 'Total Disbursement',
+            cellClass:['data','p2'],headerName: 'Total Disbursement',
             field: 'to_da',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -452,7 +593,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'totalColumn'
           },
           {
-            headerName: 'Unpaid Obligations', columnGroupShow: "open", 
+            cellClass:['data','ad'],headerName: 'Unpaid Obligations', columnGroupShow: "open", 
             field: 'unpaid_obligation',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#e83525' },
@@ -462,7 +603,7 @@ export class Bed3Component implements OnInit, OnChanges {
             type: 'totalColumn'
           },
           {
-            headerName: '% Utilization', columnGroupShow: "open", 
+            cellClass:['data'],headerName: '% Utilization', columnGroupShow: "open", 
             field: 'disbursement_utilization',
             width: 70,
             cellStyle: { color: 'black', 'background-color': 'yellow' },

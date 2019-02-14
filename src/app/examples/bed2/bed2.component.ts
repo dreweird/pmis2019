@@ -12,6 +12,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 })
 export class Bed2Component implements OnInit, OnChanges {
   @Input() pid: number = 0;
+  @Input() name: string = '';
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gridApi: any;
   gridColumnApi: any;
@@ -24,6 +25,7 @@ export class Bed2Component implements OnInit, OnChanges {
   date_updated: any;
   logs: any;
   user: any;
+  edit:any;
   excelStyles: any;
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   mon = ["jan", "feb", "mar","q1", "apr", "may", "jun" ,"q2" , "jul", "aug", "sep" ,"q3", "oct", "nov", "dec" ,"q4","t"];
@@ -91,6 +93,7 @@ ngOnChanges(changes:any) {
     }
     console.log(ck);
     var prog_ou=this.user.username;
+    if(this.pid!=0) prog_ou=this.name+" - M&E Generated";
     if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
     //ck.push("q1r","q2r","q3r","q4r")
     this.gridApi.exportDataAsExcel({
@@ -153,7 +156,7 @@ ngOnChanges(changes:any) {
 
   constructor(private mfoService: MfoService, public dialog: MatDialog,private snackBar: MatSnackBar) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    var clickable = this.user.b ==0;
+    this.edit = this.user.b==0 && this.user.pid!=100;
     this.excelStyles= [
       { id:"indent1",alignment :{indent:1} },
       { id:"indent2",alignment :{indent:2} },
@@ -404,7 +407,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jan',
             field: 'jana',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -412,7 +415,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Feb',
             field: 'feba',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -420,7 +423,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Mar',
             field: 'mara',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -437,7 +440,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Apr',
             field: 'apra',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -445,7 +448,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'May',
             field: 'maya',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -453,7 +456,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jun',
             field: 'juna',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -470,7 +473,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jul',
             field: 'jula',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -478,7 +481,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Aug',
             field: 'auga',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -486,7 +489,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Sep',
             field: 'sepa',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -503,7 +506,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Oct',
             field: 'octa',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -511,7 +514,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Nov',
             field: 'nova',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -519,7 +522,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Dec',
             field: 'deca',
             width: 70,
-            editable: clickable,
+            editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -570,7 +573,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jan',
             field: 'janr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -580,7 +583,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Feb',
             field: 'febr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -590,7 +593,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Mar',
             field: 'marr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -600,7 +603,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Apr',
             field: 'aprr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -610,7 +613,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'May',
             field: 'mayr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -620,7 +623,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jun',
             field: 'junr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -630,7 +633,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jul',
             field: 'julr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -640,7 +643,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Aug',
             field: 'augr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -650,7 +653,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Sep',
             field: 'sepr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -660,7 +663,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Oct',
             field: 'octr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -670,7 +673,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Nov',
             field: 'novr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,
@@ -680,7 +683,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Dec',
             field: 'decr',
             width: 100,
-            editable: clickable,
+            editable: this.edit,
             cellEditor: 'agLargeTextCellEditor',
             maxLength: 500,
             cols: 40,

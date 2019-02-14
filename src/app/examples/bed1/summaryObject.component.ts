@@ -1,21 +1,20 @@
+<<<<<<< HEAD
 import { Component, Input, OnChanges } from '@angular/core';
 import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
+=======
+import { Component,Input,OnChanges } from '@angular/core';
+>>>>>>> d05735b20e083b27ddef42bb0d923292f61a1432
 import { MfoService } from '../services/mfo.service';
 
 @Component({
   selector: 'summary-object',
   template: `
-  <div class="row item" [ngClass]="routeAnimationsElements">
-  <div class="col-md-10">
-          <h3>Summary Object Codes Table</h3>
-      </div>
-      <div  class="col-md-2">
-      <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
+  <div  class="col-md-2">
+    <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
       RECALCULATE
-    </button>         
-      </div>
-</div>
-
+    </button> 
+    <br>
+  </div>
     <ag-grid-angular
       style="width: 100%; height: 250px;"
       class="ag-theme-balham"
@@ -29,15 +28,19 @@ import { MfoService } from '../services/mfo.service';
       [enableColResize]="true"
       [rowSelection]="rowSelection"
       [suppressAggFuncInHeader]="true"
-      [groupDefaultExpanded]=-1
       (gridReady)="onGridReady($event)"
     >
     </ag-grid-angular>
   `
 })
 export class SummaryObjectComponent implements OnChanges{
+<<<<<<< HEAD
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
+=======
+  @Input() gridApiParent:any;
+  @Input() pid:number = 0;
+>>>>>>> d05735b20e083b27ddef42bb0d923292f61a1432
   gridApi: any;
   gridColumnApi: any;
   rowData: any;
@@ -46,30 +49,36 @@ export class SummaryObjectComponent implements OnChanges{
   components: any;
   rowSelection: any;
   columnTypes: any;
+<<<<<<< HEAD
   groupRowAggNodes;
   user: any;
   @Input() pid: number = 0;
+=======
+  user:any;
+  private groupRowAggNodes;
+>>>>>>> d05735b20e083b27ddef42bb0d923292f61a1432
 
+  
   ngOnChanges(changes:any) {
     console.log(changes.pid.currentValue);
     this.mfoService.getSummaryObject(changes.pid.currentValue).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
-
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.mfoService.getSummaryObject(this.user.pid).subscribe(data => {
+    if(this.pid===0) this.pid = this.user.pid;
+    this.mfoService.getSummaryObject(this.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
   }
   recalc(){
-    console.log("here");
-    this.mfoService.getSummaryObject(this.user.pid).subscribe(data => {
+    if(this.pid===0) this.pid = this.user.pid;
+    this.mfoService.getSummaryObject(this.pid).subscribe(data => {
       this.rowData = data;
     });
   }
