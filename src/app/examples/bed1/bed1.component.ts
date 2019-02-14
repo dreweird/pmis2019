@@ -14,7 +14,6 @@ import { logDialog } from '../bed2/logDialog.component';
 export class Bed1Component implements OnInit, OnChanges {
 
   @Input() pid: number = 0;
-  @Input() name: string = '';
   changeLog: string[] = [];
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
@@ -28,7 +27,6 @@ export class Bed1Component implements OnInit, OnChanges {
   columnTypes: any;
   date_updated: any;
   user: any;
-  edit: any;
   excelStyles:any;
   months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   mon = ["jan", "feb", "mar","Q1", "apr", "may", "jun" ,"Q2" , "jul", "aug", "sep" ,"Q3", "oct", "nov", "dec" ,"Q4","to"];
@@ -67,8 +65,6 @@ export class Bed1Component implements OnInit, OnChanges {
     }
     ck.push("un","fu");
     var prog_ou=this.user.username;
-    console.log(this.pid);
-    if(this.pid!=0) prog_ou=this.name+" - M&E Generated";
     if(prog_ou.substring(0, 7)=="budget_") prog_ou  = prog_ou.substring(7, prog_ou.length+1);
     this.gridApi.exportDataAsExcel({
       customHeader  : [
@@ -108,14 +104,8 @@ export class Bed1Component implements OnInit, OnChanges {
       processCellCallback:function (params){
         var node = params.node;
         //console.log(params);
-        if(params.column.colDef.field=="mfo_name"){
-          if(node.group) {
-            return node.key;
-          }else {
-            return params.value;
-          }
-        }
-        else if(params.column.colDef.field=="fu" && isNaN(params.value))return '';
+        if(node.group && params.column.colDef.field=="mfo_name") return node.key;
+        else if(params.column.colDef.headerName=="Total Cost" && isNaN(params.value))return '';
         else return params.value;
       },
     });
@@ -335,7 +325,6 @@ export class Bed1Component implements OnInit, OnChanges {
     this.lastUpdated();
   }
   lastUpdated() {
-    console.log(this.user.pid);
     this.mfoService.getLastUpdated(1, this.user.pid).subscribe(data => {
       this.date_updated = data;
     });
@@ -370,7 +359,7 @@ export class Bed1Component implements OnInit, OnChanges {
 
   constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.edit = this.user.b==1 && this.user.pid!=100;
+    var clickable = this.user.b==1;
     this.excelStyles= [
       { id:"indent1",alignment :{indent:1} },
       { id:"indent2",alignment :{indent:2} },
@@ -388,14 +377,12 @@ export class Bed1Component implements OnInit, OnChanges {
           borderTop: { color: "#000000", lineStyle: "Continuous", weight: 1 },
         }
       },
-      { id: "ad", interior: { color: "#f1cbff", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
-      { id: "un", interior: { color: "#ffbdbd", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
-      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
-      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
-      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
-      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
+      { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+      { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       {
         id: "header",
         font: { size:11, fontName: "Calibri", bold: true, },
@@ -494,13 +481,13 @@ export class Bed1Component implements OnInit, OnChanges {
         cellClass:['data'],headerName: 'Adjustment',
         field: 'adjustment',
         width: 100,
-        editable: this.edit,
+        editable: clickable,
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn',
 
       },
       {
-        cellClass:['data','ad'],headerName: 'Adjusted Allotment',
+        cellClass:['data'],headerName: 'Adjusted Allotment',
         field: 'adjusted',
         width: 100,
         cellStyle: { color: 'white', 'background-color': '#b23c9a' },
@@ -536,7 +523,7 @@ export class Bed1Component implements OnInit, OnChanges {
         
           },
           {
-            cellClass:['data','d1'],headerName: "Q1",
+            cellClass:['data'],headerName: "Q1",
             field: 'Q1_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -569,7 +556,7 @@ export class Bed1Component implements OnInit, OnChanges {
             
           },
           {
-            cellClass:['data','d1'],headerName: "Q2",
+            cellClass:['data'],headerName: "Q2",
             field: 'Q2_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -598,7 +585,7 @@ export class Bed1Component implements OnInit, OnChanges {
             type: 'valueColumn'
           },
           {
-            cellClass:['data','d1'],headerName: "Q3",
+            cellClass:['data'],headerName: "Q3",
             field: 'Q3_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -627,7 +614,7 @@ export class Bed1Component implements OnInit, OnChanges {
             type: 'valueColumn'
           },
           {
-            cellClass:['data','d1'],headerName: "Q4",
+            cellClass:['data'],headerName: "Q4",
             field: 'Q4_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#4b830d' },
@@ -635,7 +622,7 @@ export class Bed1Component implements OnInit, OnChanges {
               'Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
           },
           {
-            cellClass:['data','d2'],headerName: "Total",
+            cellClass:['data'],headerName: "Total",
             field: 'to_t',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -652,7 +639,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jan',
             field: 'jan',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -661,7 +648,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Feb',
             field: 'feb',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -670,13 +657,13 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Mar',
             field: 'mar',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data','p1'],headerName: 'Q1',
+            cellClass:['data'],headerName: 'Q1',
             field: 'Q1',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -688,7 +675,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Apr',
             field: 'apr',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -697,7 +684,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'May',
             field: 'may',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -706,13 +693,13 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jun',
             field: 'jun',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data','p1'],headerName: 'Q2',
+            cellClass:['data'],headerName: 'Q2',
             field: 'Q2',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -724,7 +711,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Jul',
             field: 'jul',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -733,7 +720,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Aug',
             field: 'aug',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -742,13 +729,13 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Sep',
             field: 'sep',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data','p1'],headerName: 'Q3',
+            cellClass:['data'],headerName: 'Q3',
             field: 'Q3',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -760,7 +747,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Oct',
             field: 'oct',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -769,7 +756,7 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Nov',
             field: 'nov',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
@@ -778,13 +765,13 @@ export class Bed1Component implements OnInit, OnChanges {
             cellClass:['data'],headerName: 'Dec',
             field: 'decm',
             width: 70,
-            editable: this.edit,
+            editable: clickable,
             valueFormatter: this.currencyFormatter,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
           {
-            cellClass:['data','p1'],headerName: 'Q4',
+            cellClass:['data'],headerName: 'Q4',
             field: 'Q4',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#5472d3' },
@@ -793,7 +780,7 @@ export class Bed1Component implements OnInit, OnChanges {
             type: 'numericColumn'
           },
           {
-            cellClass:['data','p2'],headerName: 'Total Obligations',
+            cellClass:['data'],headerName: 'Total Obligations',
             field: 'to',
             width: 70,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
@@ -806,7 +793,7 @@ export class Bed1Component implements OnInit, OnChanges {
       },
       
       {
-        cellClass:['data','un'],headerName: 'Unobligated',
+        cellClass:['data'],headerName: 'Unobligated',
         field: 'un',
         width: 70,
         cellStyle: { color: 'white', 'background-color': '#e83525' },
@@ -855,8 +842,7 @@ export class Bed1Component implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    console.log(this.user.pid);
-    this.lastUpdated();
+    this.lastUpdated()
   }
 }
 
