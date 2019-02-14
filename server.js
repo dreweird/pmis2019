@@ -115,15 +115,9 @@ const connection = mysql.createConnection({
                         });                        
                     },
                      two: function(callback) {
-<<<<<<< HEAD
-                        var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost, sum(accomp) as accomp ,
-                        GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text,
-                        GROUP_CONCAT(CONCAT(municipal, '(', accomp,')') SEPARATOR ", ") as text2  
-=======
                         var sql = `SELECT mfo_id,province,district,sum(target) as target ,cost,  sum(accomp) as accomp,
                         GROUP_CONCAT(CONCAT(municipal, '(', target,')') SEPARATOR ", ") as text,
                         GROUP_CONCAT(CASE WHEN accomp>0 THEN CONCAT(municipal, '(', accomp,')') ELSE NULL END  SEPARATOR ", " ) as text2
->>>>>>> d05735b20e083b27ddef42bb0d923292f61a1432
                         FROM tbl_district where mfo_id = ? and province=? and district=2 GROUP BY mfo_id,province,district`;
                         console.log(sql);
                         connection.query(String(sql),[mfo_id, prov,],function(k_err,k_rows){
