@@ -5,17 +5,17 @@
      routerLinkActive #rla="routerLinkActive"
      [active]="rla.isActive"
      [disabled]="e.user && !(isAuthenticated$ | async)">
-    {{e.label | translate}}
+    {{e.label}}
   </a>
 </nav>
 
 <nav class="nav-responsive d-sm-none d-flex justify-content-center">
-    <mat-select [placeholder]="'anms.examples.title' | translate" [value]="'todos'">
+    <mat-select [placeholder]="'anms.examples.title' " [value]="'todos'">
       <mat-option *ngFor="let e of examples"
         [value]="e"
         [routerLink]="e.link"
         [disabled]="e.user && !(isAuthenticated$ | async)">
-          {{e.label | translate}}
+          {{e.label }}
       </mat-option>
     </mat-select>
 </nav>

@@ -49,13 +49,13 @@ export class AppComponent implements OnInit, OnDestroy {
   logo = require('../assets/logo.png');
   languages = ['en', 'de', 'sk', 'fr', 'es', 'pt-br'];
   navigation = [
-    { link: 'about', label: 'anms.menu.about' },
+    { link: 'about', label: 'About' },
     { link: 'features', label: 'Performance' },
     { link: 'examples', label: 'BEDs' }
   ];
   navigationSideMenu = [
     ...this.navigation,
-    { link: 'settings', label: 'anms.menu.settings' }
+   // { link: 'settings', label: 'anms.menu.settings' }
   ];
 
   settings: SettingsState;
@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.translate.setDefaultLang('en');
+    // this.translate.setDefaultLang('en');
     this.subscribeToSettings();
     this.subscribeToIsAuthenticated();
     this.subscribeToRouterEvents();
@@ -134,7 +134,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.settings = settings;
         this.setTheme(settings);
         this.setStickyHeader(settings);
-        this.setLanguage(settings);
+       // this.setLanguage(settings);
         this.animationService.updateRouteAnimationType(
           settings.pageAnimations,
           settings.elementsAnimations
