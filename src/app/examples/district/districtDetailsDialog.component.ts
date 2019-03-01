@@ -201,7 +201,7 @@ export class districtDetailsDialog implements OnInit{
             });
             if(err===""){
                 children.forEach(element => {
-                        str = str+element.data.municipal+"("+element.data.accomp+"), ";
+                        str = str+element.data.municipal+"("+element.data.target+"), ";
                         total=total+Number(element.data.target);
                         if(element.data.new){
                             delete element.data.new;
