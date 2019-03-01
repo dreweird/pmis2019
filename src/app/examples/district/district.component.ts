@@ -200,40 +200,98 @@ export class DistrictComponent implements OnInit, OnChanges {
   onCellClicked(event){
     if(event.data!=undefined && this.user.b==0 && this.user.pid!=100){ // b=0 is for budget account ; pid=100 is m&e account
       console.log(event);
-      var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
-      var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
-      var district=["one","two"];
-      for(var i=0;i<6;i++){
-        for(var ii=0; ii<district.length;ii++){
-          if(event.colDef.field==="dist."+i+"."+district[ii]+".accomp"){
-            console.log("dist."+i+"."+district[ii]+".accomp");
-            console.log("dist."+i+"."+district[ii]+".target");
-            if(event.data["dist"][i][district[ii]]["target"]==undefined || event.data["dist"][i][district[ii]]["target"]==null){
-              var mes="Error: No target in this location.";
-              this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
-            }else{
-              console.log(event);
-              console.log(this.gridApi);
-              var data={};
-              data['province'] = province[i];
-              data['district'] = ii+1;
-              data['mfo_id'] = event.data.mfo_id;
-              data['mfo_name'] = event.data.mfo_name;
-              data['prvnc'] = prvnc[i];
-              data['i'] = i;
-              data['ii2'] = ii;
-              data['ii'] = district[ii];
-              data['data'] = event.data;
-              const dialogRef = this.dialog.open(districtDetailsDialog,{ width: '450px',disableClose: true,data:data});
+      if(event.colDef.headerName=="PAP"){
 
-              dialogRef.afterClosed().subscribe(result=>{
-                console.log(result.data);
-                event.node.setData(result.data);
-                this.gridApi.refreshClientSideRowModel('group');
-                this.lastUpdated();
-              });
+      }
+      else{
+        var province = ["Agusan del Norte", "Agusan del Sur", "Surigao del Norte", "Surigao del Sur", "Province of Dinagat Islands", "Butuan City"];
+        var prvnc = ["adn", "ads", "sdn", "sds", "pdi", "bxu"];
+        var district=["one","two"];
+        var municipality = [
+            [
+              ["Butuan City","Las Nieves","Provincial Agriculture Office","Provincial Veterinary Office"],
+              ["Buenavista","City of Cabadbaran","Carmen","Jabonga","Kitcharao","Magallanes","Nasipit","RTR","Santiago","Tubay",]
+            ],
+            [
+              ['City of Bayugan','Esperanza','Prosperidad (Capital)','San Luis','Talacogon','Provincial Agriculture Office','Provincial Veterinary Office','Sibagat'],
+              ['Bunawan','La Paz','Loreto','Rosario','San Francisco','Santa Josefa','Trento','Veruela']
+            ],
+            [
+              ['Burgos','Dapa','Del Carmen','General Luna','Pilar','San Benito','San Isidro','Santa Monica (Sapao)','Socorro'],
+              ['Alegria','Bacuag','Claver','Gigaquit','Provincial Agriculture Office','Provincial Veterinary Office','Mainit','Malimono','Placer','San Francisco (Anao-aon)','Sison','SURIGAO CITY (Capital)','Tagana-an','Tubod']
+            ],
+            [
+              ['Bayabas','Cagwait','Cantilan','Carmen','Carrascal','Cortes','Lanuza','Lianga','Provincial Agriculture Office','Provincial Veterinary Office','Madrid','Marihatag','San Agustin','San Miguel','Tago','CITY OF TANDAG (Capital)'],
+              ['Barobo','City of Bislig','Hinatuan','Lingig','Tagbina']
+            ],
+            [
+              ['Basilisa (Rizal)','Cagdianao','Dinagat','Libjo (Albor)','Loreto','San Jose (Capital)','Tubajon','Provincial Agriculture Office','Provincial Veterinary Office']
+            ],
+        ];
+        for(var i=0;i<6;i++){
+          for(var ii=0; ii<district.length;ii++){
+            if(event.colDef.field==="dist."+i+"."+district[ii]+".accomp"){
+              //console.log("dist."+i+"."+district[ii]+".accomp");
+              //console.log("dist."+i+"."+district[ii]+".target");
+              if(event.data["dist"][i][district[ii]]["target"]==undefined || event.data["dist"][i][district[ii]]["target"]==0  || event.data["dist"][i][district[ii]]["target"]==null){
+                var mes="Error: No target in this location.";
+                this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
+              }else{
+                console.log(event);
+                console.log(this.gridApi);
+                var data={};
+                data['province'] = province[i];
+                data['district'] = ii+1;
+                data['mfo_id'] = event.data.mfo_id;
+                data['mfo_name'] = event.data.mfo_name;
+                data['prvnc'] = prvnc[i];
+                data['i'] = i;
+                data['ii2'] = ii;
+                data['ii'] = district[ii];
+                data['data'] = event.data;
+                data['val'] = event.value;
+                data['t_a'] = true;
+                data['municipality'] = municipality;
+                const dialogRef = this.dialog.open(districtDetailsDialog,{ width: '400px',disableClose: true,data:data});
+
+                dialogRef.afterClosed().subscribe(result=>{
+                  console.log(result.data);
+                  event.node.setData(result.data);
+                  this.gridApi.refreshClientSideRowModel('group');
+                  this.lastUpdated();
+                });
+              }
+              break;
             }
-            break;
+            if(event.colDef.field==="dist."+i+"."+district[ii]+".target"){
+              console.log("dist."+i+"."+district[ii]+".accomp");
+              console.log("dist."+i+"."+district[ii]+".target");
+              
+                console.log(event);
+                console.log(this.gridApi);
+                var data={};
+                data['province'] = province[i];
+                data['district'] = ii+1;
+                data['mfo_id'] = event.data.mfo_id;
+                data['mfo_name'] = event.data.mfo_name;
+                data['prvnc'] = prvnc[i];
+                data['i'] = i;
+                data['ii2'] = ii;
+                data['ii'] = district[ii];
+                data['data'] = event.data;
+                data['val'] = event.value;
+                data['t_a'] = false;
+                data['municipality'] = municipality;
+                const dialogRef = this.dialog.open(districtDetailsDialog,{ width: '560px',disableClose: true,data:data});
+
+                dialogRef.afterClosed().subscribe(result=>{
+                  console.log(result.data);
+                  event.node.setData(result.data);
+                  this.gridApi.refreshClientSideRowModel('group');
+                  this.lastUpdated();
+                });
+              break;
+            }
           }
         }
       }
@@ -365,7 +423,8 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Target', 
                 children:[
                   { cellClass:['data'],headerName: 'Area', field: 'dist.0.one.text', width: 100,columnGroupShow: 'open', },            
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.target', width: 100, type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.target', width: 100, type: 'valueColumn',
+                      cellStyle: { color: 'black', 'background-color': '#6bb9f0' },},      
                   { cellClass:['data'],headerName: 'Unit Cost', field: 'dist.0.one.cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { cellClass:['data'],headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.dist[0].one.target) * Number(data.dist[0].one.cost)', valueFormatter: this.currencyFormatter,
@@ -375,7 +434,8 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Accomplishment', 
                 children:[
                   { cellClass:['data'],headerName: 'Area',  field: 'dist.0.one.text2', width: 100, columnGroupShow: 'open',},            
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.accomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.accomp', width: 100,  type: 'valueColumn',
+                      cellStyle: { color: 'black', 'background-color': '#7befb2' },},
                 ]
               }
             ]
