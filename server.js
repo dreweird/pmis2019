@@ -16,10 +16,10 @@ app.use(CONTEXT, express.static(__dirname + '/dist'));
 app.use('/', express.static(__dirname + '/dist'));
 app.use(bodyParser.json()); // Body parser use JSON data
 app.use(bodyParser.urlencoded({ extended: false }));
-app.listen(PORT, '0.0.0.0', () => console.log(`App running on 0.0.0.0:${PORT}/${CONTEXT}`));
+app.listen(PORT, 'localhost', () => console.log(`App running on localhost:${PORT}/${CONTEXT}`));
 
 const connection = mysql.createConnection({
-    host     : '0.0.0.0',
+    host     : 'localhost',
     user     : 'root',
     password : '',
     database : 'raw_dasystem'
@@ -188,6 +188,37 @@ const connection = mysql.createConnection({
     connection.query(query, function(err, rows){
         if (err) throw res.status(400).json(err);
         if (rows.length > 0){
+            res.json(rows); 
+        }
+    })
+  });
+
+  app.post('/addDistrictDetails', function(req, res){
+    var query = "INSERT INTO tbl_district (mfo_id, province,district,municipal,target,accomp,cost) values (?,?,?,?,?,?,?)";
+    var data = req.body.data;
+    console.log(data);
+    query = mysql.format(query,[data.mfo_id, data.province, data.district, data.municipal, data.target,data.accomp, data.cost]);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        if (err) throw res.status(400).json(err);
+        if (rows.affectedRows > 0){
+            console.log(rows);
+            res.json(rows); 
+        }
+    })
+  });
+
+  app.post('/updateDistrictDetailsTarget', function(req, res){
+    var query = "UPDATE tbl_district SET ? WHERE id = ?";
+    var data = req.body.data;
+    //console.log(data);
+    query = mysql.format(query,[data.data,data.id]);
+    console.log(query); 
+    connection.query(query, function(err, rows){
+        console.log(rows);
+        if (err) throw res.status(400).json(err);
+        if (rows.affectedRows > 0){
+            console.log(rows);
             res.json(rows); 
         }
     })
