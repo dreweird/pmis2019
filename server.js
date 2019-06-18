@@ -6,7 +6,7 @@ const async = require('async');
 const path = require('path');
 var staticRoot = __dirname + './dist'; 
 const CONTEXT = '/angular-ngrx-material-starter';
-const PORT = 3500;
+const PORT = 3115;
 
 const app = express();
 
@@ -16,18 +16,49 @@ app.use(CONTEXT, express.static(__dirname + '/dist'));
 app.use('/', express.static(__dirname + '/dist'));
 app.use(bodyParser.json()); // Body parser use JSON data
 app.use(bodyParser.urlencoded({ extended: false }));
-app.listen(PORT, '0.0.0.0', () => console.log(`App running on 0.0.0.0:${PORT}/${CONTEXT}`));
+//app.listen(PORT, '172.16.130.8', () => console.log(`App running on localhost:${PORT}/${CONTEXT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`App running on localhost:${PORT}/${CONTEXT}`));
 
 const connection = mysql.createConnection({
-    host     : '0.0.0.0',
-    user     : 'root',
-    password : '',
-    database : 'raw_dasystem'
+    host : '172.16.130.8',
+    user : 'pmis',
+    password : 'pmis',
+    database : 'raw_dasystem2019',
   });
   
   connection.connect();
 
   app.get('/', (req, res) => res.send('Hello World!'));
+
+  app.get('/dashboard', function(req, res) {
+ 
+    data = [];
+    function delay() {
+        return new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+      async function delayedLog(item) {
+        // notice that we can await a function
+        // that returns a promise
+        connection.query(`
+        SELECT sum(janft) as janft FROM tbl_mfo where program_id =`+item, function (error, results) {
+            if (error) throw error;
+            results.id = item;
+            data.push(results); 
+          });
+        await delay();
+        console.log(data);
+      }
+      async function processArray(array) {
+        const promises = array.map(delayedLog);
+        // wait until all promises are resolved
+        await Promise.all(promises);
+        res.send(data);
+        console.log('Done!');
+      }
+      
+      processArray([1, 2, 3, 4, 5]);
+  });
 
   app.post('/login',function(req,res){
     console.log(req.body);
@@ -227,8 +258,8 @@ const connection = mysql.createConnection({
   });
 
   app.post('/addObject', function(req, res){
-    var query = "INSERT INTO tbl_allotment (mfo_id, object_id) VALUES (?,?)";
-    var data = [req.body.mfo_id, req.body.object_id];
+    var query = "INSERT INTO tbl_allotment (mfo_id, object_id, pid) VALUES (?,?,?)";
+    var data = [req.body.mfo_id, req.body.object_id, req.body.pid];
     query = mysql.format(query,data);
     console.log(query); 
     connection.query(query, function(err, rows){
@@ -238,7 +269,7 @@ const connection = mysql.createConnection({
         }
     })
   });
-
+ 
   app.post('/addLogs', function(req, res){
     var query = "INSERT INTO tbl_logs (pid, mfo_id, message, date, beds) VALUES (?, ?, ?, NOW(), ?)";
     var data = [req.body.uid, req.body.mfo_id, req.body.message, req.body.beds];

@@ -10,11 +10,16 @@ import { MFOPhysical } from './mfo';
 export class MfoService {
   constructor(private http: HttpClient) {}
 
-  apiRoot = 'http://localhost:3500';
+  apiRoot = 'http://172.16.130.8:3115';
 
   getMFO(pid: number) {
     const url = `${this.apiRoot}/mfos`;
     return this.http.post(url, {pid});
+  }
+
+  getObjectCode() {
+    const url = `${this.apiRoot}/getObjectCode`;
+    return this.http.get(url);
   }
 
   getMFOPhysical(pid: number): Observable<MFOPhysical[]> {
@@ -70,9 +75,9 @@ export class MfoService {
     );
   }
 
-  addObject(mfo_id, object_id) {
+  addObject(mfo_id, object_id, pid) {
     const url = `${this.apiRoot}/addObject`;
-    return this.http.post(url, { mfo_id, object_id });
+    return this.http.post(url, { mfo_id, object_id, pid });
   }
 
   updateAllotment(id: number, value: number, col: string) {

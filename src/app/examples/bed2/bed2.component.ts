@@ -65,7 +65,7 @@ ngOnChanges(changes:any) {
     const uid = JSON.parse(localStorage.getItem('currentUser'));
     const mo = month.slice(0, -1);
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, month, beds,null,null,null)
+      .updateLogs(id, value, uid.pid, col, month, beds,null,null,null)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
@@ -141,16 +141,21 @@ ngOnChanges(changes:any) {
   onCellValueChanged(event: any) {
     console.log(event);
     if (isNaN(+event.newValue)&& event.colDef.cellEditor!="agLargeTextCellEditor") {
+      console.log('ok');
       event.node.setDataValue(event.colDef.field,event.oldValue);
       var mes="Error: Invalid entry. Please input numbers only.";
       this.snackBar.open(mes, null, { duration: 3000, panelClass: 'error-notification-overlay'});
-    } else if(event.newValue==event.oldVaue){
+   
+   } else{
+     console.log('ok2');
       this.updateLogs(event.data.mfo_id, event.newValue, event.data.mfo_name, event.colDef.field, 2);
       this.mfoService
         .updatePhysical(event.data.mfo_id, event.newValue, event.colDef.field)
         .subscribe(data => {
           console.log(data);
         });
+
+         
     }
   }
 

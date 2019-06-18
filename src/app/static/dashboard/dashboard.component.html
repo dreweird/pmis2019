@@ -1,0 +1,86 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12" [ngClass]="routeAnimationsElements">
+      <h1 class="main-heading">PMIS Dashboard</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" [ngClass]="routeAnimationsElements">
+      <h2>DA-Caraga Over-all Status <em>as of {{myDate  | amDateFormat:'LL'}} </em> </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col" [ngClass]="routeAnimationsElements">
+      <mat-card>
+       <h2 class="center">Financial: <em >90.89%</em> </h2> 
+      </mat-card>
+    </div>
+    <div class="col" [ngClass]="routeAnimationsElements">
+      <mat-card>
+        <h2>Physical: <em >82.10%</em> </h2> 
+      </mat-card>
+    </div>
+    <div class="col" [ngClass]="routeAnimationsElements">
+      <mat-card>
+        <h2>Disbursement: <em >50.12%</em> </h2> 
+      </mat-card>
+    </div>
+</div> 
+  <div class="row">
+      <div class="col-md-12" [ngClass]="routeAnimationsElements">
+          <button mat-raised-button >Monthly</button>
+          <button mat-raised-button >Quarterly</button>
+          <button mat-raised-button >Semi</button>
+          <button mat-raised-button >Annual</button>
+      </div>
+  </div> 
+  
+  <div class="row">
+    <div class="col-md-12" [ngClass]="routeAnimationsElements">
+      <mat-card>
+        <div id="da_fin" style="height: 370px; width: 100%;"></div>
+    </mat-card>
+    </div>
+</div>
+  <div class="row">
+    <mat-card>
+        <div  class="col" [ngClass]="routeAnimationsElements">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Programs/OUs</th>
+                    <th scope="col">Allocation</th>
+                    <th scope="col">Obligation</th>
+                    <th scope="col">Utilization</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+      
+        </div>
+    </mat-card>
+
+  
+
+  </div>
+</div>

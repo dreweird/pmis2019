@@ -15,6 +15,8 @@ import { Bed1ContainerComponent } from './bed1/bed1-container/bed1-container.com
 import { Bed2Component } from './bed2/bed2.component';
 import { Bed3Component } from './bed3/bed3.component';
 import { DistrictComponent } from './district/district.component';
+import { Bed3ContainerComponent } from './bed3/bed3-container/bed3-container.component';
+
 
 
 const routes: Routes = [
@@ -45,7 +47,7 @@ const routes: Routes = [
       },
       {
         path: 'bed3',
-        component: Bed3Component,
+        component: Bed3ContainerComponent,
         data: { title: 'BED3' },
       },
       {

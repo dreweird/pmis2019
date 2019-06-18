@@ -26,6 +26,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { MatFormFieldModule} from '@angular/material';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -123,7 +125,9 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MatDialogModule,
 
     FontAwesomeModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatFormFieldModule,
+    NgxMatSelectSearchModule
   ],
   declarations: [BigInputComponent, BigInputActionComponent],
   exports: [
@@ -159,7 +163,9 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     FontAwesomeModule,
 
     BigInputComponent,
-    BigInputActionComponent
+    BigInputActionComponent,
+    MatFormFieldModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class SharedModule {}
