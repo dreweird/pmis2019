@@ -6,7 +6,7 @@ const async = require('async');
 const path = require('path');
 var staticRoot = __dirname + './dist'; 
 const CONTEXT = '/angular-ngrx-material-starter';
-const PORT = 3500;
+const PORT = 3115;
 
 const app = express();
 
@@ -19,10 +19,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(PORT, 'localhost', () => console.log(`App running on localhost:${PORT}/${CONTEXT}`));
 
 const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    database : 'raw_dasystem'
+    host : '172.16.130.8',
+    user : 'pmis',
+    password : 'pmis',
+    database : 'raw_dasystem2019',
   });
   
   connection.connect();

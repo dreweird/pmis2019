@@ -62,6 +62,18 @@ export class DistrictComponent implements OnInit, OnChanges {
       maximumFractionDigits: 2
     });
   }
+  decimalFormatter(params) {
+    const number = parseFloat(params.value);
+    if (params.value === undefined || params.value === null) {
+      return null;
+    }else if(isNaN(params.value)){
+      return "";
+    }
+    return number.toLocaleString('en-us', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
   exportcsv(){
     var prvnc = ["adn", "ads", "sdn", "sds", "pdi"];
     var ck=["mfo_name","unitmeasure","taccomp"];
@@ -423,7 +435,7 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Target', 
                 children:[
                   { cellClass:['data'],headerName: 'Area', field: 'dist.0.one.text', width: 100,columnGroupShow: 'open', },            
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.target', width: 100, type: 'valueColumn',
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.target', width: 100, type: 'valueColumn', valueFormatter: this.decimalFormatter,
                       cellStyle: { color: 'black', 'background-color': '#6bb9f0' },},      
                   { cellClass:['data'],headerName: 'Unit Cost', field: 'dist.0.one.cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter,},      
                   { cellClass:['data'],headerName: 'Total Cost', field: 'adn1totalcost', width: 100,columnGroupShow: 'open', 
@@ -434,7 +446,7 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Accomplishment', 
                 children:[
                   { cellClass:['data'],headerName: 'Area',  field: 'dist.0.one.text2', width: 100, columnGroupShow: 'open',},            
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.accomp', width: 100,  type: 'valueColumn',
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.one.accomp', width: 100,  type: 'valueColumn', valueFormatter: this.decimalFormatter,
                       cellStyle: { color: 'black', 'background-color': '#7befb2' },},
                 ]
               }
@@ -445,7 +457,7 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Target', 
                 children:[
                   { cellClass:['data'],headerName: 'Area', field: 'dist.0.two.text', width: 100,columnGroupShow: 'open', },            
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.two.target', width: 100,  type: 'valueColumn',},      
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.two.target', width: 100,  type: 'valueColumn',valueFormatter: this.decimalFormatter,},      
                   { cellClass:['data'],headerName: 'Unit Cost', field: 'dist.0.two.cost', width: 100,columnGroupShow: 'open', valueFormatter: this.currencyFormatter, },      
                   { cellClass:['data'],headerName: 'Total Cost', field: 'adn2totalcost', width: 100,columnGroupShow: 'open', 
                     valueGetter:'Number(data.dist[0].two.target) * Number(data.dist[0].two.cost)', valueFormatter: this.currencyFormatter,
@@ -455,7 +467,7 @@ export class DistrictComponent implements OnInit, OnChanges {
               { headerName: 'Accomplishment', 
                 children:[
                   { cellClass:['data'],headerName: 'Area', field: 'dist.0.two.text2', width: 100,columnGroupShow: 'open'},          
-                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.two.accomp', width: 100,  type: 'valueColumn',},
+                  { cellClass:['data'],headerName: 'Number', field: 'dist.0.two.accomp', width: 100,  type: 'valueColumn',valueFormatter: this.decimalFormatter,},
                 ]
               }
             ]
