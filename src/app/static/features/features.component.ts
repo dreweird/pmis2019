@@ -4,7 +4,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '@app/core';
 
 
 import { features, da_financial } from './features.data';
-import * as CanvasJS from 'canvasjs/dist/canvasjs.min';
+import * as CanvasJS from '../../../assets/canvasjs.min';
 import {MatAccordion} from '@angular/material';
 
 @Component({

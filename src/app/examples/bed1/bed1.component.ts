@@ -57,15 +57,22 @@ export class Bed1Component implements OnInit, OnChanges {
   
   exportcsv(){
     var ck=["mfo_name","name","object_id","budget","adjustment","adjusted"];
-    for(var i=1;i<=2;i++){
-      for(var ii=0;ii<this.mon.length;ii++){
-        var add="";
-        if(i==1){ add="_t"; }
-        if(i==2&&ii==14) add="m";
-        ck.push(this.mon[ii]+add);
-      }
+    // for(var i=1;i<=2;i++){
+    //   for(var ii=0;ii<this.mon.length;ii++){
+    //     var add="";
+    //     if(i==1){ add="_t"; }
+    //     if(i==2&&ii==14) add="m";
+    //     ck.push(this.mon[ii]+add);
+    //   }
+    // }
+
+    for(var i=0; i<this.mon.length;i++){
+      var add="";
+      if(i==14) add="m";
+      ck.push(this.mon[i]+add);
     }
     ck.push("un","fu");
+    console.log(ck);
     var prog_ou=this.user.username;
     console.log(this.pid);
     if(this.pid!=0) prog_ou=this.name+" - M&E Generated";
@@ -86,7 +93,7 @@ export class Bed1Component implements OnInit, OnChanges {
           {data: {type:'String', value:''}},
           {data: {type:'String', value:''}},
           {data: {type:'String', value:''}},
-          {styleId:'t',data:{type:'String', value:'Financial Targets'},mergeAcross:16},
+         // {styleId:'t',data:{type:'String', value:'Financial Targets'},mergeAcross:16},
           {styleId:'a',data:{type:'String', value:'Financial Accomplishments'},mergeAcross:16},
           {styleId:'t',data:{type:'String', value:''}},
           {styleId:'t',data:{type:'String', value:''}},
@@ -150,18 +157,18 @@ export class Bed1Component implements OnInit, OnChanges {
       oct: 0,
       nov: 0,
       decm: 0,
-      jan_t: 0,
-      feb_t: 0,
-      mar_t: 0,
-      apr_t: 0,
-      may_t: 0,
-      jun_t: 0,
-      jul_t: 0,
-      aug_t: 0,
-      sep_t: 0,
-      oct_t: 0,
-      nov_t: 0,
-      dec_t: 0
+      // jan_t: 0,
+      // feb_t: 0,
+      // mar_t: 0,
+      // apr_t: 0,
+      // may_t: 0,
+      // jun_t: 0,
+      // jul_t: 0,
+      // aug_t: 0,
+      // sep_t: 0,
+      // oct_t: 0,
+      // nov_t: 0,
+      // dec_t: 0
     };
     nodes.forEach(function(node: any) {
       const data = node.group ? node.aggData : node.data;
@@ -177,42 +184,42 @@ export class Bed1Component implements OnInit, OnChanges {
       ) {
         result.adjusted += data.budget + data.adjustment;
       }
-      if (typeof data.jan_t === 'number') {
-        result.jan_t += data.jan_t;
-      }
-      if (typeof data.feb_t === 'number') {
-        result.feb_t += data.feb_t;
-      }
-      if (typeof data.mar_t === 'number') {
-        result.mar_t += data.mar_t;
-      }
-      if (typeof data.apr_t === 'number') {
-        result.apr_t += data.apr_t;
-      }
-      if (typeof data.may_t === 'number') {
-        result.may_t += data.may_t;
-      }
-      if (typeof data.jun_t === 'number') {
-        result.jun_t += data.jun_t;
-      }
-      if (typeof data.jul_t === 'number') {
-        result.jul_t += data.jul_t;
-      }
-      if (typeof data.aug_t === 'number') {
-        result.aug_t += data.aug_t;
-      }
-      if (typeof data.sep_t === 'number') {
-        result.sep_t += data.sep_t;
-      }
-      if (typeof data.oct_t === 'number') {
-        result.oct_t += data.oct_t;
-      }
-      if (typeof data.nov_t === 'number') {
-        result.nov_t += data.nov_t;
-      }
-      if (typeof data.dec_t === 'number') {
-        result.dec_t += data.dec_t;
-      }
+      // if (typeof data.jan_t === 'number') {
+      //   result.jan_t += data.jan_t;
+      // }
+      // if (typeof data.feb_t === 'number') {
+      //   result.feb_t += data.feb_t;
+      // }
+      // if (typeof data.mar_t === 'number') {
+      //   result.mar_t += data.mar_t;
+      // }
+      // if (typeof data.apr_t === 'number') {
+      //   result.apr_t += data.apr_t;
+      // }
+      // if (typeof data.may_t === 'number') {
+      //   result.may_t += data.may_t;
+      // }
+      // if (typeof data.jun_t === 'number') {
+      //   result.jun_t += data.jun_t;
+      // }
+      // if (typeof data.jul_t === 'number') {
+      //   result.jul_t += data.jul_t;
+      // }
+      // if (typeof data.aug_t === 'number') {
+      //   result.aug_t += data.aug_t;
+      // }
+      // if (typeof data.sep_t === 'number') {
+      //   result.sep_t += data.sep_t;
+      // }
+      // if (typeof data.oct_t === 'number') {
+      //   result.oct_t += data.oct_t;
+      // }
+      // if (typeof data.nov_t === 'number') {
+      //   result.nov_t += data.nov_t;
+      // }
+      // if (typeof data.dec_t === 'number') {
+      //   result.dec_t += data.dec_t;
+      // }
       if (typeof data.jan === 'number') {
         result.jan += data.jan;
       }
@@ -270,19 +277,19 @@ export class Bed1Component implements OnInit, OnChanges {
         Number(data.oct) +
         Number(data.nov) +
         Number(data.decm);
-      result.to_t +=
-        Number(data.jan_t) +
-        Number(data.feb_t) +
-        Number(data.mar_t) +
-        Number(data.apr_t) +
-        Number(data.may_t) +
-        Number(data.jun_t) +
-        Number(data.jul_t) +
-        Number(data.aug_t) +
-        Number(data.sep_t) +
-        Number(data.oct_t) +
-        Number(data.nov_t) +
-        Number(data.dec_t);
+      // result.to_t +=
+      //   Number(data.jan_t) +
+      //   Number(data.feb_t) +
+      //   Number(data.mar_t) +
+      //   Number(data.apr_t) +
+      //   Number(data.may_t) +
+      //   Number(data.jun_t) +
+      //   Number(data.jul_t) +
+      //   Number(data.aug_t) +
+      //   Number(data.sep_t) +
+      //   Number(data.oct_t) +
+      //   Number(data.nov_t) +
+      //   Number(data.dec_t);
       result.un = result.adjusted - result.to;
       result.fu = result.to / result.adjusted;
 
@@ -292,13 +299,13 @@ export class Bed1Component implements OnInit, OnChanges {
   
 
   addObject(params) {
-    // console.log(params);
+     console.log(this.user.b);
     if(this.user.b==1){
       if (params.colDef.headerName === 'PAP' && params.data !== undefined) {
         const selectedRows = this.gridApi.getSelectedRows();
         console.log(selectedRows);
         const dialogRef = this.dialog.open(AddObjectDialogComponent, {
-          data: { data: selectedRows[0], gridApi: this.gridApi }
+          data: { data: selectedRows[0], gridApi: this.gridApi, pid: this.pid }
         });
         return dialogRef.afterClosed();
       }
@@ -328,15 +335,17 @@ export class Bed1Component implements OnInit, OnChanges {
   }
 
   updateLogs(id: number, value: number, col: string, month: string) {
-    const uid = JSON.parse(localStorage.getItem('currentUser'));
+   //  const uid = JSON.parse(localStorage.getItem('currentUser'));
+   //  if(uid.pid === 101) uid.pid = this.pid; // if 
+   console.log(this.pid);
     this.mfoService
-      .updateLogs(id, value, uid.user_id, col, month, 1,null,null,null)
+      .updateLogs(id, value, this.pid, col, month, 1,null,null,null)
       .subscribe(data => console.log(data));
     this.lastUpdated();
   }
   lastUpdated() {
-    console.log(this.user.pid);
-    this.mfoService.getLastUpdated(1, this.user.pid).subscribe(data => {
+    console.log(this.pid);
+    this.mfoService.getLastUpdated(1, this.pid).subscribe(data => {
       this.date_updated = data;
     });
   }
@@ -370,7 +379,8 @@ export class Bed1Component implements OnInit, OnChanges {
 
   constructor(private mfoService: MfoService, private dialog: MatDialog) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.edit = this.user.b==1 && this.user.pid!=100;
+    this.edit = this.user.b==1;
+    console.log(this.edit);
     this.excelStyles= [
       { id:"indent1",alignment :{indent:1} },
       { id:"indent2",alignment :{indent:2} },
@@ -392,7 +402,7 @@ export class Bed1Component implements OnInit, OnChanges {
       { id: "un", interior: { color: "#ffbdbd", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
       { id: "p1", interior: { color: "#BBDAFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
       { id: "p2", interior: { color: "#86BCFF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
-      { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
+   //   { id: "t", interior: { color: "#fddfdf", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       { id: "a", interior: { color: "#ffb7b2", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, alignment:{horizontal:'Center'}},
       { id: "d1", interior: { color: "#92FEF9", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
       { id: "d2", interior: { color: "#01FCEF", pattern: 'Solid' }, font: { size:11, fontName: "Calibri", bold: true }, },
@@ -487,6 +497,7 @@ export class Bed1Component implements OnInit, OnChanges {
         cellClass:['data'],headerName: 'Original Allotment',
         field: 'budget',
         width: 100,
+        editable: this.edit,
         valueFormatter: this.currencyFormatter,
         type: 'numericColumn'
       },
@@ -507,143 +518,6 @@ export class Bed1Component implements OnInit, OnChanges {
         valueGetter: 'Number(data.budget) + Number(data.adjustment) ',
         valueFormatter: this.currencyFormatter,
         type: 'valueColumn'
-      },
-      {
-        headerName: 'Financial Target',
-        children: [
-          {
-            cellClass:['data'],headerName: "Jan",
-            field: 'jan_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-   
-          },
-          {
-            cellClass:['data'],headerName: "Feb",
-            field: 'feb_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-        
-          },
-          {
-            cellClass:['data'],headerName: "Mar",
-            field: 'mar_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-        
-          },
-          {
-            cellClass:['data','d1'],headerName: "Q1",
-            field: 'Q1_t',
-            width: 70,
-            cellStyle: { color: 'white', 'background-color': '#4b830d' },
-            valueGetter:
-            'Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t)'
-         
-          },
-          {
-            cellClass:['data'],headerName: "Apr",
-            field: 'apr_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-            
-          },
-          {
-            cellClass:['data'],headerName: "May",
-            field: 'may_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-            
-          },
-          {
-            cellClass:['data'],headerName: "Jun",
-            field: 'jun_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn',
-            
-          },
-          {
-            cellClass:['data','d1'],headerName: "Q2",
-            field: 'Q2_t',
-            width: 70,
-            cellStyle: { color: 'white', 'background-color': '#4b830d' },
-            valueGetter:
-              'Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t)',
-          },
-          {
-            cellClass:['data'],headerName: "Jul",
-            field: 'jul_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-            cellClass:['data'],headerName: "Aug",
-            field: 'aug_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-           cellClass:['data'],headerName: "Sep",
-            field: 'sep_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-            cellClass:['data','d1'],headerName: "Q3",
-            field: 'Q3_t',
-            width: 70,
-            cellStyle: { color: 'white', 'background-color': '#4b830d' },
-            valueGetter:
-              'Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t)',
-          },
-          {
-            cellClass:['data'],headerName: "Oct",
-            field: 'oct_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-           cellClass:['data'],headerName: "Nov",
-            field: 'nov_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-            cellClass:['data'],headerName: "Dec",
-            field: 'dec_t',
-            width: 70,
-            columnGroupShow: 'open',
-            type: 'valueColumn'
-          },
-          {
-            cellClass:['data','d1'],headerName: "Q4",
-            field: 'Q4_t',
-            width: 70,
-            cellStyle: { color: 'white', 'background-color': '#4b830d' },
-            valueGetter:
-              'Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
-          },
-          {
-            cellClass:['data','d2'],headerName: "Total",
-            field: 'to_t',
-            width: 70,
-            cellStyle: { color: 'white', 'background-color': '#ef7109' },
-            valueGetter:
-              'Number(data.jan_t) + Number(data.feb_t) + Number(data.mar_t) + Number(data.apr_t) + Number(data.may_t) + Number(data.jun_t) + Number(data.jul_t) + Number(data.aug_t) + Number(data.sep_t) + Number(data.oct_t) + Number(data.nov_t) + Number(data.dec_t)',
-            type: 'totalColumn'
-          }
-      ]
       },
       {
         headerName: 'Financial Accomplishment',
@@ -795,7 +669,7 @@ export class Bed1Component implements OnInit, OnChanges {
           {
             cellClass:['data','p2'],headerName: 'Total Obligations',
             field: 'to',
-            width: 70,
+            width: 120,
             cellStyle: { color: 'white', 'background-color': '#ef7109' },
             valueGetter:
               'Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm)',
@@ -808,7 +682,7 @@ export class Bed1Component implements OnInit, OnChanges {
       {
         cellClass:['data','un'],headerName: 'Unobligated',
         field: 'un',
-        width: 70,
+        width: 120,
         cellStyle: { color: 'white', 'background-color': '#e83525' },
         valueGetter:
           '(Number(data.budget) + Number(data.adjustment)) - (Number(data.jan) + Number(data.feb) + Number(data.mar) + Number(data.apr) + Number(data.may) + Number(data.jun) + Number(data.jul) + Number(data.aug) + Number(data.sep) + Number(data.oct) + Number(data.nov) + Number(data.decm))',

@@ -15,6 +15,7 @@ export class AuthenticatedComponent implements OnInit {
   pid = 0;
   name: string = '';
   open: boolean = false;
+  uid: any;
 
   setPID(pid: number, name: string) {
     this.pid = pid;
@@ -23,7 +24,8 @@ export class AuthenticatedComponent implements OnInit {
 
   constructor(private storeUser: Store<AppState>) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    if(this.user.pid === 100){
+    this.uid = this.user.user_id;
+    if(this.user.pid === 100 || this.user.pid === 101 ){
       this.open = true;
     }
   }

@@ -1,7 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MfoService } from '../services/mfo.service';
+import { MatSelect } from '@angular/material';
+import { take, takeUntil } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
 
 /**
  * The dialog will close with true if user clicks the ok button,
@@ -13,13 +16,18 @@ import { MfoService } from '../services/mfo.service';
     <mat-dialog-content>
       <form [formGroup]="form" (ngSubmit)="submit()">
         <p>
+      
           <mat-form-field>
             <mat-select
               placeholder="Select Object"
-              formControlName="object"
-              required
+              [formControl]="objectCtrl"
+              required #singleSelect
             >
-              <mat-option *ngFor="let object of objects" [value]="object">
+            <mat-option>
+            <ngx-mat-select-search [formControl]="objectFilterCtrl"></ngx-mat-select-search>
+          </mat-option>
+
+              <mat-option *ngFor="let object of filteredObjects | async" [value]="object">
                 {{ object.object_id }} - {{ object.name }}
               </mat-option>
             </mat-select>
@@ -37,11 +45,11 @@ import { MfoService } from '../services/mfo.service';
       :host {
         display: block;
         width: 100%;
-        max-width: 500px;
+        max-width: 800px;
       }
       .mat-form-field {
         width: 100%;
-        min-width: 300px;
+        min-width: 500px;
       }
 
       mat-card-title,
@@ -58,133 +66,65 @@ import { MfoService } from '../services/mfo.service';
     `
   ]
 })
-export class AddObjectDialogComponent {
-  objects: Object[] = [
-    { object_id: '50201010-00', name: 'Travelling Expenses - Local' },
-    { object_id: '50201020-00', name: 'Travelling Expenses - Foreign' },
-    { object_id: '50202010-00', name: 'Training Expenses' },
-    { object_id: '50202020-00', name: 'Scholarship Grants/Expenses' },
-    { object_id: '50203010-00', name: 'Office Supplies Expenses' },
-    { object_id: '50203010-01', name: 'ICT Office Supplies' },
-    { object_id: '50203020-00', name: 'Accountable forms' },
-    { object_id: '50203040-00', name: 'Animal/Zoological Supplies Expenses' },
-    { object_id: '50203070-00', name: 'Drugs and Medicines Expenses' },
-    {
-      object_id: '50203080-00',
-      name: 'Medical, Dental and Laboratory Supplies Expenses'
-    },
-    { object_id: '50203090-00', name: 'Fuel, Oil and Lubricants Expenses' },
-    {
-      object_id: '50203100-00',
-      name: 'Agricultural and Marine Supplies Expenses'
-    },
-    {
-      object_id: '50203130-00',
-      name: 'Chemical and Filtering Supplies Expenses'
-    },
-    { object_id: '50203210-01', name: 'Machinery' },
-    { object_id: '50203210-02', name: 'Office Equipment' },
-    { object_id: '50203210-03', name: 'Semi-Expendable ICT' },
-    { object_id: '50203210-04', name: 'Semi Exp - Agricultural and Forestry ' },
-    { object_id: '50203210-07', name: 'Semi-Expendable Communication' },
-    { object_id: '50203210-11', name: 'Semi-Exp.-Printing Equipment' },
-    { object_id: '50203210-13', name: 'Semi-Exp.-Technical & Scientific' },
-    { object_id: '50203210-99', name: 'SE-Other Machinery & Equipment' },
-    { object_id: '50203220-01', name: 'Semi-Exp.-Furniture and Fixtures' },
-    { object_id: '50203220-02', name: 'Books' },
-    { object_id: '50203990-00', name: 'Other Supplies and Materials Expenses' },
-    { object_id: '50204010-00', name: 'Water Expenses' },
-    { object_id: '50204020-00', name: 'Electricity Expenses' },
-    { object_id: '50205010-00', name: 'Postage and Courier Services' },
-    { object_id: '50205020-01', name: 'Mobile' },
-    { object_id: '50205020-02', name: 'Landline' },
-    { object_id: '50205030-00', name: 'Internet Subscription Expenses' },
-    {
-      object_id: '50205040-00',
-      name: 'Cable Satellite, Telegraph and Radio Expenses'
-    },
-    { object_id: '50206010-00', name: 'Awards/Rewards Expenses' },
-    { object_id: '50206010-01', name: 'Awards/Rewards Expenses' },
-    { object_id: '50206010-02', name: 'Rewards & Incentives' },
-    { object_id: '50206020-00', name: 'Prizes' },
-    { object_id: '50206020-02', name: 'Prizes' },
-    { object_id: '50207010-00', name: 'Survey Expenses' },
-    {
-      object_id: '50207020-00',
-      name: 'Research, Exploration and Development Expenses'
-    },
-    {
-      object_id: '50210030-00',
-      name: 'Extraordinary and Miscellaneous Expenses'
-    },
-    { object_id: '50211030-00', name: 'Consultancy Services' },
-    { object_id: '50211990-00', name: 'Other Professional Services' },
-    { object_id: '50212030-00', name: 'Security Services' },
-    { object_id: '50212990-00', name: 'Other General Services' },
-    { object_id: '50213020-99', name: 'RM - Other Land Improvements' },
-    { object_id: '50213030-04', name: 'RM-Water Supply System ' },
-    { object_id: '50213040-01', name: 'RM - Buildings' },
-    { object_id: '50213040-99', name: 'RM - Other Structures' },
-    { object_id: '50213050-01', name: 'RM - Machinery' },
-    { object_id: '50213050-02', name: 'RM - Office Equipment' },
-    {
-      object_id: '50213050-03',
-      name: 'RM - Information and Communication Technology Equipment'
-    },
-    {
-      object_id: '50213050-04',
-      name: 'RM - Agricultural and Forestry Equipment'
-    },
-    { object_id: '50213050-07', name: 'RM-Communication Equipment' },
-    {
-      object_id: '50213050-14',
-      name: 'RM - Technical and Scientific Equipment'
-    },
-    { object_id: '50213060-01', name: 'RM - Motor Vehicles' },
-    { object_id: '50213060-99', name: 'RM - Other Transportation Equipment' },
-    { object_id: '50213070-00', name: 'RM - Furniture and Fixtures' },
-    {
-      object_id: '50213990-99',
-      name: 'RM - Other Property, Plant and Equipment'
-    },
-    { object_id: '50214990-00', name: 'Subsidies - Others' },
-    { object_id: '50215010-01', name: 'Taxes, Duties and Licenses' },
-    { object_id: '50215020-00', name: 'Fidelity Bond Premiums' },
-    { object_id: '50215030-00', name: 'Insurance Expenses' },
-    { object_id: '50216010-00', name: 'Labor and Wages' },
-    { object_id: '50299010-00', name: 'Advertising Expenses' },
-    { object_id: '50299020-00', name: 'Printing and Publication Expenses' },
-    { object_id: '50299030-00', name: 'Representation Expenses' },
-    { object_id: '50299040-00', name: 'Transportation and Delivery Expenses' },
-    { object_id: '50299050-01', name: 'Rents - Building and Structures' },
-    { object_id: '50299050-03', name: 'Rents - Motor Vehicles' },
-    { object_id: '50299070-00', name: 'Other Subscription Expenses' },
-    { object_id: '50299080-00', name: 'Donations' },
-    {
-      object_id: '50299990-99',
-      name: 'Other Maintenance and Operating Expenses'
-    },
-    { object_id: '50301040-00', name: 'FINEX' },
-    { object_id: '50604020-99', name: 'Other Land Improvements' },
-    { object_id: '50604030-01', name: 'Road Network' },
-    { object_id: '50604030-04', name: 'Water Supply Systems' },
-    { object_id: '50604040-01', name: 'Buildings' },
-    { object_id: '50604040-99', name: 'Other Structures' },
-    { object_id: '50604050-00', name: 'Machinery and Equipment Outlay' },
-    { object_id: '50604050-01', name: 'Machinery' },
-    { object_id: '50604050-02', name: 'Office Equipment' },
-    { object_id: '50604050-03', name: 'Communication Equipment' },
-    { object_id: '50604050-04', name: 'Agricultural and Forestry Equipment' },
-    { object_id: '50604050-07', name: 'Communication Equipment' },
-    { object_id: '50604050-14', name: 'Technical and Scientific Equipment' },
-    { object_id: '50604050-99', name: 'Other Machinery and Equipment' },
-    { object_id: '50604060-01', name: 'Motor Vehicles' },
-    { object_id: '50604070-01', name: 'Furniture and Fixtures' },
-    { object_id: '50604070-02', name: 'Books' },
-    { object_id: '50604090-99', name: 'Other Property, Plant and Equipment' },
-    { object_id: '50605010-01', name: 'Breeding Stocks' },
-    { object_id: '50605010-02', name: 'Livestock' }
-  ];
+export class AddObjectDialogComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('singleSelect') singleSelect: MatSelect;
+  protected object: Object[];
+  public objectFilterCtrl: FormControl = new FormControl();
+  public objectCtrl: FormControl = new FormControl();
+  protected _onDestroy = new Subject<void>();
+
+  user: any;
+  public filteredObjects: ReplaySubject<Object[]> = new ReplaySubject<Object[]>(1);
+
+  ngAfterViewInit() {
+    this.setInitialValue();
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+
+  ngOnInit(){
+    this.objectFilterCtrl.valueChanges
+    .pipe(takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.filterObjects();
+    });
+  }
+
+  protected filterObjects() {
+    if (!this.object) {
+      return;
+    }
+    // get the search keyword
+    let search = this.objectFilterCtrl.value;
+    if (!search) {
+      this.filteredObjects.next(this.object.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the banks
+    this.filteredObjects.next(
+      this.object.filter(object => object.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+  protected setInitialValue() {
+    this.filteredObjects
+      .pipe(take(1), takeUntil(this._onDestroy))
+      .subscribe(() => {
+        // setting the compareWith property to a comparison function
+        // triggers initializing the selection according to the initial value of
+        // the form control (i.e. _initializeSelection())
+        // this needs to be done after the filteredBanks are loaded initially
+        // and after the mat-option elements are available
+        this.singleSelect.compareWith = (a: Object, b: Object) => a && b && a.object_id === b.object_id;
+      });
+  }
 
   constructor(
     public dialogRef: MatDialogRef<AddObjectDialogComponent>,
@@ -192,6 +132,10 @@ export class AddObjectDialogComponent {
     private mfoService: MfoService
   ) {
     console.log(data);
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.mfoService.getObjectCode().subscribe((result: any)=>{
+      this.object = result;
+    })
   }
 
   form: FormGroup = new FormGroup({
@@ -200,16 +144,16 @@ export class AddObjectDialogComponent {
 
   submit() {
     if (this.form.valid) {
-      console.log(this.data.data.mfo_id, this.form.value.object.object_id);
+      console.log(this.data.data.mfo_id, this.objectCtrl.value.object_id);
       this.mfoService
-        .addObject(this.data.data.mfo_id, this.form.value.object.object_id)
+        .addObject(this.data.data.mfo_id, this.objectCtrl.value.object_id, this.data.pid)
         .subscribe(() => {
           this.data.gridApi.updateRowData({
             add: [
               {
                 mfo_id: this.data.data.mfo_id,
-                object_id: this.form.value.object.object_id,
-                name: this.form.value.object.name,
+                object_id: this.objectCtrl.value.object_id,
+                name: this.objectCtrl.value.name,
                 header_main: this.data.data.header_main,
                 header_program: this.data.data.header_program,
                 header_mfo: this.data.data.header_mfo,
@@ -228,3 +172,135 @@ export interface Object {
   object_id: string;
   name: string;
 }
+
+// export const OBJECTS: Object[] = [
+//   { object_id: '50201010-00', name: 'Travelling Expenses - Local' },
+//   { object_id: '50201020-00', name: 'Travelling Expenses - Foreign' },
+//   { object_id: '50202010-00', name: 'Training Expenses' },
+//   { object_id: '50202020-00', name: 'Scholarship Grants/Expenses' },
+//   { object_id: '50203010-00', name: 'Office Supplies Expenses' },
+//   { object_id: '50203010-01', name: 'ICT Office Supplies' },
+//   { object_id: '50203020-00', name: 'Accountable forms' },
+//   { object_id: '50203040-00', name: 'Animal/Zoological Supplies Expenses' },
+//   { object_id: '50203070-00', name: 'Drugs and Medicines Expenses' },
+//   {
+//     object_id: '50203080-00',
+//     name: 'Medical, Dental and Laboratory Supplies Expenses'
+//   },
+//   { object_id: '50203090-00', name: 'Fuel, Oil and Lubricants Expenses' },
+//   {
+//     object_id: '50203100-00',
+//     name: 'Agricultural and Marine Supplies Expenses'
+//   },
+//   {
+//     object_id: '50203130-00',
+//     name: 'Chemical and Filtering Supplies Expenses'
+//   },
+//   { object_id: '50203210-01', name: 'Machinery' },
+//   { object_id: '50203210-02', name: 'Office Equipment' },
+//   { object_id: '50203210-03', name: 'Semi-Expendable ICT' },
+//   { object_id: '50203210-04', name: 'Semi Exp - Agricultural and Forestry ' },
+//   { object_id: '50203210-07', name: 'Semi-Expendable Communication' },
+//   { object_id: '50203210-11', name: 'Semi-Exp.-Printing Equipment' },
+//   { object_id: '50203210-13', name: 'Semi-Exp.-Technical & Scientific' },
+//   { object_id: '50203210-99', name: 'SE-Other Machinery & Equipment' },
+//   { object_id: '50203220-01', name: 'Semi-Exp.-Furniture and Fixtures' },
+//   { object_id: '50203220-02', name: 'Books' },
+//   { object_id: '50203990-00', name: 'Other Supplies and Materials Expenses' },
+//   { object_id: '50204010-00', name: 'Water Expenses' },
+//   { object_id: '50204020-00', name: 'Electricity Expenses' },
+//   { object_id: '50204020-01', name: 'Power Supply System' },
+//   { object_id: '50205010-00', name: 'Postage and Courier Services' },
+//   { object_id: '50205020-01', name: 'Mobile' },
+//   { object_id: '50205020-02', name: 'Landline' },
+//   { object_id: '50205030-00', name: 'Internet Subscription Expenses' },
+//   {
+//     object_id: '50205040-00',
+//     name: 'Cable Satellite, Telegraph and Radio Expenses'
+//   },
+//   { object_id: '50206010-00', name: 'Awards/Rewards Expenses' },
+//   { object_id: '50206010-01', name: 'Awards/Rewards Expenses' },
+//   { object_id: '50206010-02', name: 'Rewards & Incentives' },
+//   { object_id: '50206020-00', name: 'Prizes' },
+//   { object_id: '50206020-02', name: 'Prizes' },
+//   { object_id: '50207010-00', name: 'Survey Expenses' },
+//   {
+//     object_id: '50207020-00',
+//     name: 'Research, Exploration and Development Expenses'
+//   },
+//   {
+//     object_id: '50210030-00',
+//     name: 'Extraordinary and Miscellaneous Expenses'
+//   },
+//   { object_id: '50211030-00', name: 'Consultancy Services' },
+//   { object_id: '50211990-00', name: 'Other Professional Services' },
+//   { object_id: '50212030-00', name: 'Security Services' },
+//   { object_id: '50212990-00', name: 'Other General Services' },
+//   { object_id: '50213020-99', name: 'RM - Other Land Improvements' },
+//   { object_id: '50213030-04', name: 'RM-Water Supply System ' },
+//   { object_id: '50213040-01', name: 'RM - Buildings' },
+//   { object_id: '50213040-99', name: 'RM - Other Structures' },
+//   { object_id: '50213050-01', name: 'RM - Machinery' },
+//   { object_id: '50213050-02', name: 'RM - Office Equipment' },
+//   {
+//     object_id: '50213050-03',
+//     name: 'RM - Information and Communication Technology Equipment'
+//   },
+//   {
+//     object_id: '50213050-04',
+//     name: 'RM - Agricultural and Forestry Equipment'
+//   },
+//   { object_id: '50213050-07', name: 'RM-Communication Equipment' },
+//   {
+//     object_id: '50213050-14',
+//     name: 'RM - Technical and Scientific Equipment'
+//   },
+//   { object_id: '50213060-01', name: 'RM - Motor Vehicles' },
+//   { object_id: '50213060-99', name: 'RM - Other Transportation Equipment' },
+//   { object_id: '50213070-00', name: 'RM - Furniture and Fixtures' },
+//   {
+//     object_id: '50213990-99',
+//     name: 'RM - Other Property, Plant and Equipment'
+//   },
+//   { object_id: '50214990-00', name: 'Subsidies - Others' },
+//   { object_id: '50215010-01', name: 'Taxes, Duties and Licenses' },
+//   { object_id: '50215020-00', name: 'Fidelity Bond Premiums' },
+//   { object_id: '50215030-00', name: 'Insurance Expenses' },
+//   { object_id: '50216010-00', name: 'Labor and Wages' },
+//   { object_id: '50299010-00', name: 'Advertising Expenses' },
+//   { object_id: '50299020-00', name: 'Printing and Publication Expenses' },
+//   { object_id: '50299030-00', name: 'Representation Expenses' },
+//   { object_id: '50299040-00', name: 'Transportation and Delivery Expenses' },
+//   { object_id: '50299050-01', name: 'Rents - Building and Structures' },
+//   { object_id: '50299050-03', name: 'Rents - Motor Vehicles' },
+//   { object_id: '50299070-00', name: 'Other Subscription Expenses' },
+//   { object_id: '50299080-00', name: 'Donations' },
+//   {
+//     object_id: '50299990-99',
+//     name: 'Other Maintenance and Operating Expenses'
+//   },
+//   { object_id: '50301040-00', name: 'FINEX' },
+//   { object_id: '50604020-99', name: 'Other Land Improvements' },
+//   { object_id: '50604030-01', name: 'Road Network' },
+//   { object_id: '50604030-04', name: 'Water Supply Systems' },
+//   { object_id: '50604040-01', name: 'Buildings' },
+//   { object_id: '50604040-99', name: 'Other Structures' },
+//   { object_id: '50604050-00', name: 'Machinery and Equipment Outlay' },
+//   { object_id: '50604050-01', name: 'Machinery' },
+//   { object_id: '50604050-02', name: 'Office Equipment' },
+//   { object_id: '50604050-03', name: 'Communication Equipment' },
+//   { object_id: '50604050-04', name: 'Agricultural and Forestry Equipment' },
+//   { object_id: '50604050-07', name: 'Communication Equipment' },
+//   { object_id: '50604050-14', name: 'Technical and Scientific Equipment' },
+//   { object_id: '50604050-99', name: 'Other Machinery and Equipment' },
+//   { object_id: '50604060-01', name: 'Motor Vehicles' },
+//   { object_id: '50604070-01', name: 'Furniture and Fixtures' },
+//   { object_id: '50604070-02', name: 'Books' },
+//   { object_id: '50604090-99', name: 'Other Property, Plant and Equipment' },
+//   { object_id: '50605010-01', name: 'Breeding Stocks' },
+//   { object_id: '50605010-02', name: 'Livestock' },
+//   { object_id: '50605010-03', name: 'Bearer Biological Assets Outlay' },
+//   { object_id: '50203990-00', name: 'Janitorial Services' }
+// ];
+
+

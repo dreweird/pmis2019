@@ -15,33 +15,59 @@
   </div>
   <div  *ngIf="open">
       <div class="row" [ngClass]="routeAnimationsElements">
+            <div class="col-12">
+           <h4>REGULAR</h4>
+           </div>
           <div class="col-12">
-              <button mat-raised-button (click)="setPID(1,'Rice')">RICE</button>
-              <button mat-raised-button (click)="setPID(2,'Corn')">CORN</button>
-              <button mat-raised-button (click)="setPID(3,'HVCDP')">HVCDP</button>
-              <button mat-raised-button (click)="setPID(4,'Livestock')">LIVESTOCK</button>
-              <button mat-raised-button (click)="setPID(5,'Organic Agriculture')">OA</button>
-              <button mat-raised-button (click)="setPID(20,'GASS')">GASS</button>
-              <button mat-raised-button (click)="setPID(17,'PMED')">PMED</button>
-              <button mat-raised-button (click)="setPID(18,'RAED')">RAED</button>
-              <button mat-raised-button (click)="setPID(19,'ILD')">ILD</button>
-              <button mat-raised-button (click)="setPID(14,'AMAD')">AMAD</button>
-              <button mat-raised-button (click)="setPID(16,'Regulatory')">REGULATORY</button>
-              <button mat-raised-button (click)="setPID(15,'Research')">RESEARCH</button>
-              <button mat-raised-button (click)="setPID(11,'STN_Trento')">STN_TRENTO</button>
-              <button mat-raised-button (click)="setPID(12,'STN_Del Monte')">STN_DELMONTE</button>
-              <button mat-raised-button (click)="setPID(13,'STN_Tagbina')">STN_TAGBINA</button>
-              <button mat-raised-button (click)="setPID(21,'GAD')">GAD</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 68 " (click)="setPID(1,'Rice')">RICE</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 68 " (click)="setPID(2,'Corn')">CORN</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(3,'HVCDP')">HVCDP</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 67 " (click)="setPID(4,'Livestock')">LIVESTOCK</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(5,'Organic Agriculture')">OA</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 67 "(click)="setPID(20,'GASS')">GASS</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(17,'PMED')">PMED</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(19,'ILD')">ILD</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(14,'AMAD')">AMAD</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(16,'Regulatory')">REGULATORY</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(15,'Research')">RESEARCH</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(11,'STN_Trento')">STN_TRENTO</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(12,'STN_Del Monte')">STN_DELMONTE</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(13,'STN_Tagbina')">STN_TAGBINA</button>
+              <button mat-raised-button *ngIf="uid == 62 " (click)="setPID(21,'GAD')">GAD</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 67 " (click)="setPID(22,'FMRDP')">FMRDP</button>
           </div>
-        
+           <div class="col-12">
+           <h4>FPMA</h4>
+           </div>
+              <div class="col-12">
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(54,'FPMA_RICE')">RICE</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(53,'FPMA_LIVESTOCK')">LIVESTOCK</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(51,'FPMA_HVCDP')">HVCDP</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 "(click)="setPID(52,'FPMA_CORN')">CORN</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(50,'FPMA_PMED')">PMED</button>
+              <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 65 " (click)="setPID(18,'RAED')">RAED</button>
+          </div>
+          <div class="col-12">
+            <h4>Special Program</h4>
+            </div>
+               <div class="col-12">
+               <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(61,'AMIA')">AMIA</button>
+               <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(62,'ICTU')">ICTU</button>
+               <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(63,'HALAL')">HALAL</button>
+               <button mat-raised-button *ngIf="uid == 62 || uid == 75 " (click)="setPID(64,'SAAD')">SAAD</button>
+               <button mat-raised-button *ngIf="uid == 62 || uid == 75 || uid == 66 " (click)="setPID(60,'PS')">PS</button>
+           </div>
+           
       </div>
       <div class="row" [ngClass]="routeAnimationsElements">
         <div class="col-12">
           <anms-bed1 [pid]="pid" [name]="name"></anms-bed1> 
           <summary-object [pid]="pid"></summary-object>
+          <br>
+          <bed-plan [pid]="pid" [name]="name" *ngIf="uid <= 62 "> </bed-plan>
           </div>
       </div>
-  <div class="row" [ngClass]="routeAnimationsElements">
+  <div class="row" [ngClass]="routeAnimationsElements" *ngIf="uid <= 62 ">
           <div class="col-12">
             <anms-bed2 [pid]="pid" [name]="name"></anms-bed2> 
             </div>
@@ -49,9 +75,10 @@
       <div class="row" [ngClass]="routeAnimationsElements">
             <div class="col-12">
               <anms-bed3 [pid]="pid" [name]="name"></anms-bed3> 
+              <bed3-plan [pid]="pid" [name]="name" *ngIf="uid <= 62 "></bed3-plan>
               </div>
           </div> 
-         <div class="row" [ngClass]="routeAnimationsElements">
+         <div class="row" *ngIf="pid < 6 && uid <= 62" [ngClass]="routeAnimationsElements">
               <div class="col-12">
                 <anms-district [pid]="pid" [name]="name"></anms-district> 
                 </div>

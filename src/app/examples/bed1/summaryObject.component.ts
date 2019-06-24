@@ -5,12 +5,19 @@ import { MfoService } from '../services/mfo.service';
 @Component({
   selector: 'summary-object',
   template: `
-  <div  class="col-md-2">
-    <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
-      RECALCULATE
-    </button> 
-    <br>
+
+  <div class="row item" [ngClass]="routeAnimationsElements">
+  <div class="col-md-10">
+      <h2>Summary by Object Code</h2>
   </div>
+  <div  class="col-md-2">
+      <button style="margin:5px;" mat-raised-button class="information" (click)="recalc()">
+      RECALCULATE
+        </button> 
+        <br>
+  </div>
+
+</div>
     <ag-grid-angular
       style="width: 100%; height: 250px;"
       class="ag-theme-balham"
@@ -56,11 +63,12 @@ export class SummaryObjectComponent implements OnChanges{
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    if(this.pid===0) this.pid = this.user.pid;
+    //if(this.pid===0) this.pid = this.user.pid;
     this.mfoService.getSummaryObject(this.pid).subscribe(data => {
       this.rowData = data;
       console.log(data);
     });
+    console.log(this.pid);
   }
   recalc(){
     if(this.pid===0) this.pid = this.user.pid;

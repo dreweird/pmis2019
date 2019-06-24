@@ -4,12 +4,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { FeaturesComponent } from './features/features.component';
 import { LoginPageComponent } from '@app/core/user/containers/login-page.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent,
     data: { title: 'anms.menu.about' }
+  },
+    {
+    path: 'dashboard',
+    component: DashboardComponent,
   },
   {
     path: 'features',

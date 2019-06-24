@@ -10,7 +10,11 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
+<<<<<<< HEAD
   private BASE_URL = 'http://localhost:3115';
+=======
+  private BASE_URL = 'http://172.16.130.8:3115';
+>>>>>>> a1319d0b50c26bffa548056cff7b4dfaf70e4d88
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
