@@ -50,6 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
   languages = ['en', 'de', 'sk', 'fr', 'es', 'pt-br'];
   navigation = [
     { link: 'about', label: 'About' },
+    { link: 'dashboard', label: 'Dashboard' },
     { link: 'features', label: 'Performance' },
     { link: 'examples', label: 'BEDs' }
   ];

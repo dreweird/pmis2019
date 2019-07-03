@@ -33,7 +33,7 @@ import { MfoService } from '../services/mfo.service';
     [rowSelection]="rowSelection"
     [suppressAggFuncInHeader]= "true"
     (gridReady)="onGridReady($event)"
-    (cellValueChanged)="onCellValueChanged($event)"
+    
     >
 </ag-grid-angular>
 <br><br>
@@ -88,7 +88,7 @@ export class Bed3PlanComponent implements OnInit, OnChanges{
         [{styleId:'headappend',data:{type:'String', value: 'PMIS v4.0 Generated as of '+this.months[new Date().getMonth()]+' '+new Date().getDate()+', '+new Date().getFullYear()}}],
         [],
         [ {data: {type:'String', value:''}},
-         {styleId:'t',data: {type:'String', value:'Disbursement Targets', mergeAcross:5}},
+         {styleId:'t',data: {type:'String', value:'Disbursement Targets', mergeAcross:17}},
         ],
       ],
       columnKeys:ck,

@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row">
+      <div class="col-md-12" [ngClass]="routeAnimationsElements">
+        <h1 class="main-heading">PMIS Dashboard</h1>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" [ngClass]="routeAnimationsElements">
+          <h2> <span class="caps"> {{program}} </span> Status <em>as of June 15, 2019 </em> </h2>
+          <!-- <h2> <span class="caps"> {{program}} </span> Status <em>as of {{myDate  | amDateFormat:'LL'}} </em> </h2> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md" [ngClass]="routeAnimationsElements">
+          <mat-card>
+              <mat-grid-list cols="2" rowHeight="2:1">
+                  <mat-grid-tile> <img class="image" src="assets/coin-stack.png" /> </mat-grid-tile>
+                  <mat-grid-tile> <h2 class="center">Obligation: <em >{{prog_fin}}</em> </h2> </mat-grid-tile>
+              </mat-grid-list>
+          
+          </mat-card>
+        </div>
+        <div class="col-md" [ngClass]="routeAnimationsElements">
+          <mat-card>
+              <mat-grid-list cols="2" rowHeight="2:1">
+                  <mat-grid-tile> <img class="image" src="assets/target.png" /> </mat-grid-tile>
+                  <mat-grid-tile>  <h2 class="center">Physical: <em >{{prog_phys}}</em> </h2> </mat-grid-tile>
+              </mat-grid-list>
+          
+          </mat-card>
+        </div>
+        <div class="col-md" [ngClass]="routeAnimationsElements">
+          <mat-card>
+          
+            <mat-grid-list cols="2" rowHeight="2:1">
+                <mat-grid-tile> <img class="image" src="assets/approve-invoice.png" /> </mat-grid-tile>
+                <mat-grid-tile> <h2 class="center">Disbursement: <em >{{prog_dis}}</em> </h2> </mat-grid-tile>
+            </mat-grid-list>
+          </mat-card>
+        </div>
+    </div> 
+
+    <div class="row">
+      <div class="col-md-12" [ngClass]="routeAnimationsElements">
+          <button mat-raised-button  (click)="show = !show; render()">{{show ? 'COMMULATIVE' : 'NON-COMMULATIVE'}}</button>
+          <button mat-raised-button  (click)="show3 = !show3;fin_percentage()">{{show3 ? 'PERCENTAGE - ANNUAL' : 'PERCENTAGE - MONTHLY'}}</button>
+          <div >
+              <mat-card>
+                  <div id="da_fin" style="height: 370px; width: 100%;"></div>
+              </mat-card>
+          </div>
+          <button mat-raised-button  (click)="show2 = !show2; render2()">{{show2 ? 'COMMULATIVE' : 'NON-COMMULATIVE'}}</button>
+          <button mat-raised-button  (click)="show4 = !show4;phys_percentage()">{{show4 ? 'PERCENTAGE - ANNUAL' : 'PERCENTAGE - MONTHLY'}}</button>
+          <mat-card>
+              <div id="da_phys" style="height: 370px; width: 100%;"></div>
+          </mat-card>
+   
+ 
+      </div>
+  </div>
+</div>

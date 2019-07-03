@@ -637,7 +637,7 @@ export class SummaryObjectComponent implements OnChanges{
         result.disbursement_total += Number(data.jan_da) + Number(data.feb_da) + Number(data.mar_da)+Number(data.apr_da) + Number(data.may_da) + Number(data.jun_da)+Number(data.jul_da) + Number(data.aug_da) + Number(data.sep_da)+Number(data.oct_da) + Number(data.nov_da) + Number(data.dec_da)
         result.un = result.adjusted-result.to;
         result.fu = result.to/result.adjusted;
-        result.disbursement_balance = result.disbursement_total - result.to;
+        result.disbursement_balance = result.to - result.disbursement_total;
         result.disbursement_util = result.disbursement_total / result.to;
 
       });

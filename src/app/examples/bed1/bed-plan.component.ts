@@ -33,7 +33,7 @@ import { MfoService } from '../services/mfo.service';
     [rowSelection]="rowSelection"
     [suppressAggFuncInHeader]= "true"
     (gridReady)="onGridReady($event)"
-    (cellValueChanged)="onCellValueChanged($event)"
+   
     >
 </ag-grid-angular>
   `

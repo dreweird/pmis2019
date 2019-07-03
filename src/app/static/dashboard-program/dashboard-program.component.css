@@ -1,0 +1,26 @@
+.caps {
+    text-transform: uppercase;
+}
+
+.image {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  mat-card {
+ 
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  .center{
+    text-align: center;
+    font-size: 1.5vw;
+  }
+
+  @media screen and (max-width: 750px) {
+    .center {
+      font-size: 4vw;
+    }
+  }

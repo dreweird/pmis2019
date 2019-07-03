@@ -93,6 +93,22 @@ export class MfoService {
     );
   }
 
+  getFinPerformance(){
+    const url = `${this.apiRoot}/getFinPerformance`;
+    return this.http.get<any>(url).pipe(
+      tap(_ => console.log('fetched the getFinPerformance')),
+      catchError(this.handleError('getFinPerformance', []))
+    );
+  }
+
+  getPerformance_program(pid: number){
+    const url = `${this.apiRoot}/getFinPerformance`;
+    return this.http.post<any>(url, {pid}).pipe(
+      tap(_ => console.log('fetched the getPerformance_program')),
+      catchError(this.handleError('getPerformance_program', []))
+    );
+  }
+
   updateLogs(
     mfo_id: number,
     value: number,

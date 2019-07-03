@@ -28,8 +28,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule} from '@angular/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgMarqueeModule } from 'ng-marquee';
+
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faBars,
@@ -127,7 +130,9 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     FontAwesomeModule,
     MatExpansionModule,
     MatFormFieldModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatGridListModule,
+    NgMarqueeModule
   ],
   declarations: [BigInputComponent, BigInputActionComponent],
   exports: [
@@ -165,7 +170,9 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     BigInputComponent,
     BigInputActionComponent,
     MatFormFieldModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatGridListModule,
+    NgMarqueeModule
   ]
 })
 export class SharedModule {}

@@ -318,7 +318,197 @@ const connection = mysql.createConnection({
         res.json(results);
 
       })
-  })
+  });
+
+  app.post('/getFinPerformance', function(req, res){
+    connection.query(`
+    SELECT b.pid, a.name, a.ft, a.janft, a.febft, a.marft, a.aprft, a.mayft, a.junft, a.julft, a.augft, a.sepft, a.octft, a.novft, a.decft, 
+    a.dt, a.jandt, a.febdt, a.mardt, a.aprdt, a.maydt, a.jundt, a.juldt, a.augdt, a.sepdt, a.octdt, a.novdt, a.decdt, 
+    a.pt, a.jant, a.febt, a.mart, a.aprt, a.mayt, a.junt, a.jult, a.augt, a.sept, a.octt, a.novt, a.dect, 
+    a.pa, a.jana, a.feba, a.mara, a.apra, a.maya, a.juna, a.jula, a.auga, a.sepa, a.octa, a.nova, a.deca, 
+    sum((b.jan + b.feb + b.mar + b.apr + b.may + b.jun + b.jul + b.aug + b.sep + b.oct + b.nov + b.decm)) AS fa ,
+    sum(b.jan) as janfa,
+    sum(b.feb) as febfa,
+    sum(b.mar) as marfa,
+    sum(b.apr) as aprfa,
+    sum(b.may) as mayfa,
+    sum(b.jun) as junfa,
+    sum(b.jul) as julfa,
+    sum(b.aug) as augfa,
+    sum(b.sep) as sepfa,
+    sum(b.oct) as octfa,
+    sum(b.nov) as novfa,
+    sum(b.decm) as decfa,
+    sum((b.jan_da + b.feb_da + b.mar_da + b.apr_da + b.may_da + b.jun_da + b.jul_da + b.aug_da + b.sep_da + b.oct_da + b.nov_da + b.dec_da)) AS da,
+    sum(b.jan_da) as janda,
+    sum(b.feb_da) as febda,
+    sum(b.mar_da) as marda,
+    sum(b.apr_da) as aprda,
+    sum(b.may_da) as mayda,
+    sum(b.jun_da) as junda,
+    sum(b.jul_da) as julda,
+    sum(b.aug_da) as augda,
+    sum(b.sep_da) as sepda,
+    sum(b.oct_da) as octda,
+    sum(b.nov_da) as novda,
+    sum(b.dec_da) as decda
+    FROM tbl_allotment as b left join 
+    (   SELECT a.program_id, u.first_name as name, SUM((a.janft + a.febft + a.marft + a.aprft + a.mayft + a.junft + a.julft + a.augft + a.sepft + a.octft + a.novft + a.decft)) AS ft, 
+            sum(a.janft) as janft,
+            sum(a.febft) as febft, 
+            sum(a.marft) as marft, 
+            sum(a.aprft) as aprft, 
+            sum(a.mayft) as mayft,
+            sum(a.junft) as junft,
+            sum(a.julft) as julft,
+            sum(a.augft) as augft,
+            sum(a.sepft) as sepft,
+            sum(a.octft) as octft,
+            sum(a.novft) as novft,
+            sum(a.decft) as decft,
+            SUM( (a.jandt + a.febdt + a.mardt + a.aprdt + a.maydt + a.jundt + a.juldt + a.augdt + a.sepdt + a.octdt + a.novdt + a.decdt) ) AS dt,
+            sum(a.jandt) as jandt,
+            sum(a.febdt) as febdt, 
+            sum(a.mardt) as mardt, 
+            sum(a.aprdt) as aprdt, 
+            sum(a.maydt) as maydt,
+            sum(a.jundt) as jundt,
+            sum(a.juldt) as juldt,
+            sum(a.augdt) as augdt,
+            sum(a.sepdt) as sepdt,
+            sum(a.octdt) as octdt,
+            sum(a.novdt) as novdt,
+            sum(a.decdt) as decdt,
+            SUM( (a.jant + a.febt + a.mart + a.aprt + a.mayt + a.junt + a.jult + a.augt + a.sept + a.octt + a.novt + a.dect) ) AS pt,
+            sum(a.jant) as jant,
+            sum(a.febt) as febt, 
+            sum(a.mart) as mart, 
+            sum(a.aprt) as aprt, 
+            sum(a.mayt) as mayt,
+            sum(a.junt) as junt,
+            sum(a.jult) as jult,
+            sum(a.augt) as augt,
+            sum(a.sept) as sept,
+            sum(a.octt) as octt,
+            sum(a.novt) as novt,
+            sum(a.dect) as dect,
+            SUM( (a.jana + a.feba + a.mara + a.apra + a.maya + a.juna + a.jula + a.auga + a.sepa + a.octa + a.nova + a.deca) ) AS pa,
+            sum(a.jana) as jana,
+            sum(a.feba) as feba, 
+            sum(a.mara) as mara, 
+            sum(a.apra) as apra, 
+            sum(a.maya) as maya,
+            sum(a.juna) as juna,
+            sum(a.jula) as jula,
+            sum(a.auga) as auga,
+            sum(a.sepa) as sepa,
+            sum(a.octa) as octa,
+            sum(a.nova) as nova,
+            sum(a.deca) as deca
+            FROM  tbl_mfo AS a left join users as u on  a.program_id = u.program_id
+            GROUP BY a.program_id) as a on a.program_id = b.pid
+    where pid=`+req.body.pid, function(error, results){
+      if (error) throw error;
+      res.json(results);
+
+    })
+});
+
+  app.get('/getFinPerformance', function(req, res){
+    connection.query(`
+    SELECT b.pid, a.name, a.ft, a.janft, a.febft, a.marft, a.aprft, a.mayft, a.junft, a.julft, a.augft, a.sepft, a.octft, a.novft, a.decft, 
+    a.dt, a.jandt, a.febdt, a.mardt, a.aprdt, a.maydt, a.jundt, a.juldt, a.augdt, a.sepdt, a.octdt, a.novdt, a.decdt, 
+    a.pt, a.jant, a.febt, a.mart, a.aprt, a.mayt, a.junt, a.jult, a.augt, a.sept, a.octt, a.novt, a.dect, 
+    a.pa, a.jana, a.feba, a.mara, a.apra, a.maya, a.juna, a.jula, a.auga, a.sepa, a.octa, a.nova, a.deca, 
+    sum((b.jan + b.feb + b.mar + b.apr + b.may + b.jun + b.jul + b.aug + b.sep + b.oct + b.nov + b.decm)) AS fin ,
+    sum(b.jan) as janfa,
+    sum(b.feb) as febfa,
+    sum(b.mar) as marfa,
+    sum(b.apr) as aprfa,
+    sum(b.may) as mayfa,
+    sum(b.jun) as junfa,
+    sum(b.jul) as julfa,
+    sum(b.aug) as augfa,
+    sum(b.sep) as sepfa,
+    sum(b.oct) as octfa,
+    sum(b.nov) as novfa,
+    sum(b.decm) as decfa,
+    sum((b.jan_da + b.feb_da + b.mar_da + b.apr_da + b.may_da + b.jun_da + b.jul_da + b.aug_da + b.sep_da + b.oct_da + b.nov_da + b.dec_da)) AS dis,
+    sum(b.jan_da) as janda,
+    sum(b.feb_da) as febda,
+    sum(b.mar_da) as marda,
+    sum(b.apr_da) as aprda,
+    sum(b.may_da) as mayda,
+    sum(b.jun_da) as junda,
+    sum(b.jul_da) as julda,
+    sum(b.aug_da) as augda,
+    sum(b.sep_da) as sepda,
+    sum(b.oct_da) as octda,
+    sum(b.nov_da) as novda,
+    sum(b.dec_da) as decda
+    FROM tbl_allotment as b left join 
+    (   SELECT a.program_id, u.first_name as name, SUM((a.janft + a.febft + a.marft + a.aprft + a.mayft + a.junft + a.julft + a.augft + a.sepft + a.octft + a.novft + a.decft)) AS ft, 
+            sum(a.janft) as janft,
+            sum(a.febft) as febft, 
+            sum(a.marft) as marft, 
+            sum(a.aprft) as aprft, 
+            sum(a.mayft) as mayft,
+            sum(a.junft) as junft,
+            sum(a.julft) as julft,
+            sum(a.augft) as augft,
+            sum(a.sepft) as sepft,
+            sum(a.octft) as octft,
+            sum(a.novft) as novft,
+            sum(a.decft) as decft,
+            SUM( (a.jandt + a.febdt + a.mardt + a.aprdt + a.maydt + a.jundt + a.juldt + a.augdt + a.sepdt + a.octdt + a.novdt + a.decdt) ) AS dt,
+            sum(a.jandt) as jandt,
+            sum(a.febdt) as febdt, 
+            sum(a.mardt) as mardt, 
+            sum(a.aprdt) as aprdt, 
+            sum(a.maydt) as maydt,
+            sum(a.jundt) as jundt,
+            sum(a.juldt) as juldt,
+            sum(a.augdt) as augdt,
+            sum(a.sepdt) as sepdt,
+            sum(a.octdt) as octdt,
+            sum(a.novdt) as novdt,
+            sum(a.decdt) as decdt,
+            SUM( (a.jant + a.febt + a.mart + a.aprt + a.mayt + a.junt + a.jult + a.augt + a.sept + a.octt + a.novt + a.dect) ) AS pt,
+            sum(a.jant) as jant,
+            sum(a.febt) as febt, 
+            sum(a.mart) as mart, 
+            sum(a.aprt) as aprt, 
+            sum(a.mayt) as mayt,
+            sum(a.junt) as junt,
+            sum(a.jult) as jult,
+            sum(a.augt) as augt,
+            sum(a.sept) as sept,
+            sum(a.octt) as octt,
+            sum(a.novt) as novt,
+            sum(a.dect) as dect,
+            SUM( (a.jana + a.feba + a.mara + a.apra + a.maya + a.juna + a.jula + a.auga + a.sepa + a.octa + a.nova + a.deca) ) AS pa,
+            sum(a.jana) as jana,
+            sum(a.feba) as feba, 
+            sum(a.mara) as mara, 
+            sum(a.apra) as apra, 
+            sum(a.maya) as maya,
+            sum(a.juna) as juna,
+            sum(a.jula) as jula,
+            sum(a.auga) as auga,
+            sum(a.sepa) as sepa,
+            sum(a.octa) as octa,
+            sum(a.nova) as nova,
+            sum(a.deca) as deca
+            FROM  tbl_mfo AS a left join users as u on  a.program_id = u.program_id 
+            where u.budget = 0
+            GROUP BY a.program_id) as a on a.program_id = b.pid 
+    group by pid
+    `, function(error, results){
+      if (error) throw error;
+      res.json(results);
+
+    })
+});
   //connection.end();
 
   app.get('/', function (req, res) {

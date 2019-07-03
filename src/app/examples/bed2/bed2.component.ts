@@ -412,7 +412,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jan',
             field: 'jana',
             width: 70,
-            editable: this.edit,
+           // editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -420,7 +420,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Feb',
             field: 'feba',
             width: 70,
-            editable: this.edit,
+           // editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -428,7 +428,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Mar',
             field: 'mara',
             width: 70,
-            editable: this.edit,
+          //  editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -445,7 +445,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Apr',
             field: 'apra',
             width: 70,
-            editable: this.edit,
+          //  editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -453,7 +453,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'May',
             field: 'maya',
             width: 70,
-            editable: this.edit,
+          //  editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -461,7 +461,7 @@ ngOnChanges(changes:any) {
             cellClass:['data'],headerName: 'Jun',
             field: 'juna',
             width: 70,
-            editable: this.edit,
+          //  editable: this.edit,
             type: 'valueColumn',
             columnGroupShow: 'open'
           },
@@ -730,6 +730,129 @@ ngOnChanges(changes:any) {
     this.mfoService.getLastUpdated(2, this.user.pid).subscribe(data => {
       this.date_updated = data;
     });
+  }
+
+  groupRowAggNodes(nodes: any) {
+    const result = {
+      var: 0, perc: 0,
+      jana: 0,feba: 0,mara: 0,apra: 0,maya: 0,juna: 0,jula: 0,auga: 0,sepa: 0,octa: 0,nova: 0,deca: 0,
+      q1t: 0, q2t:0, q3t:0, q4t:0, tt:0,
+      q1a: 0, q2a:0, q3a:0, q4a:0, ta:0,
+      jant: 0,febt: 0,mart: 0,aprt: 0,mayt: 0,junt: 0,jult: 0,augt: 0,sept: 0,octt: 0,novt: 0,dect: 0
+    };
+    nodes.forEach(function(node: any) {
+      const data = node.group ? node.aggData : node.data;
+      if (typeof data.jant === 'number') {
+        result.jant += data.jant;
+      }
+      if (typeof data.febt === 'number') {
+        result.febt += data.febt;
+      }
+      if (typeof data.mart === 'number') {
+        result.mart += data.mart;
+      }
+      if (typeof data.aprt === 'number') {
+        result.aprt += data.aprt;
+      }
+      if (typeof data.mayt === 'number') {
+        result.mayt += data.mayt;
+      }
+      if (typeof data.junt === 'number') {
+        result.junt += data.junt;
+      }
+      if (typeof data.jult === 'number') {
+        result.jult += data.jult;
+      }
+      if (typeof data.augt === 'number') {
+        result.augt += data.augt;
+      }
+      if (typeof data.sept === 'number') {
+        result.sept += data.sept;
+      }
+      if (typeof data.octt === 'number') {
+        result.octt += data.octt;
+      }
+      if (typeof data.novt === 'number') {
+        result.novt += data.novt;
+      }
+      if (typeof data.dect === 'number') {
+        result.dect += data.dect;
+      }
+      if (typeof data.jana === 'number') {
+        result.jana += data.jana;
+      }
+      if (typeof data.feba === 'number') {
+        result.feba += data.feba;
+      }
+      if (typeof data.mara === 'number') {
+        result.mara += data.mara;
+      }
+      if (typeof data.apra === 'number') {
+        result.apra += data.apra;
+      }
+      if (typeof data.maya === 'number') {
+        result.maya += data.maya;
+      }
+      if (typeof data.juna === 'number') {
+        result.juna += data.juna;
+      }
+      if (typeof data.jula === 'number') {
+        result.jula += data.jula;
+      }
+      if (typeof data.auga === 'number') {
+        result.auga += data.auga;
+      }
+      if (typeof data.sepa === 'number') {
+        result.sepa += data.sepa;
+      }
+      if (typeof data.octa === 'number') {
+        result.octa += data.octa;
+      }
+      if (typeof data.novt === 'number') {
+        result.nova += data.nova;
+      }
+      if (typeof data.dect === 'number') {
+        result.deca += data.deca;
+      }
+      result.q1t += Number(data.jant) + Number(data.febt) + Number(data.mart);
+      result.q2t += Number(data.aprt) + Number(data.mayt) + Number(data.junt);
+      result.q3t += Number(data.jult) + Number(data.augt) + Number(data.sept);
+      result.q4t += Number(data.octt) + Number(data.novt) + Number(data.dect);
+      result.q1a += Number(data.jana) + Number(data.feba) + Number(data.mara);
+      result.q2a += Number(data.apra) + Number(data.maya) + Number(data.juna);
+      result.q3a += Number(data.jula) + Number(data.auga) + Number(data.sepa);
+      result.q4a += Number(data.octa) + Number(data.nova) + Number(data.deca);
+      result.ta +=
+        Number(data.jana) +
+        Number(data.feba) +
+        Number(data.mara) +
+        Number(data.apra) +
+        Number(data.maya) +
+        Number(data.juna) +
+        Number(data.jula) +
+        Number(data.auga) +
+        Number(data.sepa) +
+        Number(data.octa) +
+        Number(data.nova) +
+        Number(data.deca);
+      result.tt +=
+        Number(data.jant) +
+        Number(data.febt) +
+        Number(data.mart) +
+        Number(data.aprt) +
+        Number(data.mayt) +
+        Number(data.junt) +
+        Number(data.jult) +
+        Number(data.augt) +
+        Number(data.sept) +
+        Number(data.octt) +
+        Number(data.novt) +
+        Number(data.dect);
+      result.var = result.ta - result.tt;
+      result.perc = result.ta / result.tt;
+
+    });
+    return result;
   }
 
   ngOnInit() {

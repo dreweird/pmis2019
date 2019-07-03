@@ -45,12 +45,12 @@ export class Bed3Component implements OnInit, OnChanges {
 
   exportcsv(){
     var ck=["mfo_name","name","object_id","budget","adjustment","adjusted"];
-    for(var i=1;i<=3;i++){
+    for(var i=1;i<=2;i++){
       for(var ii=0;ii<this.mon.length;ii++){
         var add="";
         if(i==1){ add=""; }
-        if(i==3){ add="_da"; }
-        if(i==2){ add="_dt"; }
+        if(i==2){ add="_da"; }
+        // if(i==2){ add="_dt"; }
         //if(i==2&&ii==14) add="m";
         ck.push(this.mon[ii]+add);
         if(i==1&&ii==this.mon.length-1)ck.push("un","fu");
@@ -78,7 +78,6 @@ export class Bed3Component implements OnInit, OnChanges {
           {data: {type:'String', value:''}},
           {data: {type:'String', value:''}},
           {styleId:'d2',data:{type:'String', value:'Financial Obligation'},mergeAcross:17},
-          {styleId:'a',data:{type:'String', value:'Financial Accomplishments'},mergeAcross:16},
           {styleId:'p2',data:{type:'String', value:'Financial Disbursement'},mergeAcross:16},
           {styleId:'ad',data:{type:'String', value:''}},
           {styleId:'',data:{type:'String', value:''}},

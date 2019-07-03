@@ -5,6 +5,7 @@ import { AboutComponent } from './about/about.component';
 import { FeaturesComponent } from './features/features.component';
 import { LoginPageComponent } from '@app/core/user/containers/login-page.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardProgramComponent } from './dashboard-program/dashboard-program.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
     {
     path: 'dashboard',
     component: DashboardComponent,
+  },
+  {
+    path: 'dashboard-program',
+    component: DashboardProgramComponent,
   },
   {
     path: 'features',
